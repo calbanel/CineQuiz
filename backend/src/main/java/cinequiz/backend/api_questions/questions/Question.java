@@ -1,4 +1,4 @@
-package cinequiz.backend.questions;
+package cinequiz.backend.api_questions.questions;
 
 public abstract class Question {
     private String question;

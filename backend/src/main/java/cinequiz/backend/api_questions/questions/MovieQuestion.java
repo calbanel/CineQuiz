@@ -1,4 +1,4 @@
-package cinequiz.backend.questions;
+package cinequiz.backend.api_questions.questions;
 
 public class MovieQuestion extends Question {
     public MovieQuestion(String question) {

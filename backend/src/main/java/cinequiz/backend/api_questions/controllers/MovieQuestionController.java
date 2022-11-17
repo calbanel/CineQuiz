@@ -1,21 +1,21 @@
-package cinequiz.backend;
+package cinequiz.backend.api_questions.controllers;
 
-import org.springframework.boot.SpringApplication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import cinequiz.backend.mcq.*;
-import cinequiz.backend.questions.MovieQuestion;
+import cinequiz.backend.api_questions.mcq.*;
+import cinequiz.backend.api_questions.questions.MovieQuestion;
 
 @RestController
 @RequestMapping("/questions/movie")
 public class MovieQuestionController {
 
-    public static void main(String[] args) {
-        SpringApplication.run(BackendApplication.class, args);
+    @GetMapping("/")
+    public String random_question() {
+        return "movie";
     }
 
     @GetMapping(value = "/which-by-image", produces = { "application/json" })

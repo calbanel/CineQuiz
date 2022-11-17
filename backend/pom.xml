@@ -59,6 +59,7 @@
 					<executable>ng</executable>
 					<workingDirectory>../frontend/AngularApplication</workingDirectory>
 					<arguments>build</arguments>
+					<proc>none</proc>
 				</configuration>
 			</plugin>
 			<plugin>
