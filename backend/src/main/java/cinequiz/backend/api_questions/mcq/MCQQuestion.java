@@ -2,7 +2,7 @@ package cinequiz.backend.api_questions.mcq;
 
 public class MCQQuestion {
     private String optionalImage;
-    private String optionalName;
+    private String optionalText;
     private String question;
     private Choices choices;
     private String answer;
@@ -12,7 +12,7 @@ public class MCQQuestion {
 
     public MCQQuestion(String optionalImage, String optionalName, String question, Choices choices, String answer) {
         this.optionalImage = optionalImage;
-        this.optionalName = optionalName;
+        this.optionalText = optionalName;
         this.question = question;
         this.choices = choices;
         this.answer = answer;
@@ -26,12 +26,12 @@ public class MCQQuestion {
         this.optionalImage = optionalImage;
     }
 
-    public String getOptionalName() {
-        return optionalName;
+    public String getOptionalText() {
+        return optionalText;
     }
 
-    public void setOptionalName(String optionalName) {
-        this.optionalName = optionalName;
+    public void setOptionalText(String optionalText) {
+        this.optionalText = optionalText;
     }
 
     public String getQuestion() {
