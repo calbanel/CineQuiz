@@ -55,7 +55,7 @@ public class MovieQuestionController {
         for (int i = 0; i < number; i++) {
             int id = -1;
             while (id < 0) {
-                int randomMovieInPage = (int) (0 + (Math.random() * ((NB_RESULT_PER_PAGES_ON_TMDB - 1) - 0)));
+                int randomMovieInPage = (int) (0 + (Math.random() * (NB_RESULT_PER_PAGES_ON_TMDB - 0)));
                 MovieListResult result = page.results.get(randomMovieInPage);
                 if (!idSet.contains(result.id))
                     id = result.id;
@@ -79,10 +79,22 @@ public class MovieQuestionController {
         return page;
     }
 
+    private final int NB_QUESTIONS = 2;
+
     @GetMapping("/")
-    public String random_question(
+    public ResponseEntity<MCQQuestion> random_question(
             @RequestParam(required = false, value = "langage", defaultValue = "fr-FR") String langage) {
-        return "movie";
+
+        int randomQuestion = (int) (0 + (Math.random() * (NB_QUESTIONS - 0)));
+        switch (randomQuestion) {
+            case 0:
+                return which_by_image(langage);
+            case 1:
+                return which_by_description(langage);
+            default:
+                return which_by_image(langage);
+
+        }
     }
 
     @GetMapping(value = "/which-by-image", produces = { "application/json" })
@@ -100,7 +112,7 @@ public class MovieQuestionController {
         Choices choicesObject = new Choices(movieList.get(0).title, movieList.get(1).title, movieList.get(2).title,
                 movieList.get(3).title);
 
-        int randomAnswer = (int) (0 + (Math.random() * ((NB_CHOICES - 1) - 0)));
+        int randomAnswer = (int) (0 + (Math.random() * (NB_CHOICES - 0)));
         MovieInfos answer = movieList.get(randomAnswer);
         MCQQuestion mcq = new MCQQuestion(answer.poster_path, "", MovieQuestion.WHICH_BY_IMAGE.getQuestion(),
                 choicesObject,
@@ -124,7 +136,7 @@ public class MovieQuestionController {
         Choices choicesObject = new Choices(movieList.get(0).title, movieList.get(1).title, movieList.get(2).title,
                 movieList.get(3).title);
 
-        int randomAnswer = (int) (0 + (Math.random() * ((NB_CHOICES - 1) - 0)));
+        int randomAnswer = (int) (0 + (Math.random() * (NB_CHOICES - 0)));
         MovieInfos answer = movieList.get(randomAnswer);
         MCQQuestion mcq = new MCQQuestion("", answer.overview, MovieQuestion.WHICH_BY_DESCRIPTION.getQuestion(),
                 choicesObject,
