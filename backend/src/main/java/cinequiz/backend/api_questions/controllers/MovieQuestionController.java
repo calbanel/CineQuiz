@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
@@ -79,13 +80,14 @@ public class MovieQuestionController {
     }
 
     @GetMapping("/")
-    public String random_question() {
+    public String random_question(
+            @RequestParam(required = false, value = "langage", defaultValue = "fr-FR") String langage) {
         return "movie";
     }
 
     @GetMapping(value = "/which-by-image", produces = { "application/json" })
-    public ResponseEntity<MCQQuestion> which_by_image() {
-        String langage = "fr-FR";
+    public ResponseEntity<MCQQuestion> which_by_image(
+            @RequestParam(required = false, value = "langage", defaultValue = "fr-FR") String langage) {
 
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
         try {
@@ -108,8 +110,8 @@ public class MovieQuestionController {
     }
 
     @GetMapping(value = "/which-by-description", produces = { "application/json" })
-    public ResponseEntity<MCQQuestion> which_by_description() {
-        String langage = "fr-FR";
+    public ResponseEntity<MCQQuestion> which_by_description(
+            @RequestParam(required = false, value = "langage", defaultValue = "fr-FR") String langage) {
 
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
         try {
