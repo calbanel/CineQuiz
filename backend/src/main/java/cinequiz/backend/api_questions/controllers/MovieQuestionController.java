@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import ch.qos.logback.core.joran.conditional.ElseAction;
 import cinequiz.backend.BackendApplication;
 import cinequiz.backend.api_questions.Language;
 import cinequiz.backend.api_questions.mcq.Choices;
@@ -102,9 +103,13 @@ public class MovieQuestionController {
     public ResponseEntity<MCQQuestion> which_by_image(
             @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
 
-        Language internLanguage = Language.FR;
-        if (language.equals("en"))
+        Language internLanguage;
+        if (language.equals("fr"))
+            internLanguage = Language.FR;
+        else if (language.equals("en"))
             internLanguage = Language.EN;
+        else
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
         try {
@@ -131,9 +136,13 @@ public class MovieQuestionController {
     public ResponseEntity<MCQQuestion> which_by_description(
             @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
 
-        Language internLanguage = Language.FR;
-        if (language.equals("en"))
+        Language internLanguage;
+        if (language.equals("fr"))
+            internLanguage = Language.FR;
+        else if (language.equals("en"))
             internLanguage = Language.EN;
+        else
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
         try {
