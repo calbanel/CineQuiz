@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import cinequiz.backend.BackendApplication;
+import cinequiz.backend.api_questions.Language;
 import cinequiz.backend.api_questions.mcq.Choices;
 import cinequiz.backend.api_questions.mcq.MCQQuestion;
 import cinequiz.backend.api_questions.questions.MovieQuestion;
@@ -31,8 +32,8 @@ public class MovieQuestionController {
     private final int RANDOM_PAGE_MAX = 500; // I want one of the 100 first pages (the 10000 actual most popular films)
     private final int NB_RESULT_PER_PAGES_ON_TMDB = 20;
 
-    private ArrayList<MovieInfos> getRandomPopularMovies(String langage, int number) {
-        HashSet<Integer> movieIDlist = getRandomPopularMovieIDs(langage, number);
+    private ArrayList<MovieInfos> getRandomPopularMovies(String tmdbLanguage, int number) {
+        HashSet<Integer> movieIDlist = getRandomPopularMovieIDs(tmdbLanguage, number);
 
         RestTemplate rt = new RestTemplate();
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
@@ -40,7 +41,7 @@ public class MovieQuestionController {
         for (Integer movieId : movieIDlist) {
             String url = "https://api.themoviedb.org/3/movie/" + movieId + "?api_key=" + BackendApplication.API_KEY
                     + "&language="
-                    + langage;
+                    + tmdbLanguage;
             MovieInfos movie = rt.getForObject(url, MovieInfos.class);
             movieList.add(movie);
         }
@@ -48,8 +49,8 @@ public class MovieQuestionController {
         return movieList;
     }
 
-    private HashSet<Integer> getRandomPopularMovieIDs(String langage, int number) {
-        PageResult page = getRandomPopularMoviesPage(langage);
+    private HashSet<Integer> getRandomPopularMovieIDs(String tmdbLanguage, int number) {
+        PageResult page = getRandomPopularMoviesPage(tmdbLanguage);
 
         HashSet<Integer> idSet = new HashSet<Integer>();
         for (int i = 0; i < number; i++) {
@@ -65,14 +66,14 @@ public class MovieQuestionController {
         return idSet;
     }
 
-    private PageResult getRandomPopularMoviesPage(String langage) {
+    private PageResult getRandomPopularMoviesPage(String tmdbLanguage) {
         PageResult page = null;
         RestTemplate rt = new RestTemplate();
         while (page == null) {
             int randomPage = (int) (RANDOM_PAGE_MIN + (Math.random() * (RANDOM_PAGE_MAX - RANDOM_PAGE_MIN)));
             String url = "https://api.themoviedb.org/3/movie/popular?api_key=" + BackendApplication.API_KEY
                     + "&language="
-                    + langage + "&page="
+                    + tmdbLanguage + "&page="
                     + randomPage;
             page = rt.getForObject(url, PageResult.class);
         }
@@ -83,27 +84,31 @@ public class MovieQuestionController {
 
     @GetMapping("/")
     public ResponseEntity<MCQQuestion> random_question(
-            @RequestParam(required = false, value = "langage", defaultValue = "fr-FR") String langage) {
+            @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
 
         int randomQuestion = (int) (0 + (Math.random() * (NB_QUESTIONS - 0)));
         switch (randomQuestion) {
             case 0:
-                return which_by_image(langage);
+                return which_by_image(language);
             case 1:
-                return which_by_description(langage);
+                return which_by_description(language);
             default:
-                return which_by_image(langage);
+                return which_by_image(language);
 
         }
     }
 
     @GetMapping(value = "/which-by-image", produces = { "application/json" })
     public ResponseEntity<MCQQuestion> which_by_image(
-            @RequestParam(required = false, value = "langage", defaultValue = "fr-FR") String langage) {
+            @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
+
+        Language internLanguage = Language.FR;
+        if (language.equals("en"))
+            internLanguage = Language.EN;
 
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
         try {
-            movieList = getRandomPopularMovies(langage, NB_CHOICES);
+            movieList = getRandomPopularMovies(internLanguage.getTmdbLanguage(), NB_CHOICES);
         } catch (Exception e) {
             System.err.print(e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -114,7 +119,8 @@ public class MovieQuestionController {
 
         int randomAnswer = (int) (0 + (Math.random() * (NB_CHOICES - 0)));
         MovieInfos answer = movieList.get(randomAnswer);
-        MCQQuestion mcq = new MCQQuestion(answer.poster_path, "", MovieQuestion.WHICH_BY_IMAGE.getQuestion(),
+        MCQQuestion mcq = new MCQQuestion(answer.backdrop_path, "",
+                MovieQuestion.WHICH_BY_IMAGE.getQuestion(internLanguage),
                 choicesObject,
                 answer.title);
 
@@ -123,11 +129,15 @@ public class MovieQuestionController {
 
     @GetMapping(value = "/which-by-description", produces = { "application/json" })
     public ResponseEntity<MCQQuestion> which_by_description(
-            @RequestParam(required = false, value = "langage", defaultValue = "fr-FR") String langage) {
+            @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
+
+        Language internLanguage = Language.FR;
+        if (language.equals("en"))
+            internLanguage = Language.EN;
 
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
         try {
-            movieList = getRandomPopularMovies(langage, NB_CHOICES);
+            movieList = getRandomPopularMovies(internLanguage.getTmdbLanguage(), NB_CHOICES);
         } catch (Exception e) {
             System.err.print(e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -138,7 +148,8 @@ public class MovieQuestionController {
 
         int randomAnswer = (int) (0 + (Math.random() * (NB_CHOICES - 0)));
         MovieInfos answer = movieList.get(randomAnswer);
-        MCQQuestion mcq = new MCQQuestion("", answer.overview, MovieQuestion.WHICH_BY_DESCRIPTION.getQuestion(),
+        MCQQuestion mcq = new MCQQuestion("", answer.overview,
+                MovieQuestion.WHICH_BY_DESCRIPTION.getQuestion(internLanguage),
                 choicesObject,
                 answer.title);
 
