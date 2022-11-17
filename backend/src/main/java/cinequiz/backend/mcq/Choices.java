@@ -1,7 +1,17 @@
-package cinequiz.backend;
+package cinequiz.backend.mcq;
 
 public class Choices {
     private String choice1, choice2, choice3, choice4;
+
+    public Choices() {
+    }
+
+    public Choices(String choice1, String choice2, String choice3, String choice4) {
+        this.choice1 = choice1;
+        this.choice2 = choice2;
+        this.choice3 = choice3;
+        this.choice4 = choice4;
+    }
 
     public String getChoice1() {
         return choice1;
@@ -32,16 +42,6 @@ public class Choices {
     }
 
     public void setChoice4(String choice4) {
-        this.choice4 = choice4;
-    }
-
-    public Choices() {
-    }
-
-    public Choices(String choice1, String choice2, String choice3, String choice4) {
-        this.choice1 = choice1;
-        this.choice2 = choice2;
-        this.choice3 = choice3;
         this.choice4 = choice4;
     }
 }
