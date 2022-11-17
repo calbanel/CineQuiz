@@ -107,4 +107,28 @@ public class MovieQuestionController {
         return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/which-by-description", produces = { "application/json" })
+    public ResponseEntity<MCQQuestion> which_by_description() {
+        String langage = "fr-FR";
+
+        ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
+        try {
+            movieList = getRandomPopularMovies(langage, NB_CHOICES);
+        } catch (Exception e) {
+            System.err.print(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        Choices choicesObject = new Choices(movieList.get(0).title, movieList.get(1).title, movieList.get(2).title,
+                movieList.get(3).title);
+
+        int randomAnswer = (int) (0 + (Math.random() * ((NB_CHOICES - 1) - 0)));
+        MovieInfos answer = movieList.get(randomAnswer);
+        MCQQuestion mcq = new MCQQuestion("", answer.overview, MovieQuestion.WHICH_BY_DESCRIPTION.getQuestion(),
+                choicesObject,
+                answer.title);
+
+        return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
+    }
+
 }
