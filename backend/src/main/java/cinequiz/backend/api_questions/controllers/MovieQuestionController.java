@@ -51,12 +51,11 @@ public class MovieQuestionController {
             @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
 
         Language internLanguage;
-        if (language.equals("fr"))
-            internLanguage = Language.FR;
-        else if (language.equals("en"))
-            internLanguage = Language.EN;
-        else
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        try {
+            internLanguage = languageCheck(language);
+        } catch (LanguageNotSupportedException e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
 
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
         try {
@@ -66,9 +65,7 @@ public class MovieQuestionController {
             return new ResponseEntity<String>("This language isn't supported", HttpStatus.BAD_REQUEST);
         }
 
-        Choices choicesObject = new Choices(movieList.get(0).title, movieList.get(1).title, movieList.get(2).title,
-                movieList.get(3).title);
-
+        Choices choicesObject = createChoicesByMovieList(movieList);
         int randomAnswer = (int) (0 + (Math.random() * (NB_CHOICES_IN_MCQ - 0)));
         MovieInfos answer = movieList.get(randomAnswer);
         MCQQuestion mcq = new MCQQuestion(answer.backdrop_path, "",
@@ -84,12 +81,11 @@ public class MovieQuestionController {
             @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
 
         Language internLanguage;
-        if (language.equals("fr"))
-            internLanguage = Language.FR;
-        else if (language.equals("en"))
-            internLanguage = Language.EN;
-        else
-            return new ResponseEntity<String>("This language isn't supported", HttpStatus.BAD_REQUEST);
+        try {
+            internLanguage = languageCheck(language);
+        } catch (LanguageNotSupportedException e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
 
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
         try {
@@ -99,9 +95,7 @@ public class MovieQuestionController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        Choices choicesObject = new Choices(movieList.get(0).title, movieList.get(1).title, movieList.get(2).title,
-                movieList.get(3).title);
-
+        Choices choicesObject = createChoicesByMovieList(movieList);
         int randomAnswer = (int) (0 + (Math.random() * (NB_CHOICES_IN_MCQ - 0)));
         MovieInfos answer = movieList.get(randomAnswer);
         MCQQuestion mcq = new MCQQuestion("", answer.overview,
@@ -110,6 +104,29 @@ public class MovieQuestionController {
                 answer.title);
 
         return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
+    }
+
+    /*
+     * 
+     * Utils functions
+     * 
+     */
+
+    private Language languageCheck(String language) throws LanguageNotSupportedException {
+        Language lang;
+        if (language.equals("fr"))
+            lang = Language.FR;
+        else if (language.equals("en"))
+            lang = Language.EN;
+        else
+            throw new LanguageNotSupportedException();
+
+        return lang;
+    }
+
+    private Choices createChoicesByMovieList(ArrayList<MovieInfos> list) {
+        return new Choices(list.get(0).title, list.get(1).title, list.get(2).title,
+                list.get(3).title);
     }
 
     /*
@@ -158,7 +175,7 @@ public class MovieQuestionController {
         // remove movies where we don't have title, description or image
         ArrayList<MovieListResult> filtredResults = getFiltredResultListInPage(page);
 
-        int randomMovieInPage = (int) (0 + (Math.random() * (page.results.size() - 0)));
+        int randomMovieInPage = (int) (0 + (Math.random() * (filtredResults.size() - 0)));
         MovieListResult oneMovie = filtredResults.get(randomMovieInPage);
 
         HashSet<Integer> idSet = getSetOfSimilarMoviesId(oneMovie.id, number, tmdbLanguage);
