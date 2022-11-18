@@ -2,6 +2,7 @@ package cinequiz.backend.api_questions.controllers;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,9 +10,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import ch.qos.logback.core.joran.conditional.ElseAction;
 import cinequiz.backend.BackendApplication;
 import cinequiz.backend.api_questions.Language;
 import cinequiz.backend.api_questions.mcq.Choices;
@@ -20,21 +21,22 @@ import cinequiz.backend.api_questions.questions.MovieQuestion;
 import cinequiz.backend.api_questions.tmdb_objects.MovieInfos;
 import cinequiz.backend.api_questions.tmdb_objects.MovieListResult;
 import cinequiz.backend.api_questions.tmdb_objects.PageResult;
+import edu.emory.mathcs.backport.java.util.Collections;
 
 @RestController
 @RequestMapping("/questions/movie")
 public class MovieQuestionController {
 
     private final int NB_CHOICES = 4;
-    // private final int[] RESCUE_MOVIE_ID = { 829280, 675, 299534, 260514 };
+    private final int NB_RESCUE_IDS = 4;
+    private final int[] RESCUE_MOVIE_ID = { 829280, 675, 299534, 260514 };
     // Enola Holmes 2, Harry Potter and the OP, Avengers: Endgame, Cars 3
 
     private final int RANDOM_PAGE_MIN = 1;
     private final int RANDOM_PAGE_MAX = 500; // I want one of the 100 first pages (the 10000 actual most popular films)
-    private final int NB_RESULT_PER_PAGES_ON_TMDB = 20;
 
-    private ArrayList<MovieInfos> getRandomPopularMovies(String tmdbLanguage, int number) {
-        HashSet<Integer> movieIDlist = getRandomPopularMovieIDs(tmdbLanguage, number);
+    private ArrayList<MovieInfos> getRandomCoherentMovies(String tmdbLanguage, int number) {
+        HashSet<Integer> movieIDlist = getRandomCoherentMovieIDs(tmdbLanguage, number);
 
         RestTemplate rt = new RestTemplate();
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
@@ -43,26 +45,77 @@ public class MovieQuestionController {
             String url = "https://api.themoviedb.org/3/movie/" + movieId + "?api_key=" + BackendApplication.API_KEY
                     + "&language="
                     + tmdbLanguage;
-            MovieInfos movie = rt.getForObject(url, MovieInfos.class);
+
+            MovieInfos movie;
+            try {
+                movie = rt.getForObject(url, MovieInfos.class);
+            } catch (final HttpClientErrorException e) {
+                // if this movis had not an info page, we take the page of an knowed valid movie
+                url = "https://api.themoviedb.org/3/movie/" + RESCUE_MOVIE_ID[movieList.size()] + "?api_key="
+                        + BackendApplication.API_KEY
+                        + "&language="
+                        + tmdbLanguage;
+                movie = rt.getForObject(url, MovieInfos.class);
+            }
             movieList.add(movie);
         }
 
         return movieList;
     }
 
-    private HashSet<Integer> getRandomPopularMovieIDs(String tmdbLanguage, int number) {
+    private HashSet<Integer> getRandomCoherentMovieIDs(String tmdbLanguage, int number) {
         PageResult page = getRandomPopularMoviesPage(tmdbLanguage);
 
+        // remove movies where we don't have title, description or image
+        page.results = (ArrayList<MovieListResult>) page.results
+                .stream()
+                .filter(
+                        (m) -> m.title != null && m.title != "" && m.backdrop_path != null && m.backdrop_path != ""
+                                && m.overview != null
+                                && m.overview != "")
+                .collect(Collectors.toList());
+
+        int randomMovieInPage = (int) (0 + (Math.random() * (page.results.size() - 0)));
+        MovieListResult oneMovie = page.results.get(randomMovieInPage);
+
+        HashSet<Integer> idSet = getSetOfSimilarMoviesId(oneMovie.id, number, tmdbLanguage);
+        return idSet;
+    }
+
+    private HashSet<Integer> getSetOfSimilarMoviesId(int movieId, int number, String tmdbLanguage) {
+        int id = movieId;
+        PageResult pageOfSimilarMovies = getSimilarMoviesPage(id, tmdbLanguage);
+        if (pageOfSimilarMovies == null)
+            pageOfSimilarMovies = getSimilarMoviesPage(getRescueMovieId(), tmdbLanguage);
+
+        // remove movies where we don't have title, description or image
+        pageOfSimilarMovies.results = (ArrayList<MovieListResult>) pageOfSimilarMovies.results
+                .stream()
+                .filter(
+                        (m) -> m.title != null && m.title != "" && m.backdrop_path != null && m.backdrop_path != ""
+                                && m.overview != null
+                                && m.overview != "")
+                .collect(Collectors.toList());
+
+        // if the similar movies page of this movie had not enough valid movies, we take
+        // similar movie page of a knowed valid movie
+        if (pageOfSimilarMovies.results.size() < number - 1) {
+            pageOfSimilarMovies = getSimilarMoviesPage(getRescueMovieId(), tmdbLanguage);
+            pageOfSimilarMovies.results = (ArrayList<MovieListResult>) pageOfSimilarMovies.results
+                    .stream()
+                    .filter(
+                            (m) -> m.title != null && m.title != "" && m.backdrop_path != null && m.backdrop_path != ""
+                                    && m.overview != null
+                                    && m.overview != "")
+                    .collect(Collectors.toList());
+        }
+
+        Collections.shuffle(pageOfSimilarMovies.results);
         HashSet<Integer> idSet = new HashSet<Integer>();
-        for (int i = 0; i < number; i++) {
-            int id = -1;
-            while (id < 0) {
-                int randomMovieInPage = (int) (0 + (Math.random() * (NB_RESULT_PER_PAGES_ON_TMDB - 0)));
-                MovieListResult result = page.results.get(randomMovieInPage);
-                if (!idSet.contains(result.id))
-                    id = result.id;
-            }
-            idSet.add(id);
+        idSet.add(id);
+        for (int i = 0; i < number - 1; i++) {
+            int similarMovieId = pageOfSimilarMovies.results.get(i).id;
+            idSet.add(similarMovieId);
         }
         return idSet;
     }
@@ -76,9 +129,36 @@ public class MovieQuestionController {
                     + "&language="
                     + tmdbLanguage + "&page="
                     + randomPage;
-            page = rt.getForObject(url, PageResult.class);
+
+            try {
+                page = rt.getForObject(url, PageResult.class);
+            } catch (final HttpClientErrorException e) {
+                System.out.println(e.getStatusCode());
+                System.out.println(e.getResponseBodyAsString());
+            }
+
         }
         return page;
+    }
+
+    private PageResult getSimilarMoviesPage(int movieId, String tmdbLanguage) {
+        PageResult page = null;
+        RestTemplate rt = new RestTemplate();
+        String url = "https://api.themoviedb.org/3/movie/" + movieId + "/similar?api_key=" + BackendApplication.API_KEY
+                + "&language=" + tmdbLanguage + "&page=1";
+        try {
+            page = rt.getForObject(url, PageResult.class);
+        } catch (final HttpClientErrorException e) {
+            System.out.println(e.getStatusCode());
+            System.out.println(e.getResponseBodyAsString());
+        }
+
+        return page;
+    }
+
+    private int getRescueMovieId() {
+        int randomRescueMovieId = (int) (0 + (Math.random() * (NB_RESCUE_IDS - 0)));
+        return RESCUE_MOVIE_ID[randomRescueMovieId];
     }
 
     private final int NB_QUESTIONS = 2;
@@ -113,7 +193,7 @@ public class MovieQuestionController {
 
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
         try {
-            movieList = getRandomPopularMovies(internLanguage.getTmdbLanguage(), NB_CHOICES);
+            movieList = getRandomCoherentMovies(internLanguage.getTmdbLanguage(), NB_CHOICES);
         } catch (Exception e) {
             System.err.print(e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -146,7 +226,7 @@ public class MovieQuestionController {
 
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
         try {
-            movieList = getRandomPopularMovies(internLanguage.getTmdbLanguage(), NB_CHOICES);
+            movieList = getRandomCoherentMovies(internLanguage.getTmdbLanguage(), NB_CHOICES);
         } catch (Exception e) {
             System.err.print(e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
