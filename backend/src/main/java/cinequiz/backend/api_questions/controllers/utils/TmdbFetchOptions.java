@@ -1,4 +1,4 @@
-package cinequiz.backend.api_questions.controllers;
+package cinequiz.backend.api_questions.controllers.utils;
 
 public class TmdbFetchOptions {
     private boolean title, image, description, budget, revenue, release_date;

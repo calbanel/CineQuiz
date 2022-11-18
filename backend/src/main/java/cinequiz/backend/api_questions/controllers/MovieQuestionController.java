@@ -17,6 +17,7 @@ import cinequiz.backend.api_questions.Language;
 import cinequiz.backend.api_questions.controllers.exceptions.LanguageNotSupportedException;
 import cinequiz.backend.api_questions.controllers.exceptions.NotEnoughSimilarMoviesInTMDBException;
 import cinequiz.backend.api_questions.controllers.exceptions.NotaValidMovieException;
+import cinequiz.backend.api_questions.controllers.utils.TmdbFetchOptions;
 import cinequiz.backend.api_questions.mcq.Choices;
 import cinequiz.backend.api_questions.mcq.MCQQuestion;
 import cinequiz.backend.api_questions.questions.MovieQuestion;
