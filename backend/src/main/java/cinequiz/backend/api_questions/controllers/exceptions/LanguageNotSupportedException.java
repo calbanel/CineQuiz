@@ -1,4 +1,4 @@
-package cinequiz.backend.api_questions.controllers;
+package cinequiz.backend.api_questions.controllers.exceptions;
 
 public class LanguageNotSupportedException extends Exception {
     public LanguageNotSupportedException() {
