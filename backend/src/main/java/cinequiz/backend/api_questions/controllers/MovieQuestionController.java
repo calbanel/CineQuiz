@@ -86,7 +86,7 @@ public class MovieQuestionController {
         int id = movieId;
         PageResult pageOfSimilarMovies = getSimilarMoviesPage(id, tmdbLanguage);
         if (pageOfSimilarMovies == null)
-            pageOfSimilarMovies = getSimilarMoviesPage(getRescueMovieId(), tmdbLanguage);
+            pageOfSimilarMovies = getSimilarMoviesPage(getRandomRescueMovieId(), tmdbLanguage);
 
         // remove movies where we don't have title, description or image
         pageOfSimilarMovies.results = (ArrayList<MovieListResult>) pageOfSimilarMovies.results
@@ -100,7 +100,7 @@ public class MovieQuestionController {
         // if the similar movies page of this movie had not enough valid movies, we take
         // similar movie page of a knowed valid movie
         if (pageOfSimilarMovies.results.size() < number - 1) {
-            pageOfSimilarMovies = getSimilarMoviesPage(getRescueMovieId(), tmdbLanguage);
+            pageOfSimilarMovies = getSimilarMoviesPage(getRandomRescueMovieId(), tmdbLanguage);
             pageOfSimilarMovies.results = (ArrayList<MovieListResult>) pageOfSimilarMovies.results
                     .stream()
                     .filter(
@@ -156,7 +156,7 @@ public class MovieQuestionController {
         return page;
     }
 
-    private int getRescueMovieId() {
+    private int getRandomRescueMovieId() {
         int randomRescueMovieId = (int) (0 + (Math.random() * (NB_RESCUE_IDS - 0)));
         return RESCUE_MOVIE_ID[randomRescueMovieId];
     }
@@ -164,7 +164,7 @@ public class MovieQuestionController {
     private final int NB_QUESTIONS = 2;
 
     @GetMapping("/")
-    public ResponseEntity<MCQQuestion> random_question(
+    public ResponseEntity<?> random_question(
             @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
 
         int randomQuestion = (int) (0 + (Math.random() * (NB_QUESTIONS - 0)));
@@ -180,7 +180,7 @@ public class MovieQuestionController {
     }
 
     @GetMapping(value = "/which-by-image", produces = { "application/json" })
-    public ResponseEntity<MCQQuestion> which_by_image(
+    public ResponseEntity<?> which_by_image(
             @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
 
         Language internLanguage;
@@ -196,7 +196,7 @@ public class MovieQuestionController {
             movieList = getRandomCoherentMovies(internLanguage.getTmdbLanguage(), NB_CHOICES);
         } catch (Exception e) {
             System.err.print(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<String>("This language isn't supported", HttpStatus.BAD_REQUEST);
         }
 
         Choices choicesObject = new Choices(movieList.get(0).title, movieList.get(1).title, movieList.get(2).title,
@@ -213,7 +213,7 @@ public class MovieQuestionController {
     }
 
     @GetMapping(value = "/which-by-description", produces = { "application/json" })
-    public ResponseEntity<MCQQuestion> which_by_description(
+    public ResponseEntity<?> which_by_description(
             @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
 
         Language internLanguage;
@@ -222,7 +222,7 @@ public class MovieQuestionController {
         else if (language.equals("en"))
             internLanguage = Language.EN;
         else
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<String>("This language isn't supported", HttpStatus.BAD_REQUEST);
 
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
         try {
