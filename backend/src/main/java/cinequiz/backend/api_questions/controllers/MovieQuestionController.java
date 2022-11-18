@@ -65,17 +65,20 @@ public class MovieQuestionController {
 
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
         try {
-            movieList = getRandomCoherentMovies(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ, true, true, false,
-                    false, false, false);
+            TmdbFetchOptions answerOptions = new TmdbFetchOptions(true, true, false, false, false, false);
+            TmdbFetchOptions similaryOptions = new TmdbFetchOptions(true, false, false, false, false, false);
+            movieList = getRandomCoherentMovies(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ, answerOptions,
+                    similaryOptions);
         } catch (Exception e) {
             return new ResponseEntity<String>(e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+        MovieInfos answer = movieList.get(0);
+        Collections.shuffle(movieList);
         String[] choices = { movieList.get(0).title, movieList.get(1).title, movieList.get(2).title,
                 movieList.get(3).title };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MovieInfos answer = getRandomMovieInMovieList(movieList);
         MCQQuestion mcq = new MCQQuestion(answer.backdrop_path, "",
                 MovieQuestion.WHICH_BY_IMAGE.getQuestion(internLanguage),
                 choicesObject,
@@ -97,17 +100,20 @@ public class MovieQuestionController {
 
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
         try {
-            movieList = getRandomCoherentMovies(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ, true, false, true,
-                    false, false, false);
+            TmdbFetchOptions answerOptions = new TmdbFetchOptions(true, false, true, false, false, false);
+            TmdbFetchOptions similaryOptions = new TmdbFetchOptions(true, false, false, false, false, false);
+            movieList = getRandomCoherentMovies(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ, answerOptions,
+                    similaryOptions);
         } catch (Exception e) {
             return new ResponseEntity<String>(e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+        MovieInfos answer = movieList.get(0);
+        Collections.shuffle(movieList);
         String[] choices = { movieList.get(0).title, movieList.get(1).title, movieList.get(2).title,
                 movieList.get(3).title };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MovieInfos answer = getRandomMovieInMovieList(movieList);
         MCQQuestion mcq = new MCQQuestion("", answer.overview,
                 MovieQuestion.WHICH_BY_DESCRIPTION.getQuestion(internLanguage),
                 choicesObject,
@@ -129,18 +135,21 @@ public class MovieQuestionController {
 
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
         try {
-            movieList = getRandomCoherentMovies(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ, true, true, false,
-                    true, false, false);
+            TmdbFetchOptions answerOptions = new TmdbFetchOptions(true, true, false, true, false, false);
+            TmdbFetchOptions similaryOptions = new TmdbFetchOptions(false, false, false, true, false, false);
+            movieList = getRandomCoherentMovies(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ, answerOptions,
+                    similaryOptions);
         } catch (Exception e) {
             return new ResponseEntity<String>(e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+        MovieInfos answer = movieList.get(0);
+        Collections.shuffle(movieList);
         String[] choices = { Long.toString(movieList.get(0).budget), Long.toString(movieList.get(1).budget),
                 Long.toString(movieList.get(2).budget),
                 Long.toString(movieList.get(3).budget) };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MovieInfos answer = getRandomMovieInMovieList(movieList);
         MCQQuestion mcq = new MCQQuestion(answer.backdrop_path, answer.title,
                 MovieQuestion.BUDGET.getQuestion(internLanguage),
                 choicesObject,
@@ -162,18 +171,21 @@ public class MovieQuestionController {
 
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
         try {
-            movieList = getRandomCoherentMovies(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ, true, true, false,
-                    false, true, false);
+            TmdbFetchOptions answerOptions = new TmdbFetchOptions(true, true, false, false, true, false);
+            TmdbFetchOptions similaryOptions = new TmdbFetchOptions(false, false, false, false, true, false);
+            movieList = getRandomCoherentMovies(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ, answerOptions,
+                    similaryOptions);
         } catch (Exception e) {
             return new ResponseEntity<String>(e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+        MovieInfos answer = movieList.get(0);
+        Collections.shuffle(movieList);
         String[] choices = { Long.toString(movieList.get(0).revenue), Long.toString(movieList.get(1).revenue),
                 Long.toString(movieList.get(2).revenue),
                 Long.toString(movieList.get(3).revenue) };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MovieInfos answer = getRandomMovieInMovieList(movieList);
         MCQQuestion mcq = new MCQQuestion(answer.backdrop_path, answer.title,
                 MovieQuestion.REVENUE.getQuestion(internLanguage),
                 choicesObject,
@@ -200,11 +212,6 @@ public class MovieQuestionController {
         return lang;
     }
 
-    private MovieInfos getRandomMovieInMovieList(ArrayList<MovieInfos> list) {
-        int rand = (int) (0 + (Math.random() * (list.size() - 0)));
-        return list.get(rand);
-    }
-
     /*
      *
      * TMDB fetching functions
@@ -223,21 +230,20 @@ public class MovieQuestionController {
      */
 
     private final int RANDOM_PAGE_MIN = 1;
-    private final int RANDOM_PAGE_MAX = 500; // I want one of the 100 first pages (the 10000 actual most popular films)
+    private final int RANDOM_PAGE_MAX = 100; // I want one of the 100 first pages (the 2000 actual most popular films)
 
-    private ArrayList<MovieInfos> getRandomCoherentMovies(String tmdbLanguage, int number, boolean title, boolean image,
-            boolean description, boolean budget, boolean revenue, boolean release_date) {
+    private ArrayList<MovieInfos> getRandomCoherentMovies(String tmdbLanguage, int number,
+            TmdbFetchOptions answerOptions, TmdbFetchOptions similaryOptions) {
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
 
         ArrayList<MovieInfos> similarMovieList = null;
         MovieInfos movie = null;
         while (similarMovieList == null) {
 
-            movie = getOneRandomValidMovie(tmdbLanguage, title, image, description, budget, revenue, release_date);
+            movie = getOneRandomValidMovie(tmdbLanguage, answerOptions);
 
             try {
-                similarMovieList = getSimilarValidMovies(movie, number - 1, tmdbLanguage, title, image, description,
-                        budget, revenue, release_date);
+                similarMovieList = getSimilarValidMovies(movie, number - 1, tmdbLanguage, similaryOptions);
             } catch (NotEnoughSimilarMoviesInTMDBException e) {
                 System.err.println(e.getMessage());
                 movieList.clear();
@@ -251,8 +257,7 @@ public class MovieQuestionController {
     }
 
     private ArrayList<MovieInfos> getSimilarValidMovies(MovieInfos movie, int number, String tmdbLanguage,
-            boolean title, boolean image, boolean description, boolean budget, boolean revenue, boolean release_date)
-            throws NotEnoughSimilarMoviesInTMDBException {
+            TmdbFetchOptions options) throws NotEnoughSimilarMoviesInTMDBException {
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
         int page_number = 1;
         while (movieList.size() < number) {
@@ -261,12 +266,12 @@ public class MovieQuestionController {
                 throw new NotEnoughSimilarMoviesInTMDBException();
 
             // remove movies where we don't have title, description or image
-            ArrayList<MovieListResult> filtredResults = getFiltredResultListInPage(page, title, image, description);
+            ArrayList<MovieListResult> filtredResults = getFiltredResultListInPage(page, options);
 
             for (MovieListResult result : filtredResults) {
                 MovieInfos similar;
                 try {
-                    similar = isaValidMovie(result, tmdbLanguage, budget, revenue, release_date);
+                    similar = isaValidMovie(result, tmdbLanguage, options);
                     movieList.add(similar);
                     if (movieList.size() >= number)
                         break;
@@ -280,19 +285,18 @@ public class MovieQuestionController {
         return movieList;
     }
 
-    private MovieInfos getOneRandomValidMovie(String tmdbLanguage, boolean title, boolean image,
-            boolean description, boolean budget, boolean revenue, boolean release_date) {
+    private MovieInfos getOneRandomValidMovie(String tmdbLanguage, TmdbFetchOptions options) {
         MovieInfos movie = null;
         while (movie == null) {
             PageResult page = getRandomPopularMoviesPage(tmdbLanguage);
 
             // remove movies where we don't have title, description or image
-            ArrayList<MovieListResult> filtredResults = getFiltredResultListInPage(page, title, image, description);
+            ArrayList<MovieListResult> filtredResults = getFiltredResultListInPage(page, options);
             Collections.shuffle(filtredResults);
 
             for (MovieListResult result : filtredResults) {
                 try {
-                    movie = isaValidMovie(result, tmdbLanguage, budget, revenue, release_date);
+                    movie = isaValidMovie(result, tmdbLanguage, options);
                 } catch (NotaValidMovieException e) {
                     System.err.println(e.getMessage());
                 }
@@ -302,8 +306,8 @@ public class MovieQuestionController {
         return movie;
     }
 
-    private MovieInfos isaValidMovie(MovieListResult result, String tmdbLanguage, boolean budget, boolean revenue,
-            boolean release_date) throws NotaValidMovieException {
+    private MovieInfos isaValidMovie(MovieListResult result, String tmdbLanguage, TmdbFetchOptions options)
+            throws NotaValidMovieException {
         MovieInfos movie = null;
 
         String url = "https://api.themoviedb.org/3/movie/" + result.id + "?api_key="
@@ -321,8 +325,8 @@ public class MovieQuestionController {
         }
 
         // check if it's a valid movie
-        if (tmp != null && (budget == false || tmp.budget > 0) && (revenue == false || tmp.revenue > 0)
-                && (release_date == false || (tmp.release_date != null
+        if (tmp != null && (!options.isBudget() || tmp.budget > 0) && (!options.isRevenue() || tmp.revenue > 0)
+                && (!options.isRelease_date() || (tmp.release_date != null
                         && tmp.release_date != "")))
             movie = tmp;
 
@@ -368,14 +372,13 @@ public class MovieQuestionController {
         return page;
     }
 
-    private ArrayList<MovieListResult> getFiltredResultListInPage(PageResult page, boolean title, boolean image,
-            boolean description) {
+    private ArrayList<MovieListResult> getFiltredResultListInPage(PageResult page, TmdbFetchOptions options) {
         return (ArrayList<MovieListResult>) page.results
                 .stream()
                 .filter(
-                        (m) -> (title == false || (m.title != null && m.title != ""))
-                                && (image == false || (m.backdrop_path != null && m.backdrop_path != ""))
-                                && (description == false || (m.overview != null && m.overview != "")))
+                        (m) -> (!options.isTitle() || (m.title != null && m.title != ""))
+                                && (!options.isImage() || (m.backdrop_path != null && m.backdrop_path != ""))
+                                && (!options.isDescription() || (m.overview != null && m.overview != "")))
                 .collect(Collectors.toList());
     }
 
