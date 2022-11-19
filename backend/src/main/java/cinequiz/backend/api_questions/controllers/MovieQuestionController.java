@@ -25,9 +25,10 @@ import cinequiz.backend.api_questions.tmdb_objects.MovieInfos;
 import cinequiz.backend.api_questions.tmdb_objects.MovieListResult;
 import cinequiz.backend.api_questions.tmdb_objects.PageResult;
 import edu.emory.mathcs.backport.java.util.Collections;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 @RestController
-@RequestMapping("/questions/movie")
+@RequestMapping(value = "/cinequiz/questions/movie", method = RequestMethod.GET)
 public class MovieQuestionController {
 
     private final int NB_CHOICES_IN_MCQ = 4;
