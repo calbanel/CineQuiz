@@ -1,1 +1,57 @@
-/* You can add global styles to this file, and also import other style files */
+@font-face {
+    font-family: roboto;
+    src: url('assets/roboto/Roboto-Black.ttf');
+ }
+
+header {
+    position: absolute;
+    width: 100%;
+    height: 100px;
+    left: 0px;
+    top: 0px;
+    background-color: #EB2F06;
+}
+
+header:first-child {
+    color: white;
+    text-align: center;
+    font-family: 'Roboto';
+    font-style: normal;
+    font-size: 30px;
+    line-height: 20px;
+}
+
+#connection {
+    position: absolute;
+    height: 8%;
+    width: 10%;
+    margin-left: 97px;
+    margin-top: 110px;
+    border-color: #82CCDD;
+    background: #82CCDD;
+    color: white;
+    font-family: 'Roboto';
+    font-size: large;
+}
+
+#createGame,#joinGame{
+    position: absolute;
+    width: 50%;
+    height: 11%;
+    margin-left: 320px;
+    margin-right: 320px;
+    background-color: #079992;
+    border-color: #079992;
+    color: white;
+    font-family: 'Roboto';
+    font-size: 30px;
+
+}
+
+#createGame {
+    margin-top: 250px;
+}
+
+#joinGame {
+    margin-top: 350px;
+}
