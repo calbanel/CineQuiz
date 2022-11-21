@@ -15,15 +15,20 @@ import org.springframework.web.client.RestTemplate;
 import cinequiz.backend.BackendApplication;
 import cinequiz.backend.api_questions.Language;
 import cinequiz.backend.api_questions.controllers.exceptions.LanguageNotSupportedException;
+import cinequiz.backend.api_questions.controllers.exceptions.MovieCastUnavailableInTMDBException;
+import cinequiz.backend.api_questions.controllers.exceptions.NotEnoughPeoplesInMovieCast;
 import cinequiz.backend.api_questions.controllers.exceptions.NotEnoughSimilarMoviesInTMDBException;
 import cinequiz.backend.api_questions.controllers.exceptions.NotaValidMovieException;
-import cinequiz.backend.api_questions.controllers.utils.TmdbFetchOptions;
+import cinequiz.backend.api_questions.controllers.utils.MovieTmdbFetchOptions;
+import cinequiz.backend.api_questions.controllers.utils.PeopleTmdbFetchOptions;
 import cinequiz.backend.api_questions.mcq.Choices;
 import cinequiz.backend.api_questions.mcq.MCQQuestion;
 import cinequiz.backend.api_questions.questions.MovieQuestion;
+import cinequiz.backend.api_questions.tmdb_objects.MovieCast;
+import cinequiz.backend.api_questions.tmdb_objects.MovieCastPage;
 import cinequiz.backend.api_questions.tmdb_objects.MovieInfos;
 import cinequiz.backend.api_questions.tmdb_objects.MovieListResult;
-import cinequiz.backend.api_questions.tmdb_objects.PageResult;
+import cinequiz.backend.api_questions.tmdb_objects.MovieListPage;
 import edu.emory.mathcs.backport.java.util.Collections;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -35,7 +40,7 @@ public class MovieQuestionController {
 
     private final int NB_CHOICES_IN_MCQ = 4;
     private final int NB_DEFINED_QUESTIONS = 4;
-    
+
     @ApiOperation(value = "Gets a random mcq about a movie")
     @GetMapping("/")
     public ResponseEntity<?> random_question(
@@ -71,8 +76,8 @@ public class MovieQuestionController {
 
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
         try {
-            TmdbFetchOptions answerOptions = new TmdbFetchOptions(true, true, false, false, false, false);
-            TmdbFetchOptions similaryOptions = new TmdbFetchOptions(true, false, false, false, false, false);
+            MovieTmdbFetchOptions answerOptions = new MovieTmdbFetchOptions(true, true, false, false, false, false);
+            MovieTmdbFetchOptions similaryOptions = new MovieTmdbFetchOptions(true, false, false, false, false, false);
             movieList = getRandomCoherentMovies(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ, answerOptions,
                     similaryOptions);
         } catch (Exception e) {
@@ -107,8 +112,8 @@ public class MovieQuestionController {
 
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
         try {
-            TmdbFetchOptions answerOptions = new TmdbFetchOptions(true, false, true, false, false, false);
-            TmdbFetchOptions similaryOptions = new TmdbFetchOptions(true, false, false, false, false, false);
+            MovieTmdbFetchOptions answerOptions = new MovieTmdbFetchOptions(true, false, true, false, false, false);
+            MovieTmdbFetchOptions similaryOptions = new MovieTmdbFetchOptions(true, false, false, false, false, false);
             movieList = getRandomCoherentMovies(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ, answerOptions,
                     similaryOptions);
         } catch (Exception e) {
@@ -143,8 +148,8 @@ public class MovieQuestionController {
 
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
         try {
-            TmdbFetchOptions answerOptions = new TmdbFetchOptions(true, true, false, true, false, false);
-            TmdbFetchOptions similaryOptions = new TmdbFetchOptions(false, false, false, true, false, false);
+            MovieTmdbFetchOptions answerOptions = new MovieTmdbFetchOptions(true, true, false, true, false, false);
+            MovieTmdbFetchOptions similaryOptions = new MovieTmdbFetchOptions(false, false, false, true, false, false);
             movieList = getRandomCoherentMovies(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ, answerOptions,
                     similaryOptions);
         } catch (Exception e) {
@@ -180,8 +185,8 @@ public class MovieQuestionController {
 
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
         try {
-            TmdbFetchOptions answerOptions = new TmdbFetchOptions(true, true, false, false, true, false);
-            TmdbFetchOptions similaryOptions = new TmdbFetchOptions(false, false, false, false, true, false);
+            MovieTmdbFetchOptions answerOptions = new MovieTmdbFetchOptions(true, true, false, false, true, false);
+            MovieTmdbFetchOptions similaryOptions = new MovieTmdbFetchOptions(false, false, false, false, true, false);
             movieList = getRandomCoherentMovies(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ, answerOptions,
                     similaryOptions);
         } catch (Exception e) {
@@ -199,6 +204,61 @@ public class MovieQuestionController {
                 MovieQuestion.REVENUE.getQuestion(internLanguage),
                 choicesObject,
                 Long.toString(answer.revenue));
+
+        return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Gets a mcq : Who was involved in this film?")
+    @GetMapping(value = "/take-part", produces = { "application/json" })
+    public ResponseEntity<?> takePart(
+            @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
+
+        Language internLanguage;
+        try {
+            internLanguage = languageCheck(language);
+        } catch (LanguageNotSupportedException e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+        ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
+        ArrayList<MovieCast> cast = null;
+        try {
+            while (cast == null) {
+                MovieTmdbFetchOptions manswerOptions = new MovieTmdbFetchOptions(true, true, false, false, false,
+                        false);
+                MovieTmdbFetchOptions msimilaryOptions = new MovieTmdbFetchOptions(false, false, false, false, false,
+                        false);
+                movieList = getRandomCoherentMovies(internLanguage.getTmdbLanguage(), 2, manswerOptions,
+                        msimilaryOptions);
+
+                int randomGender = (int) (1 + (Math.random() * (3 - 1)));
+                try {
+                    PeopleTmdbFetchOptions panswerOptions = new PeopleTmdbFetchOptions(true, true, true);
+                    cast = getRandomCoherentPeoplesInvolvedInThisMovie(movieList.get(0).id,
+                            internLanguage.getTmdbLanguage(), 1, panswerOptions, randomGender);
+                    PeopleTmdbFetchOptions psimilaryOptions = new PeopleTmdbFetchOptions(true, false, true);
+                    ArrayList<MovieCast> similaryCast = getRandomCoherentPeoplesInvolvedInThisMovie(movieList.get(1).id,
+                            internLanguage.getTmdbLanguage(), 3, psimilaryOptions, randomGender);
+
+                    cast.addAll(similaryCast);
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
+                }
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<String>(e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        MovieInfos movieOfAnswer = movieList.get(0);
+        MovieCast answer = cast.get(0);
+        Collections.shuffle(cast);
+        String[] choices = { cast.get(0).name, cast.get(1).name, cast.get(2).name, cast.get(3).name };
+        Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
+        MCQQuestion mcq = new MCQQuestion(movieOfAnswer.backdrop_path, movieOfAnswer.title,
+                MovieQuestion.TAKE_PART.getQuestion(internLanguage),
+                choicesObject,
+                answer.name);
 
         return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
     }
@@ -242,7 +302,7 @@ public class MovieQuestionController {
     private final int RANDOM_PAGE_MAX = 100; // I want one of the 100 first pages (the 2000 actual most popular films)
 
     private ArrayList<MovieInfos> getRandomCoherentMovies(String tmdbLanguage, int number,
-            TmdbFetchOptions answerOptions, TmdbFetchOptions similaryOptions) {
+            MovieTmdbFetchOptions answerOptions, MovieTmdbFetchOptions similaryOptions) {
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
 
         ArrayList<MovieInfos> similarMovieList = null;
@@ -266,11 +326,11 @@ public class MovieQuestionController {
     }
 
     private ArrayList<MovieInfos> getSimilarValidMovies(MovieInfos movie, int number, String tmdbLanguage,
-            TmdbFetchOptions options) throws NotEnoughSimilarMoviesInTMDBException {
+            MovieTmdbFetchOptions options) throws NotEnoughSimilarMoviesInTMDBException {
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
         int page_number = 1;
         while (movieList.size() < number) {
-            PageResult page = getSimilarMoviesPage(movie.id, tmdbLanguage, page_number);
+            MovieListPage page = getSimilarMoviesPage(movie.id, tmdbLanguage, page_number);
             if (page == null)
                 throw new NotEnoughSimilarMoviesInTMDBException();
 
@@ -294,10 +354,10 @@ public class MovieQuestionController {
         return movieList;
     }
 
-    private MovieInfos getOneRandomValidMovie(String tmdbLanguage, TmdbFetchOptions options) {
+    private MovieInfos getOneRandomValidMovie(String tmdbLanguage, MovieTmdbFetchOptions options) {
         MovieInfos movie = null;
         while (movie == null) {
-            PageResult page = getRandomPopularMoviesPage(tmdbLanguage);
+            MovieListPage page = getRandomPopularMoviesPage(tmdbLanguage);
 
             // remove movies where we don't have title, description or image
             ArrayList<MovieListResult> filtredResults = getFiltredResultListInPage(page, options);
@@ -315,7 +375,7 @@ public class MovieQuestionController {
         return movie;
     }
 
-    private MovieInfos isaValidMovie(MovieListResult result, String tmdbLanguage, TmdbFetchOptions options)
+    private MovieInfos isaValidMovie(MovieListResult result, String tmdbLanguage, MovieTmdbFetchOptions options)
             throws NotaValidMovieException {
         MovieInfos movie = null;
 
@@ -345,8 +405,8 @@ public class MovieQuestionController {
         return movie;
     }
 
-    private PageResult getRandomPopularMoviesPage(String tmdbLanguage) {
-        PageResult page = null;
+    private MovieListPage getRandomPopularMoviesPage(String tmdbLanguage) {
+        MovieListPage page = null;
         RestTemplate rt = new RestTemplate();
         while (page == null) {
             int randomPage = (int) (RANDOM_PAGE_MIN + (Math.random() * (RANDOM_PAGE_MAX - RANDOM_PAGE_MIN)));
@@ -356,7 +416,7 @@ public class MovieQuestionController {
                     + randomPage;
 
             try {
-                page = rt.getForObject(url, PageResult.class);
+                page = rt.getForObject(url, MovieListPage.class);
             } catch (final HttpClientErrorException e) {
                 System.out.println(e.getStatusCode());
                 System.out.println(e.getResponseBodyAsString());
@@ -366,13 +426,13 @@ public class MovieQuestionController {
         return page;
     }
 
-    private PageResult getSimilarMoviesPage(int movieId, String tmdbLanguage, int num_page) {
-        PageResult page = null;
+    private MovieListPage getSimilarMoviesPage(int movieId, String tmdbLanguage, int num_page) {
+        MovieListPage page = null;
         RestTemplate rt = new RestTemplate();
         String url = "https://api.themoviedb.org/3/movie/" + movieId + "/similar?api_key=" + BackendApplication.API_KEY
                 + "&language=" + tmdbLanguage + "&page=" + num_page;
         try {
-            page = rt.getForObject(url, PageResult.class);
+            page = rt.getForObject(url, MovieListPage.class);
         } catch (final HttpClientErrorException e) {
             System.out.println(e.getStatusCode());
             System.out.println(e.getResponseBodyAsString());
@@ -381,7 +441,7 @@ public class MovieQuestionController {
         return page;
     }
 
-    private ArrayList<MovieListResult> getFiltredResultListInPage(PageResult page, TmdbFetchOptions options) {
+    private ArrayList<MovieListResult> getFiltredResultListInPage(MovieListPage page, MovieTmdbFetchOptions options) {
         return (ArrayList<MovieListResult>) page.results
                 .stream()
                 .filter(
@@ -389,6 +449,47 @@ public class MovieQuestionController {
                                 && (!options.isImage() || (m.backdrop_path != null && m.backdrop_path != ""))
                                 && (!options.isDescription() || (m.overview != null && m.overview != "")))
                 .collect(Collectors.toList());
+    }
+
+    private ArrayList<MovieCast> getRandomCoherentPeoplesInvolvedInThisMovie(int movieId, String tmdbLanguage,
+            int number, PeopleTmdbFetchOptions options, int tmdbgenre)
+            throws MovieCastUnavailableInTMDBException, NotEnoughPeoplesInMovieCast {
+        ArrayList<MovieCast> peoples = new ArrayList<MovieCast>();
+
+        MovieCastPage castPage = getMovieCastPage(movieId, tmdbLanguage);
+        if (castPage == null)
+            throw new MovieCastUnavailableInTMDBException();
+
+        ArrayList<MovieCast> castFiltered = (ArrayList<MovieCast>) castPage.cast.stream()
+                .filter((c) -> (!options.isProfile_path() || (c.profile_path != null && c.profile_path != ""))
+                        && (!options.isName() || (c.name != null && c.name != ""))
+                        && (!options.isGender() || c.gender == tmdbgenre))
+                .collect(Collectors.toList());
+
+        if (castFiltered.size() < number)
+            throw new NotEnoughPeoplesInMovieCast();
+
+        Collections.shuffle(castFiltered);
+
+        for (int i = 0; i < number; i++)
+            peoples.add(castFiltered.get(i));
+
+        return peoples;
+    }
+
+    private MovieCastPage getMovieCastPage(int movieId, String tmdbLanguage) {
+        MovieCastPage page = null;
+        RestTemplate rt = new RestTemplate();
+        String url = "https://api.themoviedb.org/3/movie/" + movieId + "/credits?api_key=" + BackendApplication.API_KEY
+                + "&language=" + tmdbLanguage;
+        try {
+            page = rt.getForObject(url, MovieCastPage.class);
+        } catch (final HttpClientErrorException e) {
+            System.out.println(e.getStatusCode());
+            System.out.println(e.getResponseBodyAsString());
+        }
+
+        return page;
     }
 
 }

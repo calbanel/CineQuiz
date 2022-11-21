@@ -1,9 +1,9 @@
 package cinequiz.backend.api_questions.controllers.utils;
 
-public class TmdbFetchOptions {
+public class MovieTmdbFetchOptions {
     private boolean title, image, description, budget, revenue, release_date;
 
-    public TmdbFetchOptions(boolean title, boolean image, boolean description, boolean budget, boolean revenue,
+    public MovieTmdbFetchOptions(boolean title, boolean image, boolean description, boolean budget, boolean revenue,
             boolean release_date) {
         this.title = title;
         this.image = image;
