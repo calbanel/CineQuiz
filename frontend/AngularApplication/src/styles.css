@@ -1,22 +1,3 @@
-@font-face {
-    font-family: roboto;
-    src: url('assets/roboto/Roboto-Black.ttf');
- }
-
-header {
-    position: absolute;
-    width: 100%;
-    height: 100px;
-    left: 0px;
-    top: 0px;
-    background-color: #EB2F06;
-}
-
-header:first-child {
-    color: white;
-    text-align: center;
-    font-family: 'Roboto';
-    font-style: normal;
-    font-size: 30px;
-    line-height: 20px;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

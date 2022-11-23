@@ -12,6 +12,8 @@ module.exports = {
       'waterfall': '#38ada9',
       'aurora-green': '#78e08f',
       'white': '#FFFFFF',
+      'reef-encounter': '#079992',
+      'spray':'#82ccdd',
     },
     fontFamily: {
       roboto: ['./src/assets/roboto/Roboto-Black.ttf'],
