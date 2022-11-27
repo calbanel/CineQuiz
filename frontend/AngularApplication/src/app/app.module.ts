@@ -13,6 +13,6 @@ import { QuestionComponent } from './question/question.component';
     BrowserModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent,QuestionComponent]
 })
 export class AppModule { }
