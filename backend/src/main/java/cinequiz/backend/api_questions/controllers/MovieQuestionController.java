@@ -1,6 +1,8 @@
 package cinequiz.backend.api_questions.controllers;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
@@ -39,7 +41,7 @@ import io.swagger.annotations.ApiOperation;
 public class MovieQuestionController {
 
     private final int NB_CHOICES_IN_MCQ = 4;
-    private final int NB_DEFINED_QUESTIONS = 5;
+    private final int NB_DEFINED_QUESTIONS = 6;
 
     @ApiOperation(value = "Gets a random mcq about a movie")
     @GetMapping("/")
@@ -58,6 +60,8 @@ public class MovieQuestionController {
                 return revenue(language);
             case 4:
                 return takePart(language);
+            case 5:
+                return doesntTakePart(language);
             default:
                 return which_by_image(language);
 
@@ -236,12 +240,13 @@ public class MovieQuestionController {
                 int randomGender = (int) (1 + (Math.random() * (3 - 1)));
                 try {
                     PeopleTmdbFetchOptions panswerOptions = new PeopleTmdbFetchOptions(true, true, true);
-                    cast = getRandomCoherentPeoplesInvolvedInThisMovie(movieList.get(0).id,
+                    ArrayList<MovieCast> answer = getRandomCoherentPeoplesInvolvedInThisMovie(movieList.get(0).id,
                             internLanguage.getTmdbLanguage(), 1, panswerOptions, randomGender);
                     PeopleTmdbFetchOptions psimilaryOptions = new PeopleTmdbFetchOptions(true, false, true);
                     ArrayList<MovieCast> similaryCast = getRandomCoherentPeoplesInvolvedInThisMovie(movieList.get(1).id,
                             internLanguage.getTmdbLanguage(), 3, psimilaryOptions, randomGender);
 
+                    cast = new ArrayList<MovieCast>(answer);
                     cast.addAll(similaryCast);
                 } catch (Exception e) {
                     System.err.println(e.getMessage());
@@ -261,6 +266,99 @@ public class MovieQuestionController {
                 MovieQuestion.TAKE_PART.getQuestion(internLanguage),
                 choicesObject,
                 answer.name);
+
+        return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Gets a mcq : Who wasn't involved in this film?")
+    @GetMapping(value = "/doesnt-take-part", produces = { "application/json" })
+    public ResponseEntity<?> doesntTakePart(
+            @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
+
+        Language internLanguage;
+        try {
+            internLanguage = languageCheck(language);
+        } catch (LanguageNotSupportedException e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+        ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
+        ArrayList<MovieCast> cast = null;
+        try {
+            while (cast == null) {
+                MovieTmdbFetchOptions manswerOptions = new MovieTmdbFetchOptions(true, true, false, false, false,
+                        false);
+                MovieTmdbFetchOptions msimilaryOptions = new MovieTmdbFetchOptions(false, false, false, false, false,
+                        false);
+                movieList = getRandomCoherentMovies(internLanguage.getTmdbLanguage(), 2, manswerOptions,
+                        msimilaryOptions);
+
+                int randomGender = (int) (1 + (Math.random() * (3 - 1)));
+                try {
+                    PeopleTmdbFetchOptions panswerOptions = new PeopleTmdbFetchOptions(true, true, true);
+                    ArrayList<MovieCast> answer = getRandomCoherentPeoplesInvolvedInThisMovie(movieList.get(1).id,
+                            internLanguage.getTmdbLanguage(), 1, panswerOptions, randomGender);
+                    PeopleTmdbFetchOptions psimilaryOptions = new PeopleTmdbFetchOptions(true, false, true);
+                    ArrayList<MovieCast> similaryCast = getRandomCoherentPeoplesInvolvedInThisMovie(movieList.get(0).id,
+                            internLanguage.getTmdbLanguage(), 3, psimilaryOptions, randomGender);
+
+                    cast = new ArrayList<MovieCast>(answer);
+                    cast.addAll(similaryCast);
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
+                }
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<String>(e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        MovieInfos movieOfAnswer = movieList.get(0);
+        MovieCast answer = cast.get(0);
+        Collections.shuffle(cast);
+        String[] choices = { cast.get(0).name, cast.get(1).name, cast.get(2).name, cast.get(3).name };
+        Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
+        MCQQuestion mcq = new MCQQuestion(movieOfAnswer.backdrop_path, movieOfAnswer.title,
+                MovieQuestion.DOESNT_TAKE_PART.getQuestion(internLanguage),
+                choicesObject,
+                answer.name);
+
+        return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Gets a mcq : When was this film released?")
+    @GetMapping(value = "/release-date", produces = { "application/json" })
+    public ResponseEntity<?> releaseDate(
+            @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
+
+        Language internLanguage;
+        try {
+            internLanguage = languageCheck(language);
+        } catch (LanguageNotSupportedException e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+        ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
+        try {
+            MovieTmdbFetchOptions answerOptions = new MovieTmdbFetchOptions(true, true, false, false, false, true);
+            MovieTmdbFetchOptions similaryOptions = new MovieTmdbFetchOptions(false, false, false, false, false, true);
+            movieList = getRandomCoherentMovies(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ, answerOptions,
+                    similaryOptions);
+        } catch (Exception e) {
+            return new ResponseEntity<String>(e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        MovieInfos answer = movieList.get(0);
+        Collections.shuffle(movieList);
+        String[] choices = { movieList.get(0).release_date, movieList.get(1).release_date,
+                movieList.get(2).release_date,
+                movieList.get(3).release_date };
+        Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
+        MCQQuestion mcq = new MCQQuestion(answer.backdrop_path, answer.title,
+                MovieQuestion.RELEASE_DATE.getQuestion(internLanguage),
+                choicesObject,
+                answer.release_date);
 
         return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
     }
@@ -336,8 +434,12 @@ public class MovieQuestionController {
             if (page == null)
                 throw new NotEnoughSimilarMoviesInTMDBException();
 
+            // keeps the movies of the same language
+            ArrayList<MovieListResult> filtredResults = (ArrayList<MovieListResult>) page.results.stream()
+                    .filter(m -> m.original_language == movie.original_language).collect(Collectors.toList());
+
             // remove movies where we don't have title, description or image
-            ArrayList<MovieListResult> filtredResults = getFiltredResultListInPage(page, options);
+            filtredResults = getFiltredResultListInPage(page, options);
 
             for (MovieListResult result : filtredResults) {
                 MovieInfos similar;
@@ -471,7 +573,16 @@ public class MovieQuestionController {
         if (castFiltered.size() < number)
             throw new NotEnoughPeoplesInMovieCast();
 
-        Collections.shuffle(castFiltered);
+        castFiltered.sort((a, b) -> new Comparator<MovieCast>() {
+            @Override
+            public int compare(MovieCast o1, MovieCast o2) {
+                if (o1.popularity == o2.popularity)
+                    return 0;
+
+                return o1.popularity < o2.popularity ? 1 : -1;
+            }
+
+        }.compare(a, b));
 
         for (int i = 0; i < number; i++)
             peoples.add(castFiltered.get(i));
