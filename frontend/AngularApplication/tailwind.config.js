@@ -4,7 +4,7 @@ module.exports = {
   theme: {
     extend: {},
     backgroundImage: {
-      'cinema': "url('/assets/scene.png')",
+      'cinema': "url('/assets/movie-theater.jpg')",
     },
     colors: {
       'cine-red': '#ad3133',
