@@ -1,4 +1,4 @@
-package cinequiz.backend.api_questions.controllers.exceptions;
+package cinequiz.backend.api_questions.exceptions;
 
 public class NotEnoughSimilarMoviesInTMDBException extends Exception {
     public NotEnoughSimilarMoviesInTMDBException() {

@@ -1,6 +1,6 @@
 package cinequiz.backend.api_questions.questions;
 
-import cinequiz.backend.api_questions.Language;
+import cinequiz.backend.api_questions.utils.Language;
 
 public abstract class Question {
     private String fr;

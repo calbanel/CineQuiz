@@ -2,7 +2,6 @@ package cinequiz.backend.api_questions.controllers;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
@@ -15,21 +14,23 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import cinequiz.backend.BackendApplication;
-import cinequiz.backend.api_questions.Language;
-import cinequiz.backend.api_questions.controllers.exceptions.LanguageNotSupportedException;
-import cinequiz.backend.api_questions.controllers.exceptions.MovieCastUnavailableInTMDBException;
-import cinequiz.backend.api_questions.controllers.exceptions.NotEnoughPeoplesInMovieCast;
-import cinequiz.backend.api_questions.controllers.exceptions.NotEnoughSimilarMoviesInTMDBException;
-import cinequiz.backend.api_questions.controllers.exceptions.NotaValidMovieException;
-import cinequiz.backend.api_questions.controllers.utils.MovieTmdbFetchOptions;
-import cinequiz.backend.api_questions.controllers.utils.PeopleTmdbFetchOptions;
+import cinequiz.backend.api_questions.exceptions.LanguageNotSupportedException;
+import cinequiz.backend.api_questions.exceptions.MovieCastUnavailableInTMDBException;
+import cinequiz.backend.api_questions.exceptions.NotEnoughPeoplesInMovieCast;
+import cinequiz.backend.api_questions.exceptions.NotEnoughSimilarMoviesInTMDBException;
+import cinequiz.backend.api_questions.exceptions.NotaValidMovieException;
 import cinequiz.backend.api_questions.mcq.Choices;
 import cinequiz.backend.api_questions.mcq.MCQQuestion;
 import cinequiz.backend.api_questions.questions.MovieQuestion;
 import cinequiz.backend.api_questions.tmdb_objects.MovieCast;
 import cinequiz.backend.api_questions.tmdb_objects.MovieCastPage;
+import cinequiz.backend.api_questions.tmdb_objects.MovieCredit;
+import cinequiz.backend.api_questions.tmdb_objects.MovieCreditPage;
 import cinequiz.backend.api_questions.tmdb_objects.MovieInfos;
 import cinequiz.backend.api_questions.tmdb_objects.MovieListResult;
+import cinequiz.backend.api_questions.utils.Language;
+import cinequiz.backend.api_questions.utils.MovieTmdbFetchOptions;
+import cinequiz.backend.api_questions.utils.PeopleTmdbFetchOptions;
 import cinequiz.backend.api_questions.tmdb_objects.MovieListPage;
 import edu.emory.mathcs.backport.java.util.Collections;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -75,7 +76,7 @@ public class MovieQuestionController {
 
         Language internLanguage;
         try {
-            internLanguage = languageCheck(language);
+            internLanguage = Language.languageCheck(language);
         } catch (LanguageNotSupportedException e) {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -111,7 +112,7 @@ public class MovieQuestionController {
 
         Language internLanguage;
         try {
-            internLanguage = languageCheck(language);
+            internLanguage = Language.languageCheck(language);
         } catch (LanguageNotSupportedException e) {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -147,7 +148,7 @@ public class MovieQuestionController {
 
         Language internLanguage;
         try {
-            internLanguage = languageCheck(language);
+            internLanguage = Language.languageCheck(language);
         } catch (LanguageNotSupportedException e) {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -184,7 +185,7 @@ public class MovieQuestionController {
 
         Language internLanguage;
         try {
-            internLanguage = languageCheck(language);
+            internLanguage = Language.languageCheck(language);
         } catch (LanguageNotSupportedException e) {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -221,7 +222,7 @@ public class MovieQuestionController {
 
         Language internLanguage;
         try {
-            internLanguage = languageCheck(language);
+            internLanguage = Language.languageCheck(language);
         } catch (LanguageNotSupportedException e) {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -241,12 +242,15 @@ public class MovieQuestionController {
                 try {
                     PeopleTmdbFetchOptions panswerOptions = new PeopleTmdbFetchOptions(true, true, true);
                     ArrayList<MovieCast> answer = getRandomCoherentPeoplesInvolvedInThisMovie(movieList.get(0).id,
-                            internLanguage.getTmdbLanguage(), 1, panswerOptions, randomGender);
+                            internLanguage.getTmdbLanguage(), 1, panswerOptions, randomGender, -1);
                     PeopleTmdbFetchOptions psimilaryOptions = new PeopleTmdbFetchOptions(true, false, true);
-                    ArrayList<MovieCast> similaryCast = getRandomCoherentPeoplesInvolvedInThisMovie(movieList.get(1).id,
-                            internLanguage.getTmdbLanguage(), 3, psimilaryOptions, randomGender);
 
-                    cast = new ArrayList<MovieCast>(answer);
+                    ArrayList<MovieCast> similaryCast = getRandomCoherentPeoplesInvolvedInThisMovie(movieList.get(1).id,
+                            internLanguage.getTmdbLanguage(), 3, psimilaryOptions, randomGender,
+                            movieList.get(0).id);
+
+                    cast = new ArrayList<MovieCast>();
+                    cast.addAll(answer);
                     cast.addAll(similaryCast);
                 } catch (Exception e) {
                     System.err.println(e.getMessage());
@@ -277,7 +281,7 @@ public class MovieQuestionController {
 
         Language internLanguage;
         try {
-            internLanguage = languageCheck(language);
+            internLanguage = Language.languageCheck(language);
         } catch (LanguageNotSupportedException e) {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -297,10 +301,10 @@ public class MovieQuestionController {
                 try {
                     PeopleTmdbFetchOptions panswerOptions = new PeopleTmdbFetchOptions(true, true, true);
                     ArrayList<MovieCast> answer = getRandomCoherentPeoplesInvolvedInThisMovie(movieList.get(1).id,
-                            internLanguage.getTmdbLanguage(), 1, panswerOptions, randomGender);
+                            internLanguage.getTmdbLanguage(), 1, panswerOptions, randomGender, movieList.get(0).id);
                     PeopleTmdbFetchOptions psimilaryOptions = new PeopleTmdbFetchOptions(true, false, true);
                     ArrayList<MovieCast> similaryCast = getRandomCoherentPeoplesInvolvedInThisMovie(movieList.get(0).id,
-                            internLanguage.getTmdbLanguage(), 3, psimilaryOptions, randomGender);
+                            internLanguage.getTmdbLanguage(), 3, psimilaryOptions, randomGender, -1);
 
                     cast = new ArrayList<MovieCast>(answer);
                     cast.addAll(similaryCast);
@@ -333,7 +337,7 @@ public class MovieQuestionController {
 
         Language internLanguage;
         try {
-            internLanguage = languageCheck(language);
+            internLanguage = Language.languageCheck(language);
         } catch (LanguageNotSupportedException e) {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -364,38 +368,9 @@ public class MovieQuestionController {
     }
 
     /*
-     * 
-     * Utils functions
-     * 
-     */
-
-    private Language languageCheck(String language) throws LanguageNotSupportedException {
-        Language lang;
-        if (language.equals("fr"))
-            lang = Language.FR;
-        else if (language.equals("en"))
-            lang = Language.EN;
-        else
-            throw new LanguageNotSupportedException();
-
-        return lang;
-    }
-
-    /*
      *
      * TMDB fetching functions
      *
-     */
-
-    /*
-     * private final int NB_RESCUE_IDS = 4;
-     * private final int[] RESCUE_MOVIE_ID = { 829280, 675, 299534, 260514 };
-     * // Enola Holmes 2, Harry Potter and the OP, Avengers: Endgame, Cars 3
-     * 
-     * private int getRandomRescueMovieId() {
-     * int randomRescueMovieId = (int) (0 + (Math.random() * (NB_RESCUE_IDS - 0)));
-     * return RESCUE_MOVIE_ID[randomRescueMovieId];
-     * }
      */
 
     private final int RANDOM_PAGE_MIN = 1;
@@ -439,7 +414,7 @@ public class MovieQuestionController {
                     .filter(m -> m.original_language == movie.original_language).collect(Collectors.toList());
 
             // remove movies where we don't have title, description or image
-            filtredResults = getFiltredResultListInPage(page, options);
+            filtredResults = getFiltredMovieResultListInPage(page, options);
 
             for (MovieListResult result : filtredResults) {
                 MovieInfos similar;
@@ -464,7 +439,7 @@ public class MovieQuestionController {
             MovieListPage page = getRandomPopularMoviesPage(tmdbLanguage);
 
             // remove movies where we don't have title, description or image
-            ArrayList<MovieListResult> filtredResults = getFiltredResultListInPage(page, options);
+            ArrayList<MovieListResult> filtredResults = getFiltredMovieResultListInPage(page, options);
             Collections.shuffle(filtredResults);
 
             for (MovieListResult result : filtredResults) {
@@ -545,7 +520,8 @@ public class MovieQuestionController {
         return page;
     }
 
-    private ArrayList<MovieListResult> getFiltredResultListInPage(MovieListPage page, MovieTmdbFetchOptions options) {
+    private ArrayList<MovieListResult> getFiltredMovieResultListInPage(MovieListPage page,
+            MovieTmdbFetchOptions options) {
         return (ArrayList<MovieListResult>) page.results
                 .stream()
                 .filter(
@@ -556,7 +532,7 @@ public class MovieQuestionController {
     }
 
     private ArrayList<MovieCast> getRandomCoherentPeoplesInvolvedInThisMovie(int movieId, String tmdbLanguage,
-            int number, PeopleTmdbFetchOptions options, int tmdbgenre)
+            int number, PeopleTmdbFetchOptions options, int tmdbgenre, int similarMovieId)
             throws MovieCastUnavailableInTMDBException, NotEnoughPeoplesInMovieCast {
         ArrayList<MovieCast> peoples = new ArrayList<MovieCast>();
 
@@ -584,8 +560,16 @@ public class MovieQuestionController {
 
         }.compare(a, b));
 
-        for (int i = 0; i < number; i++)
-            peoples.add(castFiltered.get(i));
+        int i = 0;
+        while (peoples.size() < number) {
+            MovieCast c = castFiltered.get(i);
+            if (!isCastIsInThisMovie(c.id, similarMovieId, tmdbLanguage))
+                peoples.add(castFiltered.get(i));
+
+            i++;
+            if (i >= castFiltered.size())
+                throw new NotEnoughPeoplesInMovieCast();
+        }
 
         return peoples;
     }
@@ -597,6 +581,38 @@ public class MovieQuestionController {
                 + "&language=" + tmdbLanguage;
         try {
             page = rt.getForObject(url, MovieCastPage.class);
+        } catch (final HttpClientErrorException e) {
+            System.out.println(e.getStatusCode());
+            System.out.println(e.getResponseBodyAsString());
+        }
+
+        return page;
+    }
+
+    private boolean isCastIsInThisMovie(int personId, int movieId, String tmdbLanguage) {
+        boolean isIn = false;
+        MovieCreditPage creditPage = getPeopleMovieCreditPage(personId, tmdbLanguage);
+        if (creditPage != null) {
+            ArrayList<MovieCredit> list = new ArrayList<MovieCredit>();
+            list.addAll(creditPage.cast);
+            list.addAll(creditPage.crew);
+            for (MovieCredit credit : list) {
+                if (credit.id == movieId)
+                    isIn = true;
+            }
+        }
+
+        return isIn;
+    }
+
+    private MovieCreditPage getPeopleMovieCreditPage(int personId, String tmdbLanguage) {
+        MovieCreditPage page = null;
+        RestTemplate rt = new RestTemplate();
+        String url = "https://api.themoviedb.org/3/person/" + personId + "/movie_credits?api_key="
+                + BackendApplication.API_KEY
+                + "&language=" + tmdbLanguage;
+        try {
+            page = rt.getForObject(url, MovieCreditPage.class);
         } catch (final HttpClientErrorException e) {
             System.out.println(e.getStatusCode());
             System.out.println(e.getResponseBodyAsString());

@@ -1,4 +1,4 @@
-package cinequiz.backend.api_questions.controllers.utils;
+package cinequiz.backend.api_questions.utils;
 
 public class PeopleTmdbFetchOptions {
     private boolean name, profile_path, gender;
