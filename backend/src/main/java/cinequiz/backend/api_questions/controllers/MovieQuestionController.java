@@ -326,6 +326,43 @@ public class MovieQuestionController {
         return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Gets a mcq : When was this film released?")
+    @GetMapping(value = "/release-date", produces = { "application/json" })
+    public ResponseEntity<?> releaseDate(
+            @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
+
+        Language internLanguage;
+        try {
+            internLanguage = languageCheck(language);
+        } catch (LanguageNotSupportedException e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+        ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
+        try {
+            MovieTmdbFetchOptions answerOptions = new MovieTmdbFetchOptions(true, true, false, false, false, true);
+            MovieTmdbFetchOptions similaryOptions = new MovieTmdbFetchOptions(false, false, false, false, false, true);
+            movieList = getRandomCoherentMovies(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ, answerOptions,
+                    similaryOptions);
+        } catch (Exception e) {
+            return new ResponseEntity<String>(e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        MovieInfos answer = movieList.get(0);
+        Collections.shuffle(movieList);
+        String[] choices = { movieList.get(0).release_date, movieList.get(1).release_date,
+                movieList.get(2).release_date,
+                movieList.get(3).release_date };
+        Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
+        MCQQuestion mcq = new MCQQuestion(answer.backdrop_path, answer.title,
+                MovieQuestion.RELEASE_DATE.getQuestion(internLanguage),
+                choicesObject,
+                answer.release_date);
+
+        return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
+    }
+
     /*
      * 
      * Utils functions
