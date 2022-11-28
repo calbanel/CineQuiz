@@ -3,8 +3,11 @@ module.exports = {
   content: ["./src/**/*.{html,js}"],
   theme: {
     extend: {},
+    backgroundImage: {
+      'cinema': "url('/assets/movie-theater.jpg')",
+    },
     colors: {
-      'tomato-red': '#eb2f06',
+      'cine-red': '#ad3133',
       'jalapeno-red': '#b71540',
       'orange': '#e58e26',
       'good-samaritan': '#3c6382',
