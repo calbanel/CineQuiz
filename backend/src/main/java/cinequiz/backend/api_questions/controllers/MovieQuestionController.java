@@ -422,6 +422,8 @@ public class MovieQuestionController {
                 MovieInfos similar;
                 try {
                     similar = isaValidMovie(result, tmdbLanguage, options);
+                    if (checkDuplicate(similar, movie, movieList, options))
+                        continue;
                     movieList.add(similar);
                     if (movieList.size() >= number)
                         break;
@@ -433,6 +435,43 @@ public class MovieQuestionController {
             page_number++;
         }
         return movieList;
+    }
+
+    private boolean checkDuplicate(MovieInfos result, MovieInfos original, ArrayList<MovieInfos> similarList,
+            MovieTmdbFetchOptions options) {
+        boolean isDuplicate = false;
+
+        if (options.isBudget()) {
+            if (result.budget == original.budget)
+                isDuplicate = true;
+
+            for (MovieInfos similar : similarList) {
+                if (result.budget == similar.budget)
+                    isDuplicate = true;
+            }
+        }
+
+        if (options.isRevenue() && !isDuplicate) {
+            if (result.revenue == original.revenue)
+                isDuplicate = true;
+
+            for (MovieInfos similar : similarList) {
+                if (result.revenue == similar.revenue)
+                    isDuplicate = true;
+            }
+        }
+
+        if (options.isRelease_date() && !isDuplicate) {
+            if (result.release_date == original.release_date)
+                isDuplicate = true;
+
+            for (MovieInfos similar : similarList) {
+                if (result.release_date == similar.release_date)
+                    isDuplicate = true;
+            }
+        }
+
+        return isDuplicate;
     }
 
     private MovieInfos getOneRandomValidMovie(String tmdbLanguage, MovieTmdbFetchOptions options) {
