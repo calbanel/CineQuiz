@@ -16,14 +16,14 @@ export class QuestionComponent implements OnInit {
   answerC!: string;
   answerD!: string;
   answer!: string;
-  media!: string|null;
+  media!: string;
 
   ngOnInit(){
     this.title='Question';
     this.questionNumber = 1;
     this.type = "wich-by-image";
     this.question = "Quel est ce film ?";
-    this.description = "Une charmante petite ville de l'Angleterre rurale. Si elle est originale et artiste dans l'âme, Louisa «Lou» Clark, 26 ans, n'a aucune ambition particulière. Elle se contente d'enchaîner les boulots pour permettre à ses proches de joindre les deux bouts. Jeune et riche banquier, Will Traynor était un garçon plein d'audace et d'optimisme jusqu'à ce qu'il se retrouve paralysé, suite à un accident survenu deux ans plus tôt. Devenu cynique, il a renoncé à tout et n'est plus que l'ombre de lui-même. Autant dire que ces deux-là auraient pu ne jamais se rencontrer. Mais lorsque Lou accepte de travailler comme aide-soignante auprès de Will, elle est bien décidée à lui redonner goût à la vie. Et peu à peu, les deux jeunes gens s'éprennent passionnément l'un de l'autre. La force de leur amour pourra-t-elle survivre à leur destin qui semble inexorable?";
+    this.description = "";
     this.answerA = "Un homme d’exception";
     this.answerB = "Invincible : Le chemin de la rédemption";
     this.answerC = "21 grammes";
