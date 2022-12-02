@@ -1,13 +1,13 @@
 <div class="grid bg-waterfall text-white font-roboto my-16 space-y-4 rounded-t-3xl rounded-b-xl w-fit m-20">
-    <div id="nbQuestion" class="bg-jalapeno-red rounded-full py-2 px-4 text-center"> Question 1/10 </div>
-        <div id="question" class="text-2xl text-center">Quel est ce film ?</div>
+    <div id="nbQuestion" class="bg-jalapeno-red rounded-full py-2 px-4 text-center"> Question {{questionNumber}}/10 </div>
+        <div id="question" class="text-2xl text-center">{{question}}</div>
         <div class="flex flex-row mb-6">
-            <div class="mb-6 mx-6 w-4/6" id="image"><p class="text-center text-justify">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec dignissim neque. Suspendisse in sapien vulputate, tincidunt sem vel, scelerisque ante. Vestibulum ex tellus, auctor id sapien in, luctus placerat urna. Nullam ac massa sit amet nibh suscipit molestie at et tellus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Pellentesque nibh urna, pulvinar quis leo eu, iaculis bibendum est. Nam vulputate nulla ac orci auctor posuere mollis non leo. Sed fringilla, ipsum vitae scelerisque congue, purus quam sodales diam, id sagittis augue risus in libero. Donec ac tempor quam. Aliquam pulvinar justo non neque finibus feugiat. Mauris in semper orci. Suspendisse venenatis mi eu augue elementum, vel rhoncus nisl pellentesque. Pellentesque massa risus, laoreet non fermentum eget, consequat vitae magna.</p></div>
-            <div id="answers" class="bg-waterfall rounded space-y-4 w-2/6 place-items-center ml-10 mr-12 mb-6">
-                <div id="A" class="bg-good-samaritan rounded"> <img src="../assets/A.png" class="w-6 left pt-4 inline pb-4 ml-5"> <button class="py-2 px-4 w-3/4 flex-1 hover:text-2xl"> Réponse A</button></div>
-                <div id="B" class="bg-good-samaritan rounded"> <img src="../assets/B.png" class="w-6 left pt-4 inline pb-4 ml-5"> <button class="py-2 px-4 w-3/4 flex-1 hover:text-2xl">  Réponse B</button></div>
-                <div id="C" class="bg-good-samaritan rounded"> <img src="../assets/C.png" class="w-6 left pt-4 inline pb-4 ml-5"> <button class="py-2 px-4 w-3/4 flex-1 hover:text-2xl"> Réponse C</button></div>
-                <div id="D" class="bg-good-samaritan rounded"> <img src="../assets/D.png" class="w-6 left pt-4 inline pb-4 ml-5"> <button class="py-2 px-4 w-3/4 flex-1 hover:text-2xl"> Réponse D </button></div>
+            <div class="mb-6 mx-6 w-4/6" id="image"><p class="text-center text-justify"><img src={{media}} class=""><p></div>
+            <div id="answers" class="bg-waterfall rounded space-y-4 w-2/6 place-items-center ml-4 mr-12 mb-6">
+                <div id="answerA" class="bg-good-samaritan rounded hover:bg-spray"> <img src="../assets/A.png" class="w-6 left pt-4 inline pb-4 ml-5"> <button (click)="onClick(answerA)" class="py-2 px-4 w-3/4 flex-1">{{answerA}}</button></div>
+                <div id="answerB" class="bg-good-samaritan rounded hover:bg-spray"> <img src="../assets/B.png" class="w-6 left pt-4 inline pb-4 ml-5"> <button (click)="onClick(answerB)" class="py-2 px-4 w-3/4 flex-1">{{answerB}}</button></div>
+                <div id="answerC" class="bg-good-samaritan rounded hover:bg-spray"> <img src="../assets/C.png" class="w-6 left pt-4 inline pb-4 ml-5"> <button (click)="onClick(answerC)" class="py-2 px-4 w-3/4 flex-1">{{answerC}}</button></div>
+                <div id="answerD" class="bg-good-samaritan rounded hover:bg-spray"> <img src="../assets/D.png" class="w-6 left pt-4 inline pb-4 ml-5"> <button (click)="onClick(answerD)" class="py-2 px-4 w-3/4 flex-1">{{answerD}}</button></div>
             </div>
         </div>
 </div>
