@@ -42,7 +42,7 @@ import io.swagger.annotations.ApiOperation;
 public class MovieQuestionController {
 
     private final int NB_CHOICES_IN_MCQ = 4;
-    private final int NB_DEFINED_QUESTIONS = 6;
+    private final int NB_DEFINED_QUESTIONS = 7;
 
     @ApiOperation(value = "Gets a random mcq about a movie")
     @GetMapping("/")
@@ -63,6 +63,8 @@ public class MovieQuestionController {
                 return takePart(language);
             case 5:
                 return doesntTakePart(language);
+            case 6:
+                return releaseDate(language);
             default:
                 return which_by_image(language);
 
