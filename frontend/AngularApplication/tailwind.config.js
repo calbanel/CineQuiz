@@ -13,7 +13,7 @@ module.exports = {
       'good-samaritan': '#3c6382',
       'forrest-blues': '#0a3d62',
       'waterfall': '#38ada9',
-      'aurora-green': '#78e08f',
+      'green': '#78e08f',
       'white': '#FFFFFF',
       'reef-encounter': '#079992',
       'spray':'#82ccdd',
