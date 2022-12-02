@@ -2,7 +2,7 @@
     <div id="nbQuestion" class="bg-jalapeno-red rounded-full py-2 px-4 text-center"> Question {{questionNumber}}/10 </div>
         <div id="question" class="text-2xl text-center">{{question}}</div>
         <div class="flex flex-row mb-6">
-            <div class="mb-6 mx-6 w-4/6" id="image"><p class="text-center text-justify"><img src={{media}} class=""><p></div>
+            <div class="mb-6 mx-6 w-4/6" id="image"><p class="text-center text-justify"><img [src]="media" class=""><p></div>
             <div id="answers" class="bg-waterfall rounded space-y-4 w-2/6 place-items-center ml-4 mr-12 mb-6">
                 <div id="answerA" class="bg-good-samaritan rounded hover:bg-spray"> <img src="../assets/A.png" class="w-6 left pt-4 inline pb-4 ml-5"> <button (click)="onClick('answerA')" class="py-2 px-4 w-3/4 flex-1">{{answerA}}</button></div>
                 <div id="answerB" class="bg-good-samaritan rounded hover:bg-spray"> <img src="../assets/B.png" class="w-6 left pt-4 inline pb-4 ml-5"> <button (click)="onClick('answerB')" class="py-2 px-4 w-3/4 flex-1">{{answerB}}</button></div>
