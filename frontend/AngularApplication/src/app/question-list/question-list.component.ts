@@ -13,7 +13,7 @@ export class QuestionListComponent implements OnInit {
   constructor(private questionService: QuestionService) { }
 
   ngOnInit(): void {
-    this.questions = this.questionService.questions;
+    this.questions = this.questionService.getAllQuestions();
   }
 
 }

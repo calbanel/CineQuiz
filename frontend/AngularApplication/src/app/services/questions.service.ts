@@ -92,4 +92,17 @@ export class QuestionService{
         }
       ];
 
+    getAllQuestions() : Question[] {
+        return this.questions;
+    }
+
+    getQuestionByNumber(questionNb:number) : Question {
+        const question = this.questions.find(question => question.questionNumber === questionNb);
+        if (!question){
+            throw new Error('Question not found');
+        }else{
+            return question;
+        }
+    }
+
 }
