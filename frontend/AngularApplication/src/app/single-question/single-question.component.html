@@ -1,0 +1,16 @@
+<div class="container mx-auto px-40">
+    <div class="grid bg-waterfall text-white font-roboto my-16 space-y-4 rounded-t-3xl rounded-b-xl w-full mx-auto">
+        <div id="nbQuestion" class="bg-jalapeno-red rounded-full py-2 px-4 text-center"> Question {{quest.questionNumber}}/10 </div>
+            <div id="question" class="text-2xl text-center">{{quest.question}}</div>
+            <div class="flex flex-row mb-6">
+                <div class="mb-6 mx-6 w-4/6" id="image"><img [src]="quest.media" class="mx-auto object-fill"><p class="text-center">{{quest.description}}<p></div>
+                <div id="answers" class="bg-waterfall rounded space-y-4 w-2/6 place-items-center ml-4 mr-12 mb-6">
+                    <div id="answerA{{quest.questionNumber}}" class="bg-good-samaritan rounded hover:bg-spray"> <img src="../assets/A.png" class="w-6 left pt-4 inline pb-4 ml-5"> <button (click)="onClick('answerA' + quest.questionNumber)" class="py-2 px-4 w-3/4 flex-1">{{quest.answerA}}</button></div>
+                    <div id="answerB{{quest.questionNumber}}" class="bg-good-samaritan rounded hover:bg-spray"> <img src="../assets/B.png" class="w-6 left pt-4 inline pb-4 ml-5"> <button (click)="onClick('answerB' + quest.questionNumber)" class="py-2 px-4 w-3/4 flex-1">{{quest.answerB}}</button></div>
+                    <div id="answerC{{quest.questionNumber}}" class="bg-good-samaritan rounded hover:bg-spray"> <img src="../assets/C.png" class="w-6 left pt-4 inline pb-4 ml-5"> <button (click)="onClick('answerC' + quest.questionNumber)" class="py-2 px-4 w-3/4 flex-1">{{quest.answerC}}</button></div>
+                    <div id="answerD{{quest.questionNumber}}" class="bg-good-samaritan rounded hover:bg-spray"> <img src="../assets/D.png" class="w-6 left pt-4 inline pb-4 ml-5"> <button (click)="onClick('answerD' + quest.questionNumber)" class="py-2 px-4 w-3/4 flex-1">{{quest.answerD}}</button></div>
+                </div>
+            </div>
+    </div>     
+</div>
+<button (click)="onNextQuestion()" class="right ml-60 font-roboto hover:bg-spray text-spray font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded">Question suivante</button>

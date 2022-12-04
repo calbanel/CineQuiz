@@ -8,6 +8,7 @@ import { QuestionListComponent } from './question-list/question-list.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { AppRoutingModule } from './app-routing.module';
+import { SingleQuestionComponent } from './single-question/single-question.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { AppRoutingModule } from './app-routing.module';
     HomepageComponent,
     QuestionListComponent,
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
+    SingleQuestionComponent
   ],
   imports: [
     BrowserModule,
