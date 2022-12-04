@@ -15,6 +15,6 @@ import { HomepageComponent } from './homepage/homepage.component';
     BrowserModule
   ],
   providers: [],
-  bootstrap: [AppComponent,QuestionComponent]
+  bootstrap: [AppComponent]
 })
 export class AppModule { }
