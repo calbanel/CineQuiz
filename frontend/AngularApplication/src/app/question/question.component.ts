@@ -15,7 +15,7 @@ export class QuestionComponent {
       document.getElementById(answerClicked)?.setAttribute("style", "background-color:#78e08f");
     }else{
       document.getElementById(answerClicked)?.setAttribute("style", "background-color:#E55039");
-      document.getElementById(this.quest.answer)?.setAttribute("style", "background-color:#78e08f");
+      document.getElementById(this.quest.answer+this.quest.questionNumber)?.setAttribute("style", "background-color:#78e08f");
     }
   }
 }

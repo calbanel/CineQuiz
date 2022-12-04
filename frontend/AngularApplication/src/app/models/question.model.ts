@@ -1,14 +1,12 @@
 export class Question{
-
-    constructor(public questionNumber:number, 
-                public type:string,
-                public question: string,
-                public description:string,
-                public answerA:string,
-                public answerB:string,
-                public answerC:string,
-                public answerD:string,
-                public answer:string,
-                public media:string){
-    }
+    questionNumber!:number; 
+    type!:string;
+    question!: string;
+    description!:string;
+    answerA!:string;
+    answerB!:string;
+    answerC!:string;
+    answerD!:string;
+    answer!:string;
+    media!:string
 }
