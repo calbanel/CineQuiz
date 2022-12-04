@@ -26,7 +26,7 @@ export class AppComponent implements OnInit {
       {
         questionNumber: 2,
         type: 'budget',
-        question: 'Quel a été le revenu généré par ce film ?',
+        question: 'Quel a été le budget de ce film ?',
         description: 'Solo: A Star Wars Story',
         answerA: '817400891' ,
         answerB:'1850000' ,
