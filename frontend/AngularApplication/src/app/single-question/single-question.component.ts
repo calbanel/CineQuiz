@@ -9,8 +9,6 @@ import { QuestionService } from '../services/questions.service';
   styleUrls: ['./single-question.component.css']
 })
 export class SingleQuestionComponent implements OnInit {
-
-  currentId !: number;
   quest!: Question;
   answered: boolean = false;
   someSubscription: any;
@@ -29,8 +27,8 @@ export class SingleQuestionComponent implements OnInit {
 
   ngOnInit(): void {
     this.answered = false;
-    this.currentId = +this.route.snapshot.params['id'];
-    this.quest = this.questionService.getQuestionByNumber(this.currentId);
+    let currentId = +this.route.snapshot.params['id'];
+    this.quest = this.questionService.getQuestionByNumber(currentId);
   }
 
   onClick(answerClicked: string) {
