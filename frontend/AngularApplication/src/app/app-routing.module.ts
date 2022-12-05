@@ -3,7 +3,6 @@ import { RouterModule, Routes } from "@angular/router";
 import { HomepageComponent } from "./homepage/homepage.component";
 import { Question } from "./models/question.model";
 import { QuestionListComponent } from "./question-list/question-list.component";
-import { QuestionComponent } from "./question/question.component";
 import { SingleQuestionComponent } from "./single-question/single-question.component";
 
 const routes : Routes = [
@@ -14,7 +13,7 @@ const routes : Routes = [
 
 @NgModule({
     imports: [
-        RouterModule.forRoot(routes, {onSameUrlNavigation: 'reload'})
+        RouterModule.forRoot(routes)
     ],
     exports:[
         RouterModule
