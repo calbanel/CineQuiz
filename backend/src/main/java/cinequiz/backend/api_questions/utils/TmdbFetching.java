@@ -8,20 +8,23 @@ import java.util.stream.Collectors;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import cinequiz.backend.BackendApplication;
 import cinequiz.backend.api_questions.exceptions.MovieCastUnavailableInTMDBException;
 import cinequiz.backend.api_questions.exceptions.NotEnoughPeoplesInMovieCast;
 import cinequiz.backend.api_questions.exceptions.NotEnoughSimilarMoviesInTMDBException;
 import cinequiz.backend.api_questions.exceptions.NotaValidMovieException;
-import cinequiz.backend.api_questions.tmdb_objects.MovieCast;
-import cinequiz.backend.api_questions.tmdb_objects.MovieCastPage;
-import cinequiz.backend.api_questions.tmdb_objects.MovieCredit;
-import cinequiz.backend.api_questions.tmdb_objects.MovieCreditPage;
-import cinequiz.backend.api_questions.tmdb_objects.MovieInfos;
-import cinequiz.backend.api_questions.tmdb_objects.MovieListPage;
-import cinequiz.backend.api_questions.tmdb_objects.MovieListResult;
+import cinequiz.backend.api_questions.tmdb_objects.people.credit.ShowCredit;
+import cinequiz.backend.api_questions.tmdb_objects.people.credit.ShowCreditPage;
+import cinequiz.backend.api_questions.tmdb_objects.show.cast.Cast;
+import cinequiz.backend.api_questions.tmdb_objects.show.cast.CastMember;
+import cinequiz.backend.api_questions.tmdb_objects.show.cast.CastPage;
+import cinequiz.backend.api_questions.tmdb_objects.show.cast.Crew;
+import cinequiz.backend.api_questions.tmdb_objects.show.movie.MovieInfos;
+import cinequiz.backend.api_questions.tmdb_objects.show.movie.list.MovieListPage;
+import cinequiz.backend.api_questions.tmdb_objects.show.movie.list.MovieResult;
 
 public class TmdbFetching {
+    private static final String API_KEY = "c7d238dde9b0efbe8deb61921ee13f06";
+
     public static ArrayList<MovieInfos> getRandomCoherentMovies(String tmdbLanguage, int number,
             MovieTmdbFetchOptions answerOptions, MovieTmdbFetchOptions similaryOptions) {
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
@@ -66,7 +69,7 @@ public class TmdbFetching {
                 throw new NotEnoughSimilarMoviesInTMDBException();
 
             // only keeps the movies of the same language
-            ArrayList<MovieListResult> filtredResults = (ArrayList<MovieListResult>) page.results.stream()
+            ArrayList<MovieResult> filtredResults = (ArrayList<MovieResult>) page.results.stream()
                     .filter(m -> m.original_language == movie.original_language).collect(Collectors.toList());
 
             // remove unvalid similar movies
@@ -75,7 +78,7 @@ public class TmdbFetching {
             Collections.shuffle(filtredResults);
 
             // browse valid similar movies
-            for (MovieListResult result : filtredResults) {
+            for (MovieResult result : filtredResults) {
                 MovieInfos similar = null;
                 try {
                     // check the movie and get all of his infos
@@ -149,10 +152,10 @@ public class TmdbFetching {
             MovieListPage page = getRandomPopularMoviesPage(tmdbLanguage);
 
             // remove unvalid movies of the popular movie page
-            ArrayList<MovieListResult> filtredResults = getFiltredMovieResultListInPage(page, options);
+            ArrayList<MovieResult> filtredResults = getFiltredMovieResultListInPage(page, options);
             Collections.shuffle(filtredResults);
 
-            for (MovieListResult result : filtredResults) {
+            for (MovieResult result : filtredResults) {
                 try {
                     // if the movie is valid we stop the research
                     movie = getMovieIfValid(result, tmdbLanguage, options);
@@ -166,14 +169,14 @@ public class TmdbFetching {
         return movie;
     }
 
-    private static MovieInfos getMovieIfValid(MovieListResult result, String tmdbLanguage,
+    private static MovieInfos getMovieIfValid(MovieResult result, String tmdbLanguage,
             MovieTmdbFetchOptions options)
             throws NotaValidMovieException {
         MovieInfos movie = null;
 
         // fetch the detailed informations on a movie
         String url = "https://api.themoviedb.org/3/movie/" + result.id + "?api_key="
-                + BackendApplication.API_KEY
+                + API_KEY
                 + "&language="
                 + tmdbLanguage;
 
@@ -212,7 +215,7 @@ public class TmdbFetching {
         // randomly
         while (page == null) {
             int randomPage = random(RANDOM_PAGE_MIN, RANDOM_PAGE_MAX);
-            String url = "https://api.themoviedb.org/3/movie/popular?api_key=" + BackendApplication.API_KEY
+            String url = "https://api.themoviedb.org/3/movie/popular?api_key=" + API_KEY
                     + "&language="
                     + tmdbLanguage + "&page="
                     + randomPage;
@@ -231,7 +234,7 @@ public class TmdbFetching {
     private static MovieListPage getSimilarMoviesPage(int movieId, String tmdbLanguage, int num_page) {
         MovieListPage page = null;
         RestTemplate rt = new RestTemplate();
-        String url = "https://api.themoviedb.org/3/movie/" + movieId + "/similar?api_key=" + BackendApplication.API_KEY
+        String url = "https://api.themoviedb.org/3/movie/" + movieId + "/similar?api_key=" + API_KEY
                 + "&language=" + tmdbLanguage + "&page=" + num_page;
         try {
             page = rt.getForObject(url, MovieListPage.class);
@@ -244,9 +247,9 @@ public class TmdbFetching {
         return page;
     }
 
-    private static ArrayList<MovieListResult> getFiltredMovieResultListInPage(MovieListPage page,
+    private static ArrayList<MovieResult> getFiltredMovieResultListInPage(MovieListPage page,
             MovieTmdbFetchOptions options) {
-        return (ArrayList<MovieListResult>) page.results
+        return (ArrayList<MovieResult>) page.results
                 .stream()
                 .filter(
                         (m) -> (!options.isTitle() || (m.title != null && m.title != ""))
@@ -255,33 +258,42 @@ public class TmdbFetching {
                 .collect(Collectors.toList());
     }
 
-    private static ArrayList<MovieCast> getFiltredCastListInPage(MovieCastPage page,
+    private static ArrayList<CastMember> getFiltredCastListInPage(CastPage page,
             PeopleTmdbFetchOptions options, int tmdbgenre) {
-        return (ArrayList<MovieCast>) page.cast.stream()
+        ArrayList<Cast> cast = (ArrayList<Cast>) page.cast.stream()
                 .filter((c) -> (!options.isProfile_path() || (c.profile_path != null && c.profile_path != ""))
                         && (!options.isName() || (c.name != null && c.name != ""))
                         && (!options.isGender() || c.gender == tmdbgenre))
                 .collect(Collectors.toList());
+        ArrayList<Crew> crew = (ArrayList<Crew>) page.crew.stream()
+                .filter((c) -> (!options.isProfile_path() || (c.profile_path != null && c.profile_path != ""))
+                        && (!options.isName() || (c.name != null && c.name != ""))
+                        && (!options.isGender() || c.gender == tmdbgenre))
+                .collect(Collectors.toList());
+        ArrayList<CastMember> members = new ArrayList<CastMember>();
+        members.addAll(cast);
+        members.addAll(crew);
+        return members;
     }
 
-    private static ArrayList<MovieCast> getRandomCoherentPeoplesInvolvedInThisMovie(int movieId,
+    private static ArrayList<CastMember> getRandomCoherentPeoplesInvolvedInThisMovie(int movieId,
             String tmdbLanguage,
             int number, PeopleTmdbFetchOptions options, int tmdbgenre, int similarMovieId)
             throws MovieCastUnavailableInTMDBException, NotEnoughPeoplesInMovieCast {
-        ArrayList<MovieCast> peoples = new ArrayList<MovieCast>();
+        ArrayList<CastMember> peoples = new ArrayList<CastMember>();
 
-        MovieCastPage castPage = getMovieCastPage(movieId, tmdbLanguage);
+        CastPage castPage = getMovieCastPage(movieId, tmdbLanguage);
         // if target cast page isn't valid, throw exception
         if (castPage == null)
             throw new MovieCastUnavailableInTMDBException();
 
         // only keeps peoples where we have the target values
-        ArrayList<MovieCast> castFiltered = getFiltredCastListInPage(castPage, options, tmdbgenre);
+        ArrayList<CastMember> castFiltered = getFiltredCastListInPage(castPage, options, tmdbgenre);
 
         // we firt want the most popular casts, we want known names
-        castFiltered.sort((a, b) -> new Comparator<MovieCast>() {
+        castFiltered.sort((a, b) -> new Comparator<CastMember>() {
             @Override
-            public int compare(MovieCast o1, MovieCast o2) {
+            public int compare(CastMember o1, CastMember o2) {
                 if (o1.popularity == o2.popularity)
                     return 0;
 
@@ -291,7 +303,7 @@ public class TmdbFetching {
         }.compare(a, b));
 
         // browse the clean cast list
-        for (MovieCast c : castFiltered) {
+        for (CastMember c : castFiltered) {
             // add cast to the final list if he isn't in the similar movie
             if (!isCastIsInThisMovie(c.id, similarMovieId, tmdbLanguage))
                 peoples.add(c);
@@ -308,13 +320,13 @@ public class TmdbFetching {
         return peoples;
     }
 
-    private static MovieCastPage getMovieCastPage(int movieId, String tmdbLanguage) {
-        MovieCastPage page = null;
+    private static CastPage getMovieCastPage(int movieId, String tmdbLanguage) {
+        CastPage page = null;
         RestTemplate rt = new RestTemplate();
-        String url = "https://api.themoviedb.org/3/movie/" + movieId + "/credits?api_key=" + BackendApplication.API_KEY
+        String url = "https://api.themoviedb.org/3/movie/" + movieId + "/credits?api_key=" + API_KEY
                 + "&language=" + tmdbLanguage;
         try {
-            page = rt.getForObject(url, MovieCastPage.class);
+            page = rt.getForObject(url, CastPage.class);
         } catch (final HttpClientErrorException e) {
             System.out.println(e.getStatusCode());
             System.out.println(e.getResponseBodyAsString());
@@ -328,28 +340,28 @@ public class TmdbFetching {
         boolean isIn = false;
 
         // get all the movies have participated the person
-        MovieCreditPage creditPage = getPeopleMovieCreditPage(personId, tmdbLanguage);
+        ShowCreditPage creditPage = getPeopleMovieCreditPage(personId, tmdbLanguage);
         if (creditPage != null) {
-            ArrayList<MovieCredit> list = new ArrayList<MovieCredit>();
+            ArrayList<ShowCredit> list = new ArrayList<ShowCredit>();
             list.addAll(creditPage.cast);
             list.addAll(creditPage.crew);
-            for (MovieCredit credit : list) {
-                if (credit.id == movieId)
-                    isIn = true;
-            }
+            list = (ArrayList<ShowCredit>) list.stream().filter(m -> m.id == movieId || m.media_type == "movie")
+                    .collect(Collectors.toList());
+            if (list.size() > 0)
+                isIn = true;
         }
 
         return isIn;
     }
 
-    private static MovieCreditPage getPeopleMovieCreditPage(int personId, String tmdbLanguage) {
-        MovieCreditPage page = null;
+    private static ShowCreditPage getPeopleMovieCreditPage(int personId, String tmdbLanguage) {
+        ShowCreditPage page = null;
         RestTemplate rt = new RestTemplate();
         String url = "https://api.themoviedb.org/3/person/" + personId + "/movie_credits?api_key="
-                + BackendApplication.API_KEY
+                + API_KEY
                 + "&language=" + tmdbLanguage;
         try {
-            page = rt.getForObject(url, MovieCreditPage.class);
+            page = rt.getForObject(url, ShowCreditPage.class);
         } catch (final HttpClientErrorException e) {
             System.out.println(e.getStatusCode());
             System.out.println(e.getResponseBodyAsString());
@@ -358,26 +370,28 @@ public class TmdbFetching {
         return page;
     }
 
-    public static ArrayList<MovieCast> getRandomCoherentPeopleListInTheseMovies(int movieId,
+    public static ArrayList<CastMember> getRandomCoherentPeopleListInTheseMovies(int movieId,
             int numberOfPeoplesInMovie,
             int similarMovieId, int numberOfPeoplesInSimilarMovie, String tmdbLanguage) {
-        ArrayList<MovieCast> cast = null;
+        ArrayList<CastMember> cast = null;
         int randomGender = random(1, 2);
         try {
             PeopleTmdbFetchOptions panswerOptions = new PeopleTmdbFetchOptions(true, true, true);
-            ArrayList<MovieCast> answer = getRandomCoherentPeoplesInvolvedInThisMovie(movieId,
+            ArrayList<CastMember> answer = getRandomCoherentPeoplesInvolvedInThisMovie(movieId,
                     tmdbLanguage, numberOfPeoplesInMovie, panswerOptions, randomGender, -1);
             PeopleTmdbFetchOptions psimilaryOptions = new PeopleTmdbFetchOptions(true, false, true);
 
-            ArrayList<MovieCast> similaryCast = getRandomCoherentPeoplesInvolvedInThisMovie(similarMovieId,
+            ArrayList<CastMember> similaryCast = getRandomCoherentPeoplesInvolvedInThisMovie(similarMovieId,
                     tmdbLanguage, numberOfPeoplesInSimilarMovie, psimilaryOptions, randomGender,
                     movieId);
-            cast = new ArrayList<MovieCast>();
+            cast = new ArrayList<CastMember>();
             cast.addAll(answer);
             cast.addAll(similaryCast);
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
+
+        // null if we failed to get a valid cast for these movies
         return cast;
     }
 

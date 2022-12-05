@@ -1,4 +1,4 @@
-package cinequiz.backend.api_questions.tmdb_objects;
+package cinequiz.backend.api_questions.tmdb_objects.show;
 
 public class ProductionCountry {
     public String iso_3166_1;

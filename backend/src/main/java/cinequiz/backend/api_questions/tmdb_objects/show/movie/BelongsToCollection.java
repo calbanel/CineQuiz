@@ -1,4 +1,4 @@
-package cinequiz.backend.api_questions.tmdb_objects;
+package cinequiz.backend.api_questions.tmdb_objects.show.movie;
 
 public class BelongsToCollection {
     public int id;

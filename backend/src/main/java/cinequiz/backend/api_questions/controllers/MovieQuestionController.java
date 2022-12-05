@@ -11,8 +11,8 @@ import cinequiz.backend.api_questions.exceptions.LanguageNotSupportedException;
 import cinequiz.backend.api_questions.mcq.Choices;
 import cinequiz.backend.api_questions.mcq.MCQQuestion;
 import cinequiz.backend.api_questions.questions.MovieQuestion;
-import cinequiz.backend.api_questions.tmdb_objects.MovieCast;
-import cinequiz.backend.api_questions.tmdb_objects.MovieInfos;
+import cinequiz.backend.api_questions.tmdb_objects.show.cast.CastMember;
+import cinequiz.backend.api_questions.tmdb_objects.show.movie.MovieInfos;
 import cinequiz.backend.api_questions.utils.Language;
 import cinequiz.backend.api_questions.utils.MovieTmdbFetchOptions;
 import cinequiz.backend.api_questions.utils.TmdbFetching;
@@ -218,7 +218,7 @@ public class MovieQuestionController {
         }
 
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
-        ArrayList<MovieCast> cast = null;
+        ArrayList<CastMember> cast = null;
         try {
             while (cast == null) {
                 MovieTmdbFetchOptions manswerOptions = new MovieTmdbFetchOptions(true, true, false, false, false,
@@ -240,7 +240,7 @@ public class MovieQuestionController {
         }
 
         MovieInfos movieOfQuestion = movieList.get(0);
-        MovieCast answer = cast.get(0);
+        CastMember answer = cast.get(0);
         Collections.shuffle(cast);
         String[] choices = { cast.get(0).name, cast.get(1).name, cast.get(2).name, cast.get(3).name };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
@@ -265,7 +265,7 @@ public class MovieQuestionController {
         }
 
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
-        ArrayList<MovieCast> cast = null;
+        ArrayList<CastMember> cast = null;
         try {
             while (cast == null) {
                 MovieTmdbFetchOptions manswerOptions = new MovieTmdbFetchOptions(false, false, false, false, false,
@@ -289,7 +289,7 @@ public class MovieQuestionController {
         }
 
         MovieInfos movieOfQuestion = movieList.get(1);
-        MovieCast answer = cast.get(0);
+        CastMember answer = cast.get(0);
         Collections.shuffle(cast);
         String[] choices = { cast.get(0).name, cast.get(1).name, cast.get(2).name, cast.get(3).name };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);

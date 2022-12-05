@@ -1,10 +1,10 @@
-package cinequiz.backend.api_questions.tmdb_objects;
+package cinequiz.backend.api_questions.tmdb_objects.people.credit;
 
 import java.util.ArrayList;
 
-public class MovieListResult {
+public class ShowCredit {
     public boolean adult;
-    public String backdrop_path;
+    public Object backdrop_path;
     public ArrayList<Integer> genre_ids;
     public int id;
     public String original_language;
@@ -17,4 +17,8 @@ public class MovieListResult {
     public boolean video;
     public double vote_average;
     public int vote_count;
+    public String character;
+    public String credit_id;
+    public int order;
+    public String media_type;
 }
