@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Question } from '../models/question.model';
 import { QuestionService } from '../services/questions.service';
@@ -8,7 +8,7 @@ import { QuestionService } from '../services/questions.service';
   templateUrl: './single-question.component.html',
   styleUrls: ['./single-question.component.css']
 })
-export class SingleQuestionComponent implements OnInit {
+export class SingleQuestionComponent implements OnInit, OnDestroy {
   quest!: Question;
   answered: boolean = false;
   someSubscription: any;
