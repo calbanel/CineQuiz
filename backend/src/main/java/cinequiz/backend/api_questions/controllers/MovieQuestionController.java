@@ -231,6 +231,7 @@ public class MovieQuestionController {
 
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
         ArrayList<MovieCast> cast = null;
+        MovieInfos movieOfAnswer = null;
         try {
             while (cast == null) {
                 MovieTmdbFetchOptions manswerOptions = new MovieTmdbFetchOptions(true, true, false, false, false,
@@ -240,30 +241,17 @@ public class MovieQuestionController {
                 movieList = getRandomCoherentMovies(internLanguage.getTmdbLanguage(), 2, manswerOptions,
                         msimilaryOptions);
 
-                int randomGender = random(1, 2);
-                try {
-                    PeopleTmdbFetchOptions panswerOptions = new PeopleTmdbFetchOptions(true, true, true);
-                    ArrayList<MovieCast> answer = getRandomCoherentPeoplesInvolvedInThisMovie(movieList.get(0).id,
-                            internLanguage.getTmdbLanguage(), 1, panswerOptions, randomGender, -1);
-                    PeopleTmdbFetchOptions psimilaryOptions = new PeopleTmdbFetchOptions(true, false, true);
+                movieOfAnswer = movieList.get(0);
+                MovieInfos similaryMovie = movieList.get(1);
 
-                    ArrayList<MovieCast> similaryCast = getRandomCoherentPeoplesInvolvedInThisMovie(movieList.get(1).id,
-                            internLanguage.getTmdbLanguage(), 3, psimilaryOptions, randomGender,
-                            movieList.get(0).id);
-
-                    cast = new ArrayList<MovieCast>();
-                    cast.addAll(answer);
-                    cast.addAll(similaryCast);
-                } catch (Exception e) {
-                    System.err.println(e.getMessage());
-                }
+                cast = getRandomCoherentPeopleListInTheseMovies(movieOfAnswer.id, 1, similaryMovie.id, 3,
+                        internLanguage.getTmdbLanguage());
             }
         } catch (Exception e) {
             return new ResponseEntity<String>(e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        MovieInfos movieOfAnswer = movieList.get(0);
         MovieCast answer = cast.get(0);
         Collections.shuffle(cast);
         String[] choices = { cast.get(0).name, cast.get(1).name, cast.get(2).name, cast.get(3).name };
@@ -288,38 +276,29 @@ public class MovieQuestionController {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
         ArrayList<MovieCast> cast = null;
+        MovieInfos movieOfAnswer = null;
         try {
             while (cast == null) {
                 MovieTmdbFetchOptions manswerOptions = new MovieTmdbFetchOptions(true, true, false, false, false,
                         false);
                 MovieTmdbFetchOptions msimilaryOptions = new MovieTmdbFetchOptions(false, false, false, false, false,
                         false);
-                movieList = getRandomCoherentMovies(internLanguage.getTmdbLanguage(), 2, manswerOptions,
+                ArrayList<MovieInfos> movieList = getRandomCoherentMovies(internLanguage.getTmdbLanguage(), 2,
+                        manswerOptions,
                         msimilaryOptions);
 
-                int randomGender = random(1, 2);
-                try {
-                    PeopleTmdbFetchOptions panswerOptions = new PeopleTmdbFetchOptions(true, true, true);
-                    ArrayList<MovieCast> answer = getRandomCoherentPeoplesInvolvedInThisMovie(movieList.get(1).id,
-                            internLanguage.getTmdbLanguage(), 1, panswerOptions, randomGender, movieList.get(0).id);
-                    PeopleTmdbFetchOptions psimilaryOptions = new PeopleTmdbFetchOptions(true, false, true);
-                    ArrayList<MovieCast> similaryCast = getRandomCoherentPeoplesInvolvedInThisMovie(movieList.get(0).id,
-                            internLanguage.getTmdbLanguage(), 3, psimilaryOptions, randomGender, -1);
+                movieOfAnswer = movieList.get(1);
+                MovieInfos similaryMovie = movieList.get(0);
 
-                    cast = new ArrayList<MovieCast>(answer);
-                    cast.addAll(similaryCast);
-                } catch (Exception e) {
-                    System.err.println(e.getMessage());
-                }
+                cast = getRandomCoherentPeopleListInTheseMovies(similaryMovie.id, 1, movieOfAnswer.id, 3,
+                        internLanguage.getTmdbLanguage());
             }
         } catch (Exception e) {
             return new ResponseEntity<String>(e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        MovieInfos movieOfAnswer = movieList.get(0);
         MovieCast answer = cast.get(0);
         Collections.shuffle(cast);
         String[] choices = { cast.get(0).name, cast.get(1).name, cast.get(2).name, cast.get(3).name };
@@ -427,6 +406,8 @@ public class MovieQuestionController {
 
             // remove unvalid similar movies
             filtredResults = getFiltredMovieResultListInPage(page, options);
+
+            Collections.shuffle(filtredResults);
 
             // browse valid similar movies
             for (MovieListResult result : filtredResults) {
@@ -708,6 +689,28 @@ public class MovieQuestionController {
         }
         // null if the target cast page isn't valid
         return page;
+    }
+
+    private ArrayList<MovieCast> getRandomCoherentPeopleListInTheseMovies(int movieId, int numberOfPeoplesInMovie,
+            int similarMovieId, int numberOfPeoplesInSimilarMovie, String tmdbLanguage) {
+        ArrayList<MovieCast> cast = null;
+        int randomGender = random(1, 2);
+        try {
+            PeopleTmdbFetchOptions panswerOptions = new PeopleTmdbFetchOptions(true, true, true);
+            ArrayList<MovieCast> answer = getRandomCoherentPeoplesInvolvedInThisMovie(movieId,
+                    tmdbLanguage, numberOfPeoplesInMovie, panswerOptions, randomGender, -1);
+            PeopleTmdbFetchOptions psimilaryOptions = new PeopleTmdbFetchOptions(true, false, true);
+
+            ArrayList<MovieCast> similaryCast = getRandomCoherentPeoplesInvolvedInThisMovie(similarMovieId,
+                    tmdbLanguage, numberOfPeoplesInSimilarMovie, psimilaryOptions, randomGender,
+                    movieId);
+            cast = new ArrayList<MovieCast>();
+            cast.addAll(answer);
+            cast.addAll(similaryCast);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+        return cast;
     }
 
 }
