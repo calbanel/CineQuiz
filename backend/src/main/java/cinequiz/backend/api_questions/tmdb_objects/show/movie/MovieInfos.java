@@ -1,6 +1,11 @@
-package cinequiz.backend.api_questions.tmdb_objects;
+package cinequiz.backend.api_questions.tmdb_objects.show.movie;
 
 import java.util.ArrayList;
+
+import cinequiz.backend.api_questions.tmdb_objects.show.Genre;
+import cinequiz.backend.api_questions.tmdb_objects.show.ProductionCompany;
+import cinequiz.backend.api_questions.tmdb_objects.show.ProductionCountry;
+import cinequiz.backend.api_questions.tmdb_objects.show.SpokenLanguage;
 
 public class MovieInfos {
     public boolean adult;

@@ -1,6 +1,6 @@
-package cinequiz.backend.api_questions.tmdb_objects;
+package cinequiz.backend.api_questions.tmdb_objects.show.cast;
 
-public class MovieCast {
+public class CastMember {
     public boolean adult;
     public int gender;
     public int id;
@@ -8,8 +8,5 @@ public class MovieCast {
     public String name;
     public String original_name;
     public double popularity;
-    public Object profile_path;
-    public String credit_id;
-    public String department;
-    public String job;
+    public String profile_path;
 }
