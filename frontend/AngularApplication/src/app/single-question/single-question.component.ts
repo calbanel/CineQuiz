@@ -10,16 +10,17 @@ import { QuestionService } from '../services/questions.service';
 })
 export class SingleQuestionComponent implements OnInit {
 
+  currentId !:number;
   quest!: Question;
   answered:boolean = false;
 
   constructor(private questionService: QuestionService,
               private route: ActivatedRoute,
-              private router: Router) { }
+              private router: Router) {}
 
   ngOnInit(): void {
-    const number = +this.route.snapshot.params['id'];
-    this.quest = this.questionService.getQuestionByNumber(number);
+    this.currentId = +this.route.snapshot.params['id'];
+    this.quest = this.questionService.getQuestionByNumber(this.currentId);
   }
 
   onClick(answerClicked:string){
@@ -34,9 +35,16 @@ export class SingleQuestionComponent implements OnInit {
   }
 
   onNextQuestion(){
-    // this.router.navigateByUrl(`/`);
-    let nextQuestion = this.quest.questionNumber+1;
-    this.router.navigateByUrl(`/questions/${nextQuestion}`);
+    this.majQuestion();
+    this.router.navigateByUrl(`/questions/${this.quest.questionNumber+1}`);
+  }
+
+  majQuestion(){
+    this.currentId = +this.route.snapshot.params['id'];
+    if(this.currentId === 1){
+      this.currentId = 2;
+    }
+    this.quest = this.questionService.getQuestionByNumber(this.currentId);
   }
 
 }
