@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Question } from '../models/question.model';
 import { QuestionService } from '../services/questions.service';
 
@@ -10,41 +10,48 @@ import { QuestionService } from '../services/questions.service';
 })
 export class SingleQuestionComponent implements OnInit {
 
-  currentId !:number;
+  currentId !: number;
   quest!: Question;
-  answered:boolean = false;
+  answered: boolean = false;
+  someSubscription: any;
 
-  constructor(private questionService: QuestionService,
-              private route: ActivatedRoute,
-              private router: Router) {}
+  constructor(private questionService: QuestionService, private route: ActivatedRoute,
+    private router: Router) {
+    this.router.routeReuseStrategy.shouldReuseRoute = function () {
+      return false;
+    };
+    this.someSubscription = this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.router.navigated = false;
+      }
+    });
+  }
 
   ngOnInit(): void {
+    this.answered = false;
     this.currentId = +this.route.snapshot.params['id'];
     this.quest = this.questionService.getQuestionByNumber(this.currentId);
   }
 
-  onClick(answerClicked:string){
-    this.answered=true;
+  onClick(answerClicked: string) {
+    this.answered = true;
     console.log(answerClicked);
-    if(answerClicked==this.quest.answer){
+    if (answerClicked == this.quest.answer) {
       document.getElementById(answerClicked)?.setAttribute("style", "background-color:#78e08f");
-    }else{
+    } else {
       document.getElementById(answerClicked)?.setAttribute("style", "background-color:#E55039");
-      document.getElementById(this.quest.answer+this.quest.questionNumber)?.setAttribute("style", "background-color:#78e08f");
+      document.getElementById(this.quest.answer + this.quest.questionNumber)?.setAttribute("style", "background-color:#78e08f");
     }
   }
 
-  onNextQuestion(){
-    this.majQuestion();
-    this.router.navigateByUrl(`/questions/${this.quest.questionNumber+1}`);
+  onNextQuestion() {
+    this.router.navigateByUrl(`/questions/${this.quest.questionNumber + 1}`);
   }
 
-  majQuestion(){
-    this.currentId = +this.route.snapshot.params['id'];
-    if(this.currentId === 1){
-      this.currentId = 2;
+  ngOnDestroy() {
+    if (this.someSubscription) {
+      this.someSubscription.unsubscribe();
     }
-    this.quest = this.questionService.getQuestionByNumber(this.currentId);
   }
 
 }
