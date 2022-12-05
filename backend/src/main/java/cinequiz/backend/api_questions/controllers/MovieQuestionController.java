@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import cinequiz.backend.BackendApplication;
 import cinequiz.backend.api_questions.exceptions.LanguageNotSupportedException;
 import cinequiz.backend.api_questions.mcq.Choices;
 import cinequiz.backend.api_questions.mcq.MCQQuestion;
@@ -15,7 +17,7 @@ import cinequiz.backend.api_questions.tmdb_objects.show.cast.CastMember;
 import cinequiz.backend.api_questions.tmdb_objects.show.movie.MovieInfos;
 import cinequiz.backend.api_questions.utils.Language;
 import cinequiz.backend.api_questions.utils.MovieTmdbFetchOptions;
-import cinequiz.backend.api_questions.utils.TmdbFetching;
+import cinequiz.backend.api_questions.utils.MovieTmdbFetching;
 import edu.emory.mathcs.backport.java.util.Collections;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -33,7 +35,7 @@ public class MovieQuestionController {
     public ResponseEntity<?> random_question(
             @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
 
-        int randomQuestion = (int) (1 + Math.random() * NB_DEFINED_QUESTIONS);
+        int randomQuestion = BackendApplication.random(1, NB_DEFINED_QUESTIONS);
         switch (randomQuestion) {
             case 1:
                 return which_by_image(language);
@@ -71,7 +73,7 @@ public class MovieQuestionController {
         try {
             MovieTmdbFetchOptions answerOptions = new MovieTmdbFetchOptions(true, true, false, false, false, false);
             MovieTmdbFetchOptions similaryOptions = new MovieTmdbFetchOptions(true, false, false, false, false, false);
-            movieList = TmdbFetching.getRandomCoherentMovies(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ,
+            movieList = MovieTmdbFetching.getRandomCoherentMovies(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ,
                     answerOptions,
                     similaryOptions);
         } catch (Exception e) {
@@ -108,7 +110,7 @@ public class MovieQuestionController {
         try {
             MovieTmdbFetchOptions answerOptions = new MovieTmdbFetchOptions(true, false, true, false, false, false);
             MovieTmdbFetchOptions similaryOptions = new MovieTmdbFetchOptions(true, false, false, false, false, false);
-            movieList = TmdbFetching.getRandomCoherentMovies(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ,
+            movieList = MovieTmdbFetching.getRandomCoherentMovies(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ,
                     answerOptions,
                     similaryOptions);
         } catch (Exception e) {
@@ -145,7 +147,7 @@ public class MovieQuestionController {
         try {
             MovieTmdbFetchOptions answerOptions = new MovieTmdbFetchOptions(true, true, false, true, false, false);
             MovieTmdbFetchOptions similaryOptions = new MovieTmdbFetchOptions(false, false, false, true, false, false);
-            movieList = TmdbFetching.getRandomCoherentMovies(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ,
+            movieList = MovieTmdbFetching.getRandomCoherentMovies(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ,
                     answerOptions,
                     similaryOptions);
         } catch (Exception e) {
@@ -183,7 +185,7 @@ public class MovieQuestionController {
         try {
             MovieTmdbFetchOptions answerOptions = new MovieTmdbFetchOptions(true, true, false, false, true, false);
             MovieTmdbFetchOptions similaryOptions = new MovieTmdbFetchOptions(false, false, false, false, true, false);
-            movieList = TmdbFetching.getRandomCoherentMovies(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ,
+            movieList = MovieTmdbFetching.getRandomCoherentMovies(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ,
                     answerOptions,
                     similaryOptions);
         } catch (Exception e) {
@@ -225,13 +227,14 @@ public class MovieQuestionController {
                         false);
                 MovieTmdbFetchOptions msimilaryOptions = new MovieTmdbFetchOptions(false, false, false, false, false,
                         false);
-                movieList = TmdbFetching.getRandomCoherentMovies(internLanguage.getTmdbLanguage(), 2, manswerOptions,
+                movieList = MovieTmdbFetching.getRandomCoherentMovies(internLanguage.getTmdbLanguage(), 2,
+                        manswerOptions,
                         msimilaryOptions);
 
                 MovieInfos movie = movieList.get(0);
                 MovieInfos similaryMovie = movieList.get(1);
 
-                cast = TmdbFetching.getRandomCoherentPeopleListInTheseMovies(movie.id, 1, similaryMovie.id, 3,
+                cast = MovieTmdbFetching.getRandomCoherentPeopleListInTheseMovies(movie.id, 1, similaryMovie.id, 3,
                         internLanguage.getTmdbLanguage());
             }
         } catch (Exception e) {
@@ -272,7 +275,7 @@ public class MovieQuestionController {
                         false);
                 MovieTmdbFetchOptions msimilaryOptions = new MovieTmdbFetchOptions(true, true, false, false, false,
                         false);
-                movieList = TmdbFetching.getRandomCoherentMovies(internLanguage.getTmdbLanguage(),
+                movieList = MovieTmdbFetching.getRandomCoherentMovies(internLanguage.getTmdbLanguage(),
                         2,
                         manswerOptions,
                         msimilaryOptions);
@@ -280,7 +283,7 @@ public class MovieQuestionController {
                 MovieInfos movie = movieList.get(1);
                 MovieInfos similaryMovie = movieList.get(0);
 
-                cast = TmdbFetching.getRandomCoherentPeopleListInTheseMovies(similaryMovie.id, 1, movie.id, 3,
+                cast = MovieTmdbFetching.getRandomCoherentPeopleListInTheseMovies(similaryMovie.id, 1, movie.id, 3,
                         internLanguage.getTmdbLanguage());
             }
         } catch (Exception e) {
@@ -317,7 +320,7 @@ public class MovieQuestionController {
         try {
             MovieTmdbFetchOptions answerOptions = new MovieTmdbFetchOptions(true, true, false, false, false, true);
             MovieTmdbFetchOptions similaryOptions = new MovieTmdbFetchOptions(false, false, false, false, false, true);
-            movieList = TmdbFetching.getRandomCoherentMovies(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ,
+            movieList = MovieTmdbFetching.getRandomCoherentMovies(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ,
                     answerOptions,
                     similaryOptions);
         } catch (Exception e) {

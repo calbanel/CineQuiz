@@ -10,4 +10,10 @@ public class BackendApplication {
 		SpringApplication.run(BackendApplication.class, args);
 	}
 
+	public static final String API_KEY = "c7d238dde9b0efbe8deb61921ee13f06";
+
+	public static int random(int min, int max) {
+		return (int) (min + (Math.random() * ((max + 1) - min)));
+	}
+
 }

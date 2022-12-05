@@ -9,14 +9,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cinequiz.backend.BackendApplication;
 import cinequiz.backend.api_questions.exceptions.LanguageNotSupportedException;
 import cinequiz.backend.api_questions.mcq.Choices;
 import cinequiz.backend.api_questions.mcq.MCQQuestion;
-import cinequiz.backend.api_questions.questions.MovieQuestion;
-import cinequiz.backend.api_questions.tmdb_objects.show.movie.MovieInfos;
+import cinequiz.backend.api_questions.questions.TvShowQuestion;
+import cinequiz.backend.api_questions.tmdb_objects.show.tv_show.TvShowInfos;
 import cinequiz.backend.api_questions.utils.Language;
-import cinequiz.backend.api_questions.utils.MovieTmdbFetchOptions;
-import cinequiz.backend.api_questions.utils.TmdbFetching;
+import cinequiz.backend.api_questions.utils.TvShowTmdbFetchOptions;
+import cinequiz.backend.api_questions.utils.TvShowTmdbFetching;
 
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,7 +36,7 @@ public class TvShowQuestionController {
     public ResponseEntity<?> random_question(
             @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
 
-        int randomQuestion = (int) (1 + Math.random() * NB_DEFINED_QUESTIONS);
+        int randomQuestion = BackendApplication.random(1, NB_DEFINED_QUESTIONS);
         switch (randomQuestion) {
             case 1:
                 return which_by_image(language);
@@ -57,11 +58,11 @@ public class TvShowQuestionController {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
+        ArrayList<TvShowInfos> tvList = new ArrayList<TvShowInfos>();
         try {
-            MovieTmdbFetchOptions answerOptions = new MovieTmdbFetchOptions(true, true, false, false, false, false);
-            MovieTmdbFetchOptions similaryOptions = new MovieTmdbFetchOptions(true, false, false, false, false, false);
-            movieList = TmdbFetching.getRandomCoherentMovies(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ,
+            TvShowTmdbFetchOptions answerOptions = new TvShowTmdbFetchOptions(true, true, false, false, false);
+            TvShowTmdbFetchOptions similaryOptions = new TvShowTmdbFetchOptions(true, false, false, false, false);
+            tvList = TvShowTmdbFetching.getRandomCoherentTvShows(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ,
                     answerOptions,
                     similaryOptions);
         } catch (Exception e) {
@@ -69,15 +70,15 @@ public class TvShowQuestionController {
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        MovieInfos answer = movieList.get(0);
-        Collections.shuffle(movieList);
-        String[] choices = { movieList.get(0).title, movieList.get(1).title, movieList.get(2).title,
-                movieList.get(3).title };
+        TvShowInfos answer = tvList.get(0);
+        Collections.shuffle(tvList);
+        String[] choices = { tvList.get(0).name, tvList.get(1).name, tvList.get(2).name,
+                tvList.get(3).name };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
         MCQQuestion mcq = new MCQQuestion(answer.backdrop_path, "",
-                MovieQuestion.WHICH_BY_IMAGE.getQuestion(internLanguage),
+                TvShowQuestion.WHICH_BY_IMAGE.getQuestion(internLanguage),
                 choicesObject,
-                answer.title);
+                answer.name);
 
         return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
     }
