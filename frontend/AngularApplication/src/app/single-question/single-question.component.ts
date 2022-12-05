@@ -11,6 +11,7 @@ import { QuestionService } from '../services/questions.service';
 export class SingleQuestionComponent implements OnInit {
 
   quest!: Question;
+  answered:boolean = false;
 
   constructor(private questionService: QuestionService,
               private route: ActivatedRoute,
@@ -22,6 +23,7 @@ export class SingleQuestionComponent implements OnInit {
   }
 
   onClick(answerClicked:string){
+    this.answered=true;
     console.log(answerClicked);
     if(answerClicked==this.quest.answer){
       document.getElementById(answerClicked)?.setAttribute("style", "background-color:#78e08f");
@@ -33,8 +35,8 @@ export class SingleQuestionComponent implements OnInit {
 
   onNextQuestion(){
     // this.router.navigateByUrl(`/`);
-    let nextId = this.quest.questionNumber+1;
-    this.router.navigateByUrl(`/questions/${nextId}`);
+    let nextQuestion = this.quest.questionNumber+1;
+    this.router.navigateByUrl(`/questions/${nextQuestion}`);
   }
 
 }
