@@ -1,0 +1,27 @@
+.form-card {
+    box-sizing: border-box;
+    width: 50%;
+    margin: 20px auto;
+    padding: 10px 30px;
+    box-shadow: lightgray 4px 4px 20px;
+    margin-top: 3%;
+  }
+  
+  .form-group {
+    margin: 10px auto;
+    width: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  input {
+    width: 50%;
+    outline:auto;
+    outline-color: #38ada9;
+  }
+  
+  button {
+    display: block;
+    margin: 30px auto;
+  }
