@@ -9,6 +9,9 @@ import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { AppRoutingModule } from './app-routing.module';
 import { SingleQuestionComponent } from './single-question/single-question.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { RegistrationComponent } from './registration/registration.component';
+import { ConnectionComponent } from './connection/connection.component';
 
 @NgModule({
   declarations: [
@@ -18,11 +21,14 @@ import { SingleQuestionComponent } from './single-question/single-question.compo
     QuestionListComponent,
     HeaderComponent,
     FooterComponent,
-    SingleQuestionComponent
+    SingleQuestionComponent,
+    RegistrationComponent,
+    ConnectionComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
