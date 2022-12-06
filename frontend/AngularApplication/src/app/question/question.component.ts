@@ -8,8 +8,10 @@ import { Question } from '../models/question.model';
 })
 export class QuestionComponent {
   @Input() quest!: Question;
+  answered: boolean = false;
 
   onClick(answerClicked:string){
+    this.answered=true;
     console.log(answerClicked);
     if(answerClicked==this.quest.answer){
       document.getElementById(answerClicked)?.setAttribute("style", "background-color:#78e08f");
