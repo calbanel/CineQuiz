@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-connection',
@@ -7,9 +8,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ConnectionComponent implements OnInit {
 
-  constructor() { }
+  connectionForm !: FormGroup;
+
+  constructor(private formBuilder:FormBuilder) { }
 
   ngOnInit(): void {
+    this.connectionForm = this.formBuilder.group({
+      pseudo: [null],
+      password: [null]
+    });
+  }
+
+  onSubmitForm() : void {
+    console.log(this.connectionForm.value);
   }
 
 }
