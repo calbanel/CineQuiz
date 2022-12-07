@@ -1,4 +1,4 @@
-package cinequiz.backend.api_questions.questions;
+package cinequiz.backend.api_questions.utils.questions;
 
 import cinequiz.backend.api_questions.utils.Language;
 

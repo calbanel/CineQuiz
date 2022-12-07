@@ -12,12 +12,12 @@ import cinequiz.backend.BackendApplication;
 import cinequiz.backend.api_questions.exceptions.LanguageNotSupportedException;
 import cinequiz.backend.api_questions.mcq.Choices;
 import cinequiz.backend.api_questions.mcq.MCQQuestion;
-import cinequiz.backend.api_questions.questions.MovieQuestion;
 import cinequiz.backend.api_questions.tmdb_objects.show.cast.CastMember;
 import cinequiz.backend.api_questions.tmdb_objects.show.movie.MovieInfos;
 import cinequiz.backend.api_questions.utils.Language;
 import cinequiz.backend.api_questions.utils.MovieTmdbFetchOptions;
 import cinequiz.backend.api_questions.utils.MovieTmdbFetching;
+import cinequiz.backend.api_questions.utils.questions.MovieQuestion;
 import edu.emory.mathcs.backport.java.util.Collections;
 import org.springframework.web.bind.annotation.RequestMethod;
 

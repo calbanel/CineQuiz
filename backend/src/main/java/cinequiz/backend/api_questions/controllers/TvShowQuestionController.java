@@ -13,11 +13,11 @@ import cinequiz.backend.BackendApplication;
 import cinequiz.backend.api_questions.exceptions.LanguageNotSupportedException;
 import cinequiz.backend.api_questions.mcq.Choices;
 import cinequiz.backend.api_questions.mcq.MCQQuestion;
-import cinequiz.backend.api_questions.questions.TvShowQuestion;
 import cinequiz.backend.api_questions.tmdb_objects.show.tv_show.TvShowInfos;
 import cinequiz.backend.api_questions.utils.Language;
 import cinequiz.backend.api_questions.utils.TvShowTmdbFetchOptions;
 import cinequiz.backend.api_questions.utils.TvShowTmdbFetching;
+import cinequiz.backend.api_questions.utils.questions.TvShowQuestion;
 
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -77,6 +77,43 @@ public class TvShowQuestionController {
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
         MCQQuestion mcq = new MCQQuestion(answer.backdrop_path, "",
                 TvShowQuestion.WHICH_BY_IMAGE.getQuestion(internLanguage),
+                choicesObject,
+                answer.name);
+
+        return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Gets a mcq : [Description] Which tv show fits this description?")
+    @GetMapping(value = "/which-by-description", produces = { "application/json" })
+    public ResponseEntity<?> which_by_description(
+            @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
+
+        Language internLanguage;
+        try {
+            internLanguage = Language.languageCheck(language);
+        } catch (LanguageNotSupportedException e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+        ArrayList<TvShowInfos> tvList = new ArrayList<TvShowInfos>();
+        try {
+            TvShowTmdbFetchOptions answerOptions = new TvShowTmdbFetchOptions(true, false, true, false, false);
+            TvShowTmdbFetchOptions similaryOptions = new TvShowTmdbFetchOptions(true, false, false, false, false);
+            tvList = TvShowTmdbFetching.getRandomCoherentTvShows(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ,
+                    answerOptions,
+                    similaryOptions);
+        } catch (Exception e) {
+            return new ResponseEntity<String>(e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        TvShowInfos answer = tvList.get(0);
+        Collections.shuffle(tvList);
+        String[] choices = { tvList.get(0).name, tvList.get(1).name, tvList.get(2).name,
+                tvList.get(3).name };
+        Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
+        MCQQuestion mcq = new MCQQuestion("", answer.overview,
+                TvShowQuestion.WHICH_BY_DESCRIPTION.getQuestion(internLanguage),
                 choicesObject,
                 answer.name);
 
