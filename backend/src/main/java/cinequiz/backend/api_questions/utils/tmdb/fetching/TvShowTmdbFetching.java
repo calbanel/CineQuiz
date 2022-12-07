@@ -2,15 +2,25 @@ package cinequiz.backend.api_questions.utils.tmdb.fetching;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import cinequiz.backend.BackendApplication;
+import cinequiz.backend.api_questions.exceptions.CastUnavailableInTMDBException;
+import cinequiz.backend.api_questions.exceptions.NotEnoughPeoplesInCast;
 import cinequiz.backend.api_questions.exceptions.NotEnoughSimilarShowsInTMDBException;
 import cinequiz.backend.api_questions.exceptions.NotaValidShowException;
+import cinequiz.backend.api_questions.utils.tmdb.fetching.options.PeopleTmdbFetchOptions;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.options.TvShowTmdbFetchOptions;
+import cinequiz.backend.api_questions.utils.tmdb.objects.people.credit.ShowCredit;
+import cinequiz.backend.api_questions.utils.tmdb.objects.people.credit.ShowCreditPage;
+import cinequiz.backend.api_questions.utils.tmdb.objects.show.cast.Cast;
+import cinequiz.backend.api_questions.utils.tmdb.objects.show.cast.Crew;
+import cinequiz.backend.api_questions.utils.tmdb.objects.show.cast.CastMember;
+import cinequiz.backend.api_questions.utils.tmdb.objects.show.cast.CastPage;
 import cinequiz.backend.api_questions.utils.tmdb.objects.show.tv_show.TvShowInfos;
 import cinequiz.backend.api_questions.utils.tmdb.objects.show.tv_show.list.TvShowPage;
 import cinequiz.backend.api_questions.utils.tmdb.objects.show.tv_show.list.TvShowResult;
@@ -248,4 +258,142 @@ public class TvShowTmdbFetching {
 
         return isDuplicate;
     }
+
+    public static ArrayList<CastMember> getRandomCoherentPeopleListInTheseTvShows(int tvShowId,
+            int numberOfPeoplesInTvShow,
+            int similarTvShowId, int numberOfPeoplesInSimilarTvShow, String tmdbLanguage) {
+        ArrayList<CastMember> cast = null;
+        int randomGender = BackendApplication.random(1, 2);
+        try {
+            PeopleTmdbFetchOptions panswerOptions = new PeopleTmdbFetchOptions(true, true, true);
+            ArrayList<CastMember> answer = getRandomCoherentPeoplesInvolvedInThisTvShow(tvShowId,
+                    tmdbLanguage, numberOfPeoplesInTvShow, panswerOptions, randomGender, -1);
+            PeopleTmdbFetchOptions psimilaryOptions = new PeopleTmdbFetchOptions(true, false, true);
+
+            ArrayList<CastMember> similaryCast = getRandomCoherentPeoplesInvolvedInThisTvShow(similarTvShowId,
+                    tmdbLanguage, numberOfPeoplesInSimilarTvShow, psimilaryOptions, randomGender,
+                    tvShowId);
+            cast = new ArrayList<CastMember>();
+            cast.addAll(answer);
+            cast.addAll(similaryCast);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+
+        // null if we failed to get a valid cast for these tv shows
+        return cast;
+    }
+
+    private static ArrayList<CastMember> getRandomCoherentPeoplesInvolvedInThisTvShow(int tvShowId,
+            String tmdbLanguage,
+            int number, PeopleTmdbFetchOptions options, int tmdbgenre, int similarTvShowId)
+            throws CastUnavailableInTMDBException, NotEnoughPeoplesInCast {
+        ArrayList<CastMember> peoples = new ArrayList<CastMember>();
+
+        CastPage castPage = getTvShowCastPage(tvShowId, tmdbLanguage);
+        // if target cast page isn't valid, throw exception
+        if (castPage == null)
+            throw new CastUnavailableInTMDBException();
+
+        // only keeps peoples where we have the target values
+        ArrayList<CastMember> castFiltered = getFiltredCastListInPage(castPage, options, tmdbgenre);
+
+        // we firt want the most popular casts, we want known names
+        castFiltered.sort((a, b) -> new Comparator<CastMember>() {
+            @Override
+            public int compare(CastMember o1, CastMember o2) {
+                if (o1.popularity == o2.popularity)
+                    return 0;
+
+                return o1.popularity < o2.popularity ? 1 : -1;
+            }
+
+        }.compare(a, b));
+
+        // browse the clean cast list
+        for (CastMember c : castFiltered) {
+            // add cast to the final list if he isn't in the similar tv shows
+            if (!isCastIsInThisTvShow(c.id, similarTvShowId, tmdbLanguage))
+                peoples.add(c);
+
+            // stop the research when we have the number of peoples we want
+            if (peoples.size() >= number)
+                break;
+        }
+
+        // if there not enough peoples in the final list, throw exception
+        if (peoples.size() < number)
+            throw new NotEnoughPeoplesInCast();
+
+        return peoples;
+    }
+
+    private static CastPage getTvShowCastPage(int tvShowId, String tmdbLanguage) {
+        CastPage page = null;
+        RestTemplate rt = new RestTemplate();
+        String url = "https://api.themoviedb.org/3/tv/" + tvShowId + "/credits?api_key=" + BackendApplication.API_KEY
+                + "&language=" + tmdbLanguage;
+        try {
+            page = rt.getForObject(url, CastPage.class);
+        } catch (final HttpClientErrorException e) {
+            System.out.println(e.getStatusCode());
+            System.out.println(e.getResponseBodyAsString());
+        }
+
+        // null if the target cast page isn't valid
+        return page;
+    }
+
+    private static ArrayList<CastMember> getFiltredCastListInPage(CastPage page,
+            PeopleTmdbFetchOptions options, int tmdbgenre) {
+        ArrayList<Cast> cast = (ArrayList<Cast>) page.cast.stream()
+                .filter((c) -> (!options.isProfile_path() || (c.profile_path != null && c.profile_path != ""))
+                        && (!options.isName() || (c.name != null && c.name != ""))
+                        && (!options.isGender() || c.gender == tmdbgenre))
+                .collect(Collectors.toList());
+        ArrayList<Crew> crew = (ArrayList<Crew>) page.crew.stream()
+                .filter((c) -> (!options.isProfile_path() || (c.profile_path != null && c.profile_path != ""))
+                        && (!options.isName() || (c.name != null && c.name != ""))
+                        && (!options.isGender() || c.gender == tmdbgenre))
+                .collect(Collectors.toList());
+        ArrayList<CastMember> members = new ArrayList<CastMember>();
+        members.addAll(cast);
+        members.addAll(crew);
+        return members;
+    }
+
+    private static boolean isCastIsInThisTvShow(int personId, int tvShowId, String tmdbLanguage) {
+        boolean isIn = false;
+
+        // get all the tv shows have participated the person
+        ShowCreditPage creditPage = getPeopleTvShowCreditPage(personId, tmdbLanguage);
+        if (creditPage != null) {
+            ArrayList<ShowCredit> list = new ArrayList<ShowCredit>();
+            list.addAll(creditPage.cast);
+            list.addAll(creditPage.crew);
+            list = (ArrayList<ShowCredit>) list.stream().filter(m -> m.id == tvShowId || m.media_type == "tv")
+                    .collect(Collectors.toList());
+            if (list.size() > 0)
+                isIn = true;
+        }
+
+        return isIn;
+    }
+
+    private static ShowCreditPage getPeopleTvShowCreditPage(int personId, String tmdbLanguage) {
+        ShowCreditPage page = null;
+        RestTemplate rt = new RestTemplate();
+        String url = "https://api.themoviedb.org/3/person/" + personId + "/combined_credits?api_key="
+                + BackendApplication.API_KEY
+                + "&language=" + tmdbLanguage;
+        try {
+            page = rt.getForObject(url, ShowCreditPage.class);
+        } catch (final HttpClientErrorException e) {
+            System.out.println(e.getStatusCode());
+            System.out.println(e.getResponseBodyAsString());
+        }
+        // null if the target cast page isn't valid
+        return page;
+    }
+
 }

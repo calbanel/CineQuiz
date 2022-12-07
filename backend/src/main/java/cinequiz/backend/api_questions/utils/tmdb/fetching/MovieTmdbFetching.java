@@ -369,7 +369,7 @@ public class MovieTmdbFetching {
     private static ShowCreditPage getPeopleMovieCreditPage(int personId, String tmdbLanguage) {
         ShowCreditPage page = null;
         RestTemplate rt = new RestTemplate();
-        String url = "https://api.themoviedb.org/3/person/" + personId + "/movie_credits?api_key="
+        String url = "https://api.themoviedb.org/3/person/" + personId + "/combined_credits?api_key="
                 + BackendApplication.API_KEY
                 + "&language=" + tmdbLanguage;
         try {

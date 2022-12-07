@@ -17,6 +17,7 @@ import cinequiz.backend.api_questions.utils.Language;
 import cinequiz.backend.api_questions.utils.questions.TvShowQuestion;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.TvShowTmdbFetching;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.options.TvShowTmdbFetchOptions;
+import cinequiz.backend.api_questions.utils.tmdb.objects.show.cast.CastMember;
 import cinequiz.backend.api_questions.utils.tmdb.objects.show.tv_show.TvShowInfos;
 
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -204,6 +205,55 @@ public class TvShowQuestionController {
                 TvShowQuestion.HOW_MANY_EPISODES.getQuestion(internLanguage),
                 choicesObject,
                 Integer.toString(answer.number_of_episodes));
+
+        return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Gets a mcq : Who was involved in this tv show?")
+    @GetMapping(value = "/take-part", produces = { "application/json" })
+    public ResponseEntity<?> takePart(
+            @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
+
+        Language internLanguage;
+        try {
+            internLanguage = Language.languageCheck(language);
+        } catch (LanguageNotSupportedException e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+        ArrayList<TvShowInfos> tvList = new ArrayList<TvShowInfos>();
+        ArrayList<CastMember> cast = null;
+        try {
+            while (cast == null) {
+                TvShowTmdbFetchOptions manswerOptions = new TvShowTmdbFetchOptions(true, true, false, false, false,
+                        false);
+                TvShowTmdbFetchOptions msimilaryOptions = new TvShowTmdbFetchOptions(false, false, false, false, false,
+                        false);
+                tvList = TvShowTmdbFetching.getRandomCoherentTvShows(internLanguage.getTmdbLanguage(), 2,
+                        manswerOptions,
+                        msimilaryOptions);
+
+                TvShowInfos tvShow = tvList.get(0);
+                TvShowInfos similarTvShow = tvList.get(1);
+
+                cast = TvShowTmdbFetching.getRandomCoherentPeopleListInTheseTvShows(tvShow.id, 1, similarTvShow.id, 3,
+                        internLanguage.getTmdbLanguage());
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<String>(e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        TvShowInfos tvShowOfQuestion = tvList.get(0);
+        CastMember answer = cast.get(0);
+        Collections.shuffle(cast);
+        String[] choices = { cast.get(0).name, cast.get(1).name, cast.get(2).name, cast.get(3).name };
+        Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
+        MCQQuestion mcq = new MCQQuestion(BackendApplication.IMG_URL_BASE + tvShowOfQuestion.poster_path,
+                tvShowOfQuestion.name,
+                TvShowQuestion.TAKE_PART.getQuestion(internLanguage),
+                choicesObject,
+                answer.name);
 
         return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
     }
