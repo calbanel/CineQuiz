@@ -82,7 +82,7 @@ public class TvShowQuestionController {
         String[] choices = { tvList.get(0).name, tvList.get(1).name, tvList.get(2).name,
                 tvList.get(3).name };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MCQQuestion mcq = new MCQQuestion(answer.backdrop_path, "",
+        MCQQuestion mcq = new MCQQuestion(BackendApplication.IMG_URL_BASE + answer.backdrop_path, "",
                 TvShowQuestion.WHICH_BY_IMAGE.getQuestion(internLanguage),
                 choicesObject,
                 answer.name);
@@ -160,7 +160,7 @@ public class TvShowQuestionController {
                 tvList.get(2).first_air_date,
                 tvList.get(3).first_air_date };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MCQQuestion mcq = new MCQQuestion(answer.poster_path, answer.name,
+        MCQQuestion mcq = new MCQQuestion(BackendApplication.IMG_URL_BASE + answer.poster_path, answer.name,
                 TvShowQuestion.FIRST_AIR_DATE.getQuestion(internLanguage),
                 choicesObject,
                 answer.first_air_date);
@@ -200,7 +200,7 @@ public class TvShowQuestionController {
                 Integer.toString(tvList.get(2).number_of_episodes),
                 Integer.toString(tvList.get(3).number_of_episodes) };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MCQQuestion mcq = new MCQQuestion(answer.poster_path, answer.name,
+        MCQQuestion mcq = new MCQQuestion(BackendApplication.IMG_URL_BASE + answer.poster_path, answer.name,
                 TvShowQuestion.HOW_MANY_EPISODES.getQuestion(internLanguage),
                 choicesObject,
                 Integer.toString(answer.number_of_episodes));

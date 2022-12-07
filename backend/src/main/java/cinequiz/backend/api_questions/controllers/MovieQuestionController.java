@@ -88,7 +88,7 @@ public class MovieQuestionController {
         String[] choices = { movieList.get(0).title, movieList.get(1).title, movieList.get(2).title,
                 movieList.get(3).title };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MCQQuestion mcq = new MCQQuestion(answer.backdrop_path, "",
+        MCQQuestion mcq = new MCQQuestion(BackendApplication.IMG_URL_BASE + answer.backdrop_path, "",
                 MovieQuestion.WHICH_BY_IMAGE.getQuestion(internLanguage),
                 choicesObject,
                 answer.title);
@@ -167,7 +167,7 @@ public class MovieQuestionController {
                 Long.toString(movieList.get(2).budget),
                 Long.toString(movieList.get(3).budget) };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MCQQuestion mcq = new MCQQuestion(answer.backdrop_path, answer.title,
+        MCQQuestion mcq = new MCQQuestion(BackendApplication.IMG_URL_BASE + answer.poster_path, answer.title,
                 MovieQuestion.BUDGET.getQuestion(internLanguage),
                 choicesObject,
                 Long.toString(answer.budget));
@@ -207,7 +207,7 @@ public class MovieQuestionController {
                 Long.toString(movieList.get(2).revenue),
                 Long.toString(movieList.get(3).revenue) };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MCQQuestion mcq = new MCQQuestion(answer.backdrop_path, answer.title,
+        MCQQuestion mcq = new MCQQuestion(BackendApplication.IMG_URL_BASE + answer.poster_path, answer.title,
                 MovieQuestion.REVENUE.getQuestion(internLanguage),
                 choicesObject,
                 Long.toString(answer.revenue));
@@ -255,7 +255,8 @@ public class MovieQuestionController {
         Collections.shuffle(cast);
         String[] choices = { cast.get(0).name, cast.get(1).name, cast.get(2).name, cast.get(3).name };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MCQQuestion mcq = new MCQQuestion(movieOfQuestion.backdrop_path, movieOfQuestion.title,
+        MCQQuestion mcq = new MCQQuestion(BackendApplication.IMG_URL_BASE + movieOfQuestion.poster_path,
+                movieOfQuestion.title,
                 MovieQuestion.TAKE_PART.getQuestion(internLanguage),
                 choicesObject,
                 answer.name);
@@ -304,7 +305,8 @@ public class MovieQuestionController {
         Collections.shuffle(cast);
         String[] choices = { cast.get(0).name, cast.get(1).name, cast.get(2).name, cast.get(3).name };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MCQQuestion mcq = new MCQQuestion(movieOfQuestion.backdrop_path, movieOfQuestion.title,
+        MCQQuestion mcq = new MCQQuestion(BackendApplication.IMG_URL_BASE + movieOfQuestion.poster_path,
+                movieOfQuestion.title,
                 MovieQuestion.DOESNT_TAKE_PART.getQuestion(internLanguage),
                 choicesObject,
                 answer.name);
@@ -344,7 +346,7 @@ public class MovieQuestionController {
                 movieList.get(2).release_date,
                 movieList.get(3).release_date };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MCQQuestion mcq = new MCQQuestion(answer.backdrop_path, answer.title,
+        MCQQuestion mcq = new MCQQuestion(BackendApplication.IMG_URL_BASE + answer.poster_path, answer.title,
                 MovieQuestion.RELEASE_DATE.getQuestion(internLanguage),
                 choicesObject,
                 answer.release_date);
