@@ -289,10 +289,10 @@ public class MovieQuestionController {
                         manswerOptions,
                         msimilaryOptions);
 
-                MovieInfos movie = movieList.get(1);
-                MovieInfos similaryMovie = movieList.get(0);
+                MovieInfos movie = movieList.get(0);
+                MovieInfos similaryMovie = movieList.get(1);
 
-                cast = MovieTmdbFetching.getRandomCoherentPeopleListInTheseMovies(similaryMovie.id, 1, movie.id, 3,
+                cast = MovieTmdbFetching.getRandomCoherentPeopleListInTheseMovies(movie.id, 1, similaryMovie.id, 3,
                         internLanguage.getTmdbLanguage());
             }
         } catch (Exception e) {
