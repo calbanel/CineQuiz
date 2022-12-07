@@ -5,20 +5,20 @@ public class TvShowQuestion extends Question {
                 super(fr, en);
         }
 
-        public static final MovieQuestion WHICH_BY_IMAGE = new MovieQuestion("Quelle est cette série ?",
+        public static final TvShowQuestion WHICH_BY_IMAGE = new TvShowQuestion("Quelle est cette série ?",
                         "What is this series?");
-        public static final MovieQuestion WHICH_BY_DESCRIPTION = new MovieQuestion(
+        public static final TvShowQuestion WHICH_BY_DESCRIPTION = new TvShowQuestion(
                         "A quelle série correspond a cette description ?",
                         "Which tv show fits this description?");
-        public static final MovieQuestion TAKE_PART = new MovieQuestion("Quelle personne a participé à cette série ?",
+        public static final TvShowQuestion TAKE_PART = new TvShowQuestion("Quelle personne a participé à cette série ?",
                         "Who participated in this tv shows?");
-        public static final MovieQuestion DOESNT_TAKE_PART = new MovieQuestion(
+        public static final TvShowQuestion DOESNT_TAKE_PART = new TvShowQuestion(
                         "Quelle personne n'a pas participé à cette série ?",
                         "Who hasn't participated in this tv show?");
-        public static final MovieQuestion RELEASE_DATE = new MovieQuestion(
+        public static final TvShowQuestion FIRST_AIR_DATE = new TvShowQuestion(
                         "Quelle a été la date de première diffusion de cette série ?",
                         "When did this tv show first air?");
-        public static final MovieQuestion HOW_MANY_EPISODES = new MovieQuestion(
+        public static final TvShowQuestion HOW_MANY_EPISODES = new TvShowQuestion(
                         "Combien d'épisodes compte cette série ?",
                         "How many episodes does this tv show have?");
 }

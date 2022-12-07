@@ -29,7 +29,7 @@ import io.swagger.annotations.ApiOperation;
 public class TvShowQuestionController {
 
     private final int NB_CHOICES_IN_MCQ = 4;
-    private final int NB_DEFINED_QUESTIONS = 3;
+    private final int NB_DEFINED_QUESTIONS = 4;
 
     @ApiOperation(value = "Gets a random mcq about a tv show")
     @GetMapping("/random")
@@ -43,6 +43,8 @@ public class TvShowQuestionController {
             case 2:
                 return whichByDescription(language);
             case 3:
+                return firstAirDate(language);
+            case 4:
                 return howManyEpisodes(language);
             default:
                 return whichByImage(language);
@@ -120,6 +122,45 @@ public class TvShowQuestionController {
                 TvShowQuestion.WHICH_BY_DESCRIPTION.getQuestion(internLanguage),
                 choicesObject,
                 answer.name);
+
+        return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Gets a mcq : When did this tv show first air?")
+    @GetMapping(value = "/first-air-date", produces = { "application/json" })
+    public ResponseEntity<?> firstAirDate(
+            @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
+
+        Language internLanguage;
+        try {
+            internLanguage = Language.languageCheck(language);
+        } catch (LanguageNotSupportedException e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+        ArrayList<TvShowInfos> tvList = new ArrayList<TvShowInfos>();
+        try {
+            TvShowTmdbFetchOptions answerOptions = new TvShowTmdbFetchOptions(true, true, false, false, true);
+            TvShowTmdbFetchOptions similaryOptions = new TvShowTmdbFetchOptions(false, false, false, false, true);
+            tvList = TvShowTmdbFetching.getRandomCoherentTvShows(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ,
+                    answerOptions,
+                    similaryOptions);
+        } catch (Exception e) {
+            return new ResponseEntity<String>(e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        TvShowInfos answer = tvList.get(0);
+        Collections.shuffle(tvList);
+        String[] choices = { tvList.get(0).first_air_date,
+                tvList.get(1).first_air_date,
+                tvList.get(2).first_air_date,
+                tvList.get(3).first_air_date };
+        Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
+        MCQQuestion mcq = new MCQQuestion(answer.backdrop_path, answer.name,
+                TvShowQuestion.FIRST_AIR_DATE.getQuestion(internLanguage),
+                choicesObject,
+                answer.first_air_date);
 
         return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
     }
