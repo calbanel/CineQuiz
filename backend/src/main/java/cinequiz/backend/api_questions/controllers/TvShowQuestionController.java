@@ -29,7 +29,7 @@ import io.swagger.annotations.ApiOperation;
 public class TvShowQuestionController {
 
     private final int NB_CHOICES_IN_MCQ = 4;
-    private final int NB_DEFINED_QUESTIONS = 1;
+    private final int NB_DEFINED_QUESTIONS = 3;
 
     @ApiOperation(value = "Gets a random mcq about a tv show")
     @GetMapping("/random")
@@ -39,16 +39,20 @@ public class TvShowQuestionController {
         int randomQuestion = BackendApplication.random(1, NB_DEFINED_QUESTIONS);
         switch (randomQuestion) {
             case 1:
-                return which_by_image(language);
+                return whichByImage(language);
+            case 2:
+                return whichByDescription(language);
+            case 3:
+                return howManyEpisodes(language);
             default:
-                return which_by_image(language);
+                return whichByImage(language);
 
         }
     }
 
     @ApiOperation(value = "Gets a mcq : [Image] What is this tv show?")
     @GetMapping(value = "/which-by-image", produces = { "application/json" })
-    public ResponseEntity<?> which_by_image(
+    public ResponseEntity<?> whichByImage(
             @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
 
         Language internLanguage;
@@ -85,7 +89,7 @@ public class TvShowQuestionController {
 
     @ApiOperation(value = "Gets a mcq : [Description] Which tv show fits this description?")
     @GetMapping(value = "/which-by-description", produces = { "application/json" })
-    public ResponseEntity<?> which_by_description(
+    public ResponseEntity<?> whichByDescription(
             @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
 
         Language internLanguage;
@@ -116,6 +120,45 @@ public class TvShowQuestionController {
                 TvShowQuestion.WHICH_BY_DESCRIPTION.getQuestion(internLanguage),
                 choicesObject,
                 answer.name);
+
+        return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Gets a mcq : How many episodes does this tv show have?")
+    @GetMapping(value = "/how-many-episodes", produces = { "application/json" })
+    public ResponseEntity<?> howManyEpisodes(
+            @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
+
+        Language internLanguage;
+        try {
+            internLanguage = Language.languageCheck(language);
+        } catch (LanguageNotSupportedException e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+        ArrayList<TvShowInfos> tvList = new ArrayList<TvShowInfos>();
+        try {
+            TvShowTmdbFetchOptions answerOptions = new TvShowTmdbFetchOptions(true, true, false, true, false);
+            TvShowTmdbFetchOptions similaryOptions = new TvShowTmdbFetchOptions(false, false, false, true, false);
+            tvList = TvShowTmdbFetching.getRandomCoherentTvShows(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ,
+                    answerOptions,
+                    similaryOptions);
+        } catch (Exception e) {
+            return new ResponseEntity<String>(e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        TvShowInfos answer = tvList.get(0);
+        Collections.shuffle(tvList);
+        String[] choices = { Integer.toString(tvList.get(0).number_of_episodes),
+                Integer.toString(tvList.get(1).number_of_episodes),
+                Integer.toString(tvList.get(2).number_of_episodes),
+                Integer.toString(tvList.get(3).number_of_episodes) };
+        Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
+        MCQQuestion mcq = new MCQQuestion(answer.backdrop_path, answer.name,
+                TvShowQuestion.HOW_MANY_EPISODES.getQuestion(internLanguage),
+                choicesObject,
+                Integer.toString(answer.number_of_episodes));
 
         return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
     }

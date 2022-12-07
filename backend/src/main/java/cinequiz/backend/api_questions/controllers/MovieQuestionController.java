@@ -38,9 +38,9 @@ public class MovieQuestionController {
         int randomQuestion = BackendApplication.random(1, NB_DEFINED_QUESTIONS);
         switch (randomQuestion) {
             case 1:
-                return which_by_image(language);
+                return whichByImage(language);
             case 2:
-                return which_by_description(language);
+                return whichByDescription(language);
             case 3:
                 return budget(language);
             case 4:
@@ -52,14 +52,14 @@ public class MovieQuestionController {
             case 7:
                 return releaseDate(language);
             default:
-                return which_by_image(language);
+                return whichByImage(language);
 
         }
     }
 
     @ApiOperation(value = "Gets a mcq : [Image] What is this film?")
     @GetMapping(value = "/which-by-image", produces = { "application/json" })
-    public ResponseEntity<?> which_by_image(
+    public ResponseEntity<?> whichByImage(
             @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
 
         Language internLanguage;
@@ -96,7 +96,7 @@ public class MovieQuestionController {
 
     @ApiOperation(value = "Gets a mcq : [Description] Which film fits this description?")
     @GetMapping(value = "/which-by-description", produces = { "application/json" })
-    public ResponseEntity<?> which_by_description(
+    public ResponseEntity<?> whichByDescription(
             @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
 
         Language internLanguage;
