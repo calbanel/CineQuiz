@@ -13,11 +13,11 @@ import cinequiz.backend.BackendApplication;
 import cinequiz.backend.api_questions.exceptions.LanguageNotSupportedException;
 import cinequiz.backend.api_questions.mcq.Choices;
 import cinequiz.backend.api_questions.mcq.MCQQuestion;
-import cinequiz.backend.api_questions.tmdb_objects.show.tv_show.TvShowInfos;
 import cinequiz.backend.api_questions.utils.Language;
-import cinequiz.backend.api_questions.utils.TvShowTmdbFetchOptions;
-import cinequiz.backend.api_questions.utils.TvShowTmdbFetching;
 import cinequiz.backend.api_questions.utils.questions.TvShowQuestion;
+import cinequiz.backend.api_questions.utils.tmdb.fetching.TvShowTmdbFetching;
+import cinequiz.backend.api_questions.utils.tmdb.fetching.options.TvShowTmdbFetchOptions;
+import cinequiz.backend.api_questions.utils.tmdb.objects.show.tv_show.TvShowInfos;
 
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -66,8 +66,9 @@ public class TvShowQuestionController {
 
         ArrayList<TvShowInfos> tvList = new ArrayList<TvShowInfos>();
         try {
-            TvShowTmdbFetchOptions answerOptions = new TvShowTmdbFetchOptions(true, true, false, false, false);
-            TvShowTmdbFetchOptions similaryOptions = new TvShowTmdbFetchOptions(true, false, false, false, false);
+            TvShowTmdbFetchOptions answerOptions = new TvShowTmdbFetchOptions(true, false, true, false, false, false);
+            TvShowTmdbFetchOptions similaryOptions = new TvShowTmdbFetchOptions(true, false, false, false, false,
+                    false);
             tvList = TvShowTmdbFetching.getRandomCoherentTvShows(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ,
                     answerOptions,
                     similaryOptions);
@@ -103,8 +104,9 @@ public class TvShowQuestionController {
 
         ArrayList<TvShowInfos> tvList = new ArrayList<TvShowInfos>();
         try {
-            TvShowTmdbFetchOptions answerOptions = new TvShowTmdbFetchOptions(true, false, true, false, false);
-            TvShowTmdbFetchOptions similaryOptions = new TvShowTmdbFetchOptions(true, false, false, false, false);
+            TvShowTmdbFetchOptions answerOptions = new TvShowTmdbFetchOptions(true, false, false, true, false, false);
+            TvShowTmdbFetchOptions similaryOptions = new TvShowTmdbFetchOptions(true, false, false, false, false,
+                    false);
             tvList = TvShowTmdbFetching.getRandomCoherentTvShows(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ,
                     answerOptions,
                     similaryOptions);
@@ -140,8 +142,9 @@ public class TvShowQuestionController {
 
         ArrayList<TvShowInfos> tvList = new ArrayList<TvShowInfos>();
         try {
-            TvShowTmdbFetchOptions answerOptions = new TvShowTmdbFetchOptions(true, true, false, false, true);
-            TvShowTmdbFetchOptions similaryOptions = new TvShowTmdbFetchOptions(false, false, false, false, true);
+            TvShowTmdbFetchOptions answerOptions = new TvShowTmdbFetchOptions(true, true, false, false, true, false);
+            TvShowTmdbFetchOptions similaryOptions = new TvShowTmdbFetchOptions(false, false, false, false, true,
+                    false);
             tvList = TvShowTmdbFetching.getRandomCoherentTvShows(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ,
                     answerOptions,
                     similaryOptions);
@@ -157,7 +160,7 @@ public class TvShowQuestionController {
                 tvList.get(2).first_air_date,
                 tvList.get(3).first_air_date };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MCQQuestion mcq = new MCQQuestion(answer.backdrop_path, answer.name,
+        MCQQuestion mcq = new MCQQuestion(answer.poster_path, answer.name,
                 TvShowQuestion.FIRST_AIR_DATE.getQuestion(internLanguage),
                 choicesObject,
                 answer.first_air_date);
@@ -179,8 +182,9 @@ public class TvShowQuestionController {
 
         ArrayList<TvShowInfos> tvList = new ArrayList<TvShowInfos>();
         try {
-            TvShowTmdbFetchOptions answerOptions = new TvShowTmdbFetchOptions(true, true, false, true, false);
-            TvShowTmdbFetchOptions similaryOptions = new TvShowTmdbFetchOptions(false, false, false, true, false);
+            TvShowTmdbFetchOptions answerOptions = new TvShowTmdbFetchOptions(true, true, false, false, false, true);
+            TvShowTmdbFetchOptions similaryOptions = new TvShowTmdbFetchOptions(false, false, false, false, false,
+                    true);
             tvList = TvShowTmdbFetching.getRandomCoherentTvShows(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ,
                     answerOptions,
                     similaryOptions);
@@ -196,7 +200,7 @@ public class TvShowQuestionController {
                 Integer.toString(tvList.get(2).number_of_episodes),
                 Integer.toString(tvList.get(3).number_of_episodes) };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MCQQuestion mcq = new MCQQuestion(answer.backdrop_path, answer.name,
+        MCQQuestion mcq = new MCQQuestion(answer.poster_path, answer.name,
                 TvShowQuestion.HOW_MANY_EPISODES.getQuestion(internLanguage),
                 choicesObject,
                 Integer.toString(answer.number_of_episodes));

@@ -12,12 +12,12 @@ import cinequiz.backend.BackendApplication;
 import cinequiz.backend.api_questions.exceptions.LanguageNotSupportedException;
 import cinequiz.backend.api_questions.mcq.Choices;
 import cinequiz.backend.api_questions.mcq.MCQQuestion;
-import cinequiz.backend.api_questions.tmdb_objects.show.cast.CastMember;
-import cinequiz.backend.api_questions.tmdb_objects.show.movie.MovieInfos;
 import cinequiz.backend.api_questions.utils.Language;
-import cinequiz.backend.api_questions.utils.MovieTmdbFetchOptions;
-import cinequiz.backend.api_questions.utils.MovieTmdbFetching;
 import cinequiz.backend.api_questions.utils.questions.MovieQuestion;
+import cinequiz.backend.api_questions.utils.tmdb.fetching.MovieTmdbFetching;
+import cinequiz.backend.api_questions.utils.tmdb.fetching.options.MovieTmdbFetchOptions;
+import cinequiz.backend.api_questions.utils.tmdb.objects.show.cast.CastMember;
+import cinequiz.backend.api_questions.utils.tmdb.objects.show.movie.MovieInfos;
 import edu.emory.mathcs.backport.java.util.Collections;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -71,8 +71,10 @@ public class MovieQuestionController {
 
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
         try {
-            MovieTmdbFetchOptions answerOptions = new MovieTmdbFetchOptions(true, true, false, false, false, false);
-            MovieTmdbFetchOptions similaryOptions = new MovieTmdbFetchOptions(true, false, false, false, false, false);
+            MovieTmdbFetchOptions answerOptions = new MovieTmdbFetchOptions(true, false, true, false, false, false,
+                    false);
+            MovieTmdbFetchOptions similaryOptions = new MovieTmdbFetchOptions(true, false, false, false, false, false,
+                    false);
             movieList = MovieTmdbFetching.getRandomCoherentMovies(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ,
                     answerOptions,
                     similaryOptions);
@@ -108,8 +110,10 @@ public class MovieQuestionController {
 
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
         try {
-            MovieTmdbFetchOptions answerOptions = new MovieTmdbFetchOptions(true, false, true, false, false, false);
-            MovieTmdbFetchOptions similaryOptions = new MovieTmdbFetchOptions(true, false, false, false, false, false);
+            MovieTmdbFetchOptions answerOptions = new MovieTmdbFetchOptions(true, false, false, true, false, false,
+                    false);
+            MovieTmdbFetchOptions similaryOptions = new MovieTmdbFetchOptions(true, false, false, false, false, false,
+                    false);
             movieList = MovieTmdbFetching.getRandomCoherentMovies(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ,
                     answerOptions,
                     similaryOptions);
@@ -145,8 +149,10 @@ public class MovieQuestionController {
 
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
         try {
-            MovieTmdbFetchOptions answerOptions = new MovieTmdbFetchOptions(true, true, false, true, false, false);
-            MovieTmdbFetchOptions similaryOptions = new MovieTmdbFetchOptions(false, false, false, true, false, false);
+            MovieTmdbFetchOptions answerOptions = new MovieTmdbFetchOptions(true, true, false, false, false, true,
+                    false);
+            MovieTmdbFetchOptions similaryOptions = new MovieTmdbFetchOptions(false, false, false, false, false, true,
+                    false);
             movieList = MovieTmdbFetching.getRandomCoherentMovies(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ,
                     answerOptions,
                     similaryOptions);
@@ -183,8 +189,10 @@ public class MovieQuestionController {
 
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
         try {
-            MovieTmdbFetchOptions answerOptions = new MovieTmdbFetchOptions(true, true, false, false, true, false);
-            MovieTmdbFetchOptions similaryOptions = new MovieTmdbFetchOptions(false, false, false, false, true, false);
+            MovieTmdbFetchOptions answerOptions = new MovieTmdbFetchOptions(true, true, false, false, false, false,
+                    true);
+            MovieTmdbFetchOptions similaryOptions = new MovieTmdbFetchOptions(false, false, false, false, false, false,
+                    true);
             movieList = MovieTmdbFetching.getRandomCoherentMovies(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ,
                     answerOptions,
                     similaryOptions);
@@ -224,9 +232,9 @@ public class MovieQuestionController {
         try {
             while (cast == null) {
                 MovieTmdbFetchOptions manswerOptions = new MovieTmdbFetchOptions(true, true, false, false, false,
-                        false);
+                        false, false);
                 MovieTmdbFetchOptions msimilaryOptions = new MovieTmdbFetchOptions(false, false, false, false, false,
-                        false);
+                        false, false);
                 movieList = MovieTmdbFetching.getRandomCoherentMovies(internLanguage.getTmdbLanguage(), 2,
                         manswerOptions,
                         msimilaryOptions);
@@ -272,9 +280,9 @@ public class MovieQuestionController {
         try {
             while (cast == null) {
                 MovieTmdbFetchOptions manswerOptions = new MovieTmdbFetchOptions(false, false, false, false, false,
-                        false);
+                        false, false);
                 MovieTmdbFetchOptions msimilaryOptions = new MovieTmdbFetchOptions(true, true, false, false, false,
-                        false);
+                        false, false);
                 movieList = MovieTmdbFetching.getRandomCoherentMovies(internLanguage.getTmdbLanguage(),
                         2,
                         manswerOptions,
@@ -318,8 +326,10 @@ public class MovieQuestionController {
 
         ArrayList<MovieInfos> movieList = new ArrayList<MovieInfos>();
         try {
-            MovieTmdbFetchOptions answerOptions = new MovieTmdbFetchOptions(true, true, false, false, false, true);
-            MovieTmdbFetchOptions similaryOptions = new MovieTmdbFetchOptions(false, false, false, false, false, true);
+            MovieTmdbFetchOptions answerOptions = new MovieTmdbFetchOptions(true, true, false, false, true, false,
+                    false);
+            MovieTmdbFetchOptions similaryOptions = new MovieTmdbFetchOptions(false, false, false, false, true, false,
+                    false);
             movieList = MovieTmdbFetching.getRandomCoherentMovies(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ,
                     answerOptions,
                     similaryOptions);
