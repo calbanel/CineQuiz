@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-connection',
@@ -14,8 +14,8 @@ export class ConnectionComponent implements OnInit {
 
   ngOnInit(): void {
     this.connectionForm = this.formBuilder.group({
-      pseudo: [null],
-      password: [null]
+      pseudo: [null, Validators.required],
+      password: [null, Validators.required]
     });
   }
 
