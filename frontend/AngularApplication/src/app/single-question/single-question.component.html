@@ -3,7 +3,7 @@
         <div id="nbQuestion" class="bg-jalapeno-red rounded-full py-2 px-4 text-center"> Question {{quest.questionNumber}}/10 </div>
             <div id="question" class="text-2xl text-center">{{quest.question}}</div>
             <div class="flex flex-row mb-6">
-                <div class="mb-6 mx-6 w-4/6" id="image"><img [src]="quest.media" class="mx-auto object-fill"><p class="text-center">{{quest.description}}<p></div>
+                <div class="mb-6 mx-6 w-4/6" id="image"><img [src]="quest.optionalImage" class="mx-auto object-fill"><p class="text-center">{{quest.optionalText}}<p></div>
                 <div id="answers" class="bg-waterfall rounded space-y-4 w-2/6 place-items-center ml-4 mr-12 mb-6">
                     <div id="{{quest.choice1}}" class="bg-good-samaritan rounded hover:bg-spray"> <label for="questA"  [ngClass] = "{ disabled : answered === true}"> <img src="../assets/A.png" class="w-6 left pt-4 inline pb-4 ml-5"></label>  <button (click)="onClick(quest.choice1)" class="py-2 px-4 w-3/4 flex-1" [ngClass] = "{ disabled : answered === true}" id="questA">{{quest.choice1}}</button></div>
                     <div id="{{quest.choice2}}" class="bg-good-samaritan rounded hover:bg-spray"> <label for="questB"  [ngClass] = "{ disabled : answered === true}"> <img src="../assets/B.png" class="w-6 left pt-4 inline pb-4 ml-5"> </label> <button (click)="onClick(quest.choice2)" class="py-2 px-4 w-3/4 flex-1" [ngClass] = "{ disabled : answered === true}" id="questB">{{quest.choice2}}</button></div>

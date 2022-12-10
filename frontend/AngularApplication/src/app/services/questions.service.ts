@@ -4,121 +4,115 @@ import { Question } from "../models/question.model";
 import { Observable } from "rxjs";
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
-export class QuestionService{
+export class QuestionService {
 
-    constructor(private http:HttpClient){
+  constructor(private http: HttpClient) {
 
+  }
+
+  questions: Question[] = [
+    {
+      questionNumber: 1,
+      question: 'Quel est ce film ?',
+      optionalText: '',
+      choice1: 'Un homme d’exception',
+      choice2: 'Invincible : Le chemin de la rédemption',
+      choice3: '21 grammes',
+      choice4: 'Sissi Impératrice',
+      answer: 'Invincible : Le chemin de la rédemption',
+      optionalImage: 'https://image.tmdb.org/t/p/w500/6nh02WC31a5Sg3HqK21JY1nHqFo.jpg'
+    },
+    {
+      questionNumber: 2,
+      question: 'Quel a été le budget de ce film ?',
+      optionalText: 'Solo: A Star Wars Story',
+      choice1: '817400891',
+      choice2: '1850000',
+      choice3: '121214377',
+      choice4: '392952373',
+      answer: '392952373',
+      optionalImage: 'https://image.tmdb.org/t/p/w500/ojHCeDULAkQK25700fhRU75Tur2.jpg'
+    },
+    {
+      questionNumber: 3,
+      question: 'Quelle personne n\'a pas participé à ce film ?',
+      optionalText: 'Star Wars : Les Derniers Jedi',
+      choice1: 'Kate Dickie',
+      choice2: 'Whoopi Goldberg',
+      choice3: 'Gwendoline Christie',
+      choice4: 'Daisy Ridley',
+      answer: 'Whoopi Goldberg',
+      optionalImage: 'https://image.tmdb.org/t/p/w500/5Iw7zQTHVRBOYpA0V6z0yypOPZh.jpg'
+    },
+    {
+      questionNumber: 4,
+      question: 'A quelle date est sortie ce film ?',
+      optionalText: 'Looop Lapeta : La boucle infernale',
+      choice1: '2006-05-10',
+      choice2: '2022-02-04',
+      choice3: '1999-04-16',
+      choice4: '2002-10-18',
+      answer: '2022-02-04',
+      optionalImage: 'https://image.tmdb.org/t/p/w500/kQM7o3NIkruIZLoQ9E2XzZQ8Ujl.jpg'
+    },
+    {
+      questionNumber: 5,
+      question: 'Quel a été le revenu généré par ce film ?',
+      optionalText: 'G.I. Joe : Le Réveil du Cobra',
+      choice1: '77000000',
+      choice2: '16951798',
+      choice3: '302469017',
+      choice4: '26000000',
+      answer: '302469017',
+      optionalImage: 'https://image.tmdb.org/t/p/w500/vBV2nF3yqYrskq2y1bSSuAuGqcz.jpg'
+    },
+    {
+      questionNumber: 6,
+      question: 'Quelle personne a participé à ce film ?',
+      optionalText: 'Superman',
+      choice1: 'Eric Lloyd',
+      choice2: 'Terence Stamp',
+      choice3: 'Alan Arkin',
+      choice4: 'Tim Allen',
+      answer: 'Terence Stamp',
+      optionalImage: 'https://image.tmdb.org/t/p/w500/v6MVBFnQOscITvmAy5N5ras2JKZ.jpg'
+    },
+    {
+      questionNumber: 7,
+      question: 'A quel film correspond a cette optionalText ?',
+      optionalText: 'Espérant offrir une vie plus équilibrée à sa famille, Lenny quitte l’hystérie de Hollywood et revient s’installer dans la petite ville où il a grandi. Pourtant, entre ses anciens amis, leurs enfants, les grandes brutes et les petits excités, les chauffeurs de bus fous, les flics bourrés à skis et les 400 invités d’une fête costumée complètement déchaînés, il va vite découvrir que même si vous fuyez la folie, parfois, elle vous poursuit où que vous alliez…',
+      choice1: 'Copains pour toujours 2',
+      choice2: 'Le Roi lion 2 : L\'Honneur de la tribu',
+      choice3: 'Les 4 Fantastiques',
+      choice4: 'Graffiti party',
+      answer: 'Copains pour toujours 2',
+      optionalImage: ''
     }
+  ];
 
-    questions : Question[] = [
-        {
-          questionNumber: 1,
-          type: 'wich-by-image',
-          question: 'Quel est ce film ?',
-          description: '',
-          answerA: 'Un homme d’exception' ,
-          answerB:'Invincible : Le chemin de la rédemption' ,
-          answerC:'21 grammes',
-          answerD: 'Sissi Impératrice',
-          answer: 'Invincible : Le chemin de la rédemption',
-          media: 'https://image.tmdb.org/t/p/w500/6nh02WC31a5Sg3HqK21JY1nHqFo.jpg'
-        },
-        {
-          questionNumber: 2,
-          type: 'budget',
-          question: 'Quel a été le budget de ce film ?',
-          description: 'Solo: A Star Wars Story',
-          answerA: '817400891' ,
-          answerB:'1850000' ,
-          answerC:'121214377',
-          answerD: '392952373',
-          answer: '392952373',
-          media: 'https://image.tmdb.org/t/p/w500/ojHCeDULAkQK25700fhRU75Tur2.jpg'
-        },
-        {
-          questionNumber: 3,
-          type: 'doesnt-take-part',
-          question: 'Quelle personne n\'a pas participé à ce film ?',
-          description: 'Star Wars : Les Derniers Jedi',
-          answerA: 'Kate Dickie' ,
-          answerB:'Whoopi Goldberg' ,
-          answerC:'Gwendoline Christie',
-          answerD: 'Daisy Ridley',
-          answer: 'Whoopi Goldberg',
-          media: 'https://image.tmdb.org/t/p/w500/5Iw7zQTHVRBOYpA0V6z0yypOPZh.jpg'
-        },
-        {
-          questionNumber: 4,
-          type: 'release-date',
-          question: 'A quelle date est sortie ce film ?' ,
-          description: 'Looop Lapeta : La boucle infernale',
-          answerA: '2006-05-10' ,
-          answerB:'2022-02-04' ,
-          answerC:'1999-04-16',
-          answerD: '2002-10-18',
-          answer: '2022-02-04',
-          media: 'https://image.tmdb.org/t/p/w500/kQM7o3NIkruIZLoQ9E2XzZQ8Ujl.jpg'
-        },
-        {
-          questionNumber: 5,
-          type: 'revenue',
-          question: 'Quel a été le revenu généré par ce film ?',
-          description: 'G.I. Joe : Le Réveil du Cobra',
-          answerA: '77000000' ,
-          answerB:'16951798' ,
-          answerC:'302469017',
-          answerD: '26000000',
-          answer: '302469017',
-          media: 'https://image.tmdb.org/t/p/w500/vBV2nF3yqYrskq2y1bSSuAuGqcz.jpg'
-        },
-        {
-          questionNumber: 6,
-          type: 'take-part',
-          question: 'Quelle personne a participé à ce film ?',
-          description: 'Superman',
-          answerA: 'Eric Lloyd' ,
-          answerB:'Terence Stamp' ,
-          answerC:'Alan Arkin',
-          answerD: 'Tim Allen',
-          answer: 'Terence Stamp',
-          media: 'https://image.tmdb.org/t/p/w500/v6MVBFnQOscITvmAy5N5ras2JKZ.jpg'
-        },
-        {
-          questionNumber: 7,
-          type: 'which-by-description',
-          question: 'A quel film correspond a cette description ?',
-          description: 'Espérant offrir une vie plus équilibrée à sa famille, Lenny quitte l’hystérie de Hollywood et revient s’installer dans la petite ville où il a grandi. Pourtant, entre ses anciens amis, leurs enfants, les grandes brutes et les petits excités, les chauffeurs de bus fous, les flics bourrés à skis et les 400 invités d’une fête costumée complètement déchaînés, il va vite découvrir que même si vous fuyez la folie, parfois, elle vous poursuit où que vous alliez…',
-          answerA: 'Copains pour toujours 2' ,
-          answerB:'Le Roi lion 2 : L\'Honneur de la tribu',
-          answerC:'Les 4 Fantastiques',
-          answerD: 'Graffiti party',
-          answer: 'Copains pour toujours 2',
-          media: ''
-        }
-      ];
-      
-    getAllQuestions() : Observable<Question[]> {
-      const options = { headers: new HttpHeaders({ 
-        'Access-Control-Allow-Origin':'*'
+  getAllQuestions(): Observable<Question[]> {
+    const options = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': '*'
       })
-      }
-        return this.http.get<Question[]>("http://localhost:8080/cinequiz/questions/movie/random",options);
     }
+    return this.http.get<Question[]>("http://localhost:8080/cinequiz/questions/movie/random", options);
+  }
 
-    getQuestionByNumber(questionNb:number) : Question {
-        const question = this.questions.find(question => question.questionNumber === questionNb);
-        if (!question){
-            throw new Error('Question not found');
-        }else{
-            return question;
-        }
-        // const options = { headers: new HttpHeaders({ 
-        //   'Access-Control-Allow-Origin':'*'
-        // })
-        // }
-        // return this.http.get<Question>("http://localhost:8080/cinequiz/questions/movie/random",options);
+  getQuestionByNumber(questionNb: number): Question {
+    const question = this.questions.find(question => question.questionNumber === questionNb);
+    if (!question) {
+      throw new Error('Question not found');
+    } else {
+      return question;
     }
+    // const options = { headers: new HttpHeaders({ 
+    //   'Access-Control-Allow-Origin':'*'
+    // })
+    // }
+    // return this.http.get<Question>("http://localhost:8080/cinequiz/questions/movie/random",options);
+  }
 
 }

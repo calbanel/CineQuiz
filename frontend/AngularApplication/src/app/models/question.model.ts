@@ -1,12 +1,11 @@
 export class Question{
     questionNumber!:number; 
-    type!:string;
     question!: string;
-    description!:string;
-    answerA!:string;
-    answerB!:string;
-    answerC!:string;
-    answerD!:string;
+    optionalText!:string;
+    choice1!:string;
+    choice2!:string;
+    choice3!:string;
+    choice4!:string;
     answer!:string;
-    media!:string
+    optionalImage!:string
 }
