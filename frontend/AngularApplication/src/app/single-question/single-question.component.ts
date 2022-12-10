@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Question } from '../models/question.model';
 import { QuestionService } from '../services/questions.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-single-question',
@@ -9,7 +10,8 @@ import { QuestionService } from '../services/questions.service';
   styleUrls: ['./single-question.component.css']
 })
 export class SingleQuestionComponent implements OnInit, OnDestroy {
-  quest!: Question;
+  // quest$!: Observable<Question>;
+  quest !: Question;
   answered: boolean = false;
   someSubscription: any;
 
@@ -29,6 +31,8 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
     this.answered = false;
     let currentId = +this.route.snapshot.params['id'];
     this.quest = this.questionService.getQuestionByNumber(currentId);
+    // this.quest$ = this.questionService.getQuestionByNumber();
+
   }
 
   onClick(answerClicked: string) {
@@ -38,7 +42,7 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
       document.getElementById(answerClicked)?.setAttribute("style", "background-color:#78e08f");
     } else {
       document.getElementById(answerClicked)?.setAttribute("style", "background-color:#E55039");
-      document.getElementById(this.quest.answer + this.quest.questionNumber)?.setAttribute("style", "background-color:#78e08f");
+      document.getElementById(this.quest.answer)?.setAttribute("style", "background-color:#78e08f");
     }
   }
 

@@ -1,10 +1,17 @@
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Question } from "../models/question.model";
+import { Observable } from "rxjs";
 
 @Injectable({
     providedIn: 'root'
 })
 export class QuestionService{
+
+    constructor(private http:HttpClient){
+
+    }
+
     questions : Question[] = [
         {
           questionNumber: 1,
@@ -15,7 +22,7 @@ export class QuestionService{
           answerB:'Invincible : Le chemin de la rédemption' ,
           answerC:'21 grammes',
           answerD: 'Sissi Impératrice',
-          answer: 'answerB',
+          answer: 'Invincible : Le chemin de la rédemption',
           media: 'https://image.tmdb.org/t/p/w500/6nh02WC31a5Sg3HqK21JY1nHqFo.jpg'
         },
         {
@@ -27,7 +34,7 @@ export class QuestionService{
           answerB:'1850000' ,
           answerC:'121214377',
           answerD: '392952373',
-          answer: 'answerD',
+          answer: '392952373',
           media: 'https://image.tmdb.org/t/p/w500/ojHCeDULAkQK25700fhRU75Tur2.jpg'
         },
         {
@@ -39,7 +46,7 @@ export class QuestionService{
           answerB:'Whoopi Goldberg' ,
           answerC:'Gwendoline Christie',
           answerD: 'Daisy Ridley',
-          answer: 'answerB',
+          answer: 'Whoopi Goldberg',
           media: 'https://image.tmdb.org/t/p/w500/5Iw7zQTHVRBOYpA0V6z0yypOPZh.jpg'
         },
         {
@@ -51,7 +58,7 @@ export class QuestionService{
           answerB:'2022-02-04' ,
           answerC:'1999-04-16',
           answerD: '2002-10-18',
-          answer: 'answerB',
+          answer: '2022-02-04',
           media: 'https://image.tmdb.org/t/p/w500/kQM7o3NIkruIZLoQ9E2XzZQ8Ujl.jpg'
         },
         {
@@ -63,7 +70,7 @@ export class QuestionService{
           answerB:'16951798' ,
           answerC:'302469017',
           answerD: '26000000',
-          answer: 'answerC',
+          answer: '302469017',
           media: 'https://image.tmdb.org/t/p/w500/vBV2nF3yqYrskq2y1bSSuAuGqcz.jpg'
         },
         {
@@ -75,7 +82,7 @@ export class QuestionService{
           answerB:'Terence Stamp' ,
           answerC:'Alan Arkin',
           answerD: 'Tim Allen',
-          answer: 'answerB',
+          answer: 'Terence Stamp',
           media: 'https://image.tmdb.org/t/p/w500/v6MVBFnQOscITvmAy5N5ras2JKZ.jpg'
         },
         {
@@ -87,13 +94,17 @@ export class QuestionService{
           answerB:'Le Roi lion 2 : L\'Honneur de la tribu',
           answerC:'Les 4 Fantastiques',
           answerD: 'Graffiti party',
-          answer: 'answerA',
+          answer: 'Copains pour toujours 2',
           media: ''
         }
       ];
-
-    getAllQuestions() : Question[] {
-        return this.questions;
+      
+    getAllQuestions() : Observable<Question[]> {
+      const options = { headers: new HttpHeaders({ 
+        'Access-Control-Allow-Origin':'*'
+      })
+      }
+        return this.http.get<Question[]>("http://localhost:8080/cinequiz/questions/movie/random",options);
     }
 
     getQuestionByNumber(questionNb:number) : Question {
@@ -103,6 +114,11 @@ export class QuestionService{
         }else{
             return question;
         }
+        // const options = { headers: new HttpHeaders({ 
+        //   'Access-Control-Allow-Origin':'*'
+        // })
+        // }
+        // return this.http.get<Question>("http://localhost:8080/cinequiz/questions/movie/random",options);
     }
 
 }
