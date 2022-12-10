@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { QuestionComponent } from './question/question.component';
 import { HomepageComponent } from './homepage/homepage.component';
-import { QuestionListComponent } from './question-list/question-list.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -18,7 +18,6 @@ import { ConnectionComponent } from './connection/connection.component';
     AppComponent,
     QuestionComponent,
     HomepageComponent,
-    QuestionListComponent,
     HeaderComponent,
     FooterComponent,
     SingleQuestionComponent,
@@ -28,7 +27,8 @@ import { ConnectionComponent } from './connection/connection.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
