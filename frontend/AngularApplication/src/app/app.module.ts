@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
-import { QuestionComponent } from './question/question.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
@@ -16,7 +15,6 @@ import { ConnectionComponent } from './connection/connection.component';
 @NgModule({
   declarations: [
     AppComponent,
-    QuestionComponent,
     HomepageComponent,
     HeaderComponent,
     FooterComponent,

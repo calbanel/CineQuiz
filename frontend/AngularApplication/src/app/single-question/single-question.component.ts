@@ -31,8 +31,9 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
     this.answered = false;
     let currentId = +this.route.snapshot.params['id'];
     this.quest = this.questionService.getQuestionByNumber(currentId);
+    
+    //this.quest.questionNumber = currentId;
     // this.quest$ = this.questionService.getQuestionByNumber();
-
   }
 
   onClick(answerClicked: string) {
