@@ -1,11 +1,9 @@
+import { Choice } from "./choice.models";
+
 export class Question{
-    questionNumber!:number; 
-    question!: string;
+    optionalImage!:string;
     optionalText!:string;
-    choice1!:string;
-    choice2!:string;
-    choice3!:string;
-    choice4!:string;
+    choices !: Choice;
+    question!: string;
     answer!:string;
-    optionalImage!:string
 }

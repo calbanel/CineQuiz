@@ -10,10 +10,11 @@ import { Observable } from 'rxjs';
   styleUrls: ['./single-question.component.css']
 })
 export class SingleQuestionComponent implements OnInit, OnDestroy {
-  // quest$!: Observable<Question>;
+  quest$!: Observable<Question>;
   quest !: Question;
   answered: boolean = false;
   someSubscription: any;
+  questionNumber !: number;
 
   constructor(private questionService: QuestionService, private route: ActivatedRoute,
     private router: Router) {
@@ -30,25 +31,26 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.answered = false;
     let currentId = +this.route.snapshot.params['id'];
-    this.quest = this.questionService.getQuestionByNumber(currentId);
+    // this.quest = this.questionService.getQuestionByNumber(currentId);
     
-    //this.quest.questionNumber = currentId;
-    // this.quest$ = this.questionService.getQuestionByNumber();
+    this.questionNumber = currentId;
+    this.quest$ = this.questionService.getQuestionByNumber();
   }
 
-  onClick(answerClicked: string) {
+  onClick(answerClicked: string, answer: string) {
     this.answered = true;
     console.log(answerClicked);
-    if (answerClicked == this.quest.answer) {
+    console.log(answer);
+    if (answerClicked === answer) {
       document.getElementById(answerClicked)?.setAttribute("style", "background-color:#78e08f");
     } else {
       document.getElementById(answerClicked)?.setAttribute("style", "background-color:#E55039");
-      document.getElementById(this.quest.answer)?.setAttribute("style", "background-color:#78e08f");
+      document.getElementById(answer)!.setAttribute("style", "background-color:#78e08f");
     }
   }
 
   onNextQuestion() {
-    this.router.navigateByUrl(`/questions/${this.quest.questionNumber + 1}`);
+    this.router.navigateByUrl(`/questions/${this.questionNumber + 1}`);
   }
 
   ngOnDestroy() {
