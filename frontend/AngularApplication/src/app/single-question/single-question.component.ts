@@ -46,7 +46,11 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
   }
 
   onNextQuestion() {
-    this.router.navigateByUrl(`/questions/${this.questionNumber + 1}`);
+    if(this.questionNumber == 10){
+      this.router.navigateByUrl("/ranking");
+    }else{
+      this.router.navigateByUrl(`/questions/${this.questionNumber + 1}`);
+    }
   }
 
   ngOnDestroy() {
