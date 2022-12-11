@@ -11,7 +11,6 @@ import { Observable } from 'rxjs';
 })
 export class SingleQuestionComponent implements OnInit, OnDestroy {
   quest$!: Observable<Question>;
-  quest !: Question;
   answered: boolean = false;
   someSubscription: any;
   questionNumber !: number;
@@ -30,11 +29,8 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.answered = false;
-    let currentId = +this.route.snapshot.params['id'];
-    // this.quest = this.questionService.getQuestionByNumber(currentId);
-    
-    this.questionNumber = currentId;
-    this.quest$ = this.questionService.getQuestionByNumber();
+    this.questionNumber = +this.route.snapshot.params['id'];
+    this.quest$ = this.questionService.getQuestion();
   }
 
   onClick(answerClicked: string, answer: string) {
