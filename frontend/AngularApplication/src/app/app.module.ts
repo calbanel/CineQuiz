@@ -12,6 +12,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { RegistrationComponent } from './registration/registration.component';
 import { ConnectionComponent } from './connection/connection.component';
 import { LobbyComponent } from './lobby/lobby.component';
+import { RankingComponent } from './ranking/ranking.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { LobbyComponent } from './lobby/lobby.component';
     SingleQuestionComponent,
     RegistrationComponent,
     ConnectionComponent,
-    LobbyComponent
+    LobbyComponent,
+    RankingComponent
   ],
   imports: [
     BrowserModule,
