@@ -17,11 +17,22 @@
   
   input {
     width: 50%;
-    outline:auto;
-    outline-color: #38ada9;
+    padding: 2px;
+    border-radius: 4px;
+    border : 1px solid black;
+    outline: none;
+    padding-left: 4px;
   }
   
   button {
     display: block;
     margin: 30px auto;
+  }
+
+  input.ng-invalid.ng-dirty{
+    border : 1.5px solid red !important;
+  }
+
+  input.ng-valid.ng-dirty{
+    border : 1.5px solid green !important;
   }
