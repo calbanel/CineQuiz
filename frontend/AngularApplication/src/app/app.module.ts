@@ -11,6 +11,7 @@ import { SingleQuestionComponent } from './single-question/single-question.compo
 import { ReactiveFormsModule } from '@angular/forms';
 import { RegistrationComponent } from './registration/registration.component';
 import { ConnectionComponent } from './connection/connection.component';
+import { LobbyComponent } from './lobby/lobby.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { ConnectionComponent } from './connection/connection.component';
     FooterComponent,
     SingleQuestionComponent,
     RegistrationComponent,
-    ConnectionComponent
+    ConnectionComponent,
+    LobbyComponent
   ],
   imports: [
     BrowserModule,
