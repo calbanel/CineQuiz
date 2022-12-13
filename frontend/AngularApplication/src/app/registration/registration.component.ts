@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { User } from '../models/user.models';
+import { UserService } from '../services/user.service';
+import { Observable } from "rxjs";
 
 @Component({
   selector: 'app-inscription',
@@ -10,7 +13,7 @@ export class RegistrationComponent implements OnInit {
 
   registrationForm !: FormGroup;
 
-  constructor(private formBuilder:FormBuilder) { }
+  constructor(private formBuilder:FormBuilder, private userService:UserService) { }
 
   ngOnInit(): void {
     this.registrationForm = this.formBuilder.group({
@@ -23,6 +26,12 @@ export class RegistrationComponent implements OnInit {
 
   onSubmitForm() : void {
     console.log(this.registrationForm.value);
+    let user:User = { id: 1,
+                      email : this.registrationForm.value.email,
+                      pseudo: this.registrationForm.value.pseudo,
+                      password: this.registrationForm.value.password
+    }
+   this.userService.addUser(user).subscribe();
   }
 
 }
