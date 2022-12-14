@@ -29,7 +29,8 @@ export class RegistrationComponent implements OnInit {
     let user:User = { id: 1,
                       pseudo: this.registrationForm.value.pseudo,
                       email : this.registrationForm.value.email,
-                      password: this.registrationForm.value.password
+                      password: this.registrationForm.value.password,
+                      score : 0,
     }
     console.log(user);
     this.userService.addUser(user).subscribe();

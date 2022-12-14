@@ -3,4 +3,5 @@ export class User{
     pseudo !: string;
     email !: string;
     password !: string;
+    score !: number;
 }

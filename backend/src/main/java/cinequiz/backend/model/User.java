@@ -14,4 +14,5 @@ public class User{
     private String pseudo;
     private String email;
     private String password;
+    private int score;
 }
