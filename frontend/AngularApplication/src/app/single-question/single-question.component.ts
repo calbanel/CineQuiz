@@ -35,8 +35,6 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
 
   onClick(answerClicked: string, answer: string) {
     this.answered = true;
-    console.log(answerClicked);
-    console.log(answer);
     if (answerClicked === answer) {
       document.getElementById(answerClicked)?.setAttribute("style", "background-color:#78e08f");
     } else {

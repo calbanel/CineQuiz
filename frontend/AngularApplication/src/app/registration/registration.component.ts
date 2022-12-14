@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { User } from '../models/user.models';
 import { UserService } from '../services/user.service';
 import { Observable } from "rxjs";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-inscription',
@@ -13,7 +14,7 @@ export class RegistrationComponent implements OnInit {
 
   registrationForm !: FormGroup;
 
-  constructor(private formBuilder:FormBuilder, private userService:UserService) { }
+  constructor(private formBuilder:FormBuilder, private userService:UserService,private router: Router) { }
 
   ngOnInit(): void {
     this.registrationForm = this.formBuilder.group({
@@ -32,8 +33,8 @@ export class RegistrationComponent implements OnInit {
                       password: this.registrationForm.value.password,
                       score : 0,
     }
-    console.log(user);
     this.userService.addUser(user).subscribe();
+    this.router.navigateByUrl("/");
   }
 
 }
