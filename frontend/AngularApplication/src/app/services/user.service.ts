@@ -13,12 +13,7 @@ export class UserService {
   }
 
   addUser(user: User): Observable<User> {
-    const options = {
-      headers: new HttpHeaders({
-        'Access-Control-Allow-Origin': 'Content-Type, Authorization'
-      })
-    }
-    return this.http.post<User>("http://localhost:8080/add-user", user, options);
+    return this.http.post<User>("http://localhost:8080/add-user", user);
   }
 
 }
