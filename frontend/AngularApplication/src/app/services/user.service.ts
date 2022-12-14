@@ -12,8 +12,13 @@ export class UserService {
 
   }
 
-  addUser(user:User): Observable<User> {
-    return this.http.post<User>("http://localhost:8080/addUser",user);
+  addUser(user: User): Observable<User> {
+    const options = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': 'Content-Type, Authorization'
+      })
+    }
+    return this.http.post<User>("http://localhost:8080/cinequiz/users/addUser", user, options);
   }
 
 }

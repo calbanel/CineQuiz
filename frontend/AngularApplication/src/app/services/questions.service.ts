@@ -13,11 +13,12 @@ export class QuestionService {
   }
 
   getQuestion(): Observable<Question> {
-    const options = { headers: new HttpHeaders({ 
-      'Access-Control-Allow-Origin':'Content-Type, Authorization'
-    })
+    const options = {
+      headers: new HttpHeaders({
+        'Access-Control-Allow-Origin': 'Content-Type, Authorization'
+      })
     }
-    return this.http.get<Question>("http://localhost:8080/cinequiz/questions/movie/random",options);
+    return this.http.get<Question>("http://localhost:8080/cinequiz/questions/movie/random", options);
   }
 
 }
