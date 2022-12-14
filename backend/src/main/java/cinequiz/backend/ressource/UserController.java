@@ -1,4 +1,4 @@
-package cinequiz.backend.api_questions.controllers;
+package cinequiz.backend.ressource;
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +14,8 @@ import io.swagger.annotations.ApiOperation;
 
 import cinequiz.backend.model.User;
 import cinequiz.backend.repository.UserRepository;
+import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin
 @RestController
@@ -27,23 +29,23 @@ public class UserController{
         return repository.save(user);
     }
 
-    // @GetMapping("/cinequiz/users/findAllUsers")
-    // @ApiOperation(value = "Finds all users")
-	// public List<User> getUsers() {
-	// 	return repository.findAll();
-	// }
+    @GetMapping("/find-all-users")
+    @ApiOperation(value = "Finds all users")
+	public List<User> getUsers() {
+		return repository.findAll();
+	}
 
-	// @GetMapping("/cinequiz/users/findUser/{id}")
-    // @ApiOperation(value = "Finds a user having a specific id")
-	// public Optional<User> getUser(@PathVariable int id) {
-	// 	return repository.findById(id);
-	// }
+	@GetMapping("/find-user/{id}")
+    @ApiOperation(value = "Finds a user having a specific id")
+	public Optional<User> getUser(@PathVariable int id) {
+		return repository.findById(id);
+	}
 
-	// @DeleteMapping("/cinequiz/users/deleteUser/{id}")
-    // @ApiOperation(value = "Deletes a user having a specific id")
-	// public String deleteUser(@PathVariable int id) {
-	// 	repository.deleteById(id);
-	// 	return "Deleted user with id : " + id;
-	// }
+	@DeleteMapping("/delete-user/{id}")
+    @ApiOperation(value = "Deletes a user having a specific id")
+	public String deleteUser(@PathVariable int id) {
+		repository.deleteById(id);
+		return "Deleted user with id : " + id;
+	}
 
 }
