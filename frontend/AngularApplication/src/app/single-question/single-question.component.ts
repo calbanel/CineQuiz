@@ -41,9 +41,12 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
       document.getElementById(answerClicked)?.setAttribute("style", "background-color:#E55039");
       document.getElementById(answer)!.setAttribute("style", "background-color:#78e08f");
     }
+    setTimeout(() => {
+     this.nextQuestion();
+    },1000);
   }
 
-  onNextQuestion() {
+  nextQuestion() {
     if(this.questionNumber == 10){
       this.router.navigateByUrl("/ranking");
     }else{

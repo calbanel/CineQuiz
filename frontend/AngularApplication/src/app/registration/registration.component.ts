@@ -14,27 +14,31 @@ export class RegistrationComponent implements OnInit {
 
   registrationForm !: FormGroup;
 
-  constructor(private formBuilder:FormBuilder, private userService:UserService,private router: Router) { }
+  constructor(private formBuilder: FormBuilder, private userService: UserService, private router: Router) { }
 
   ngOnInit(): void {
     this.registrationForm = this.formBuilder.group({
       pseudo: [null, [Validators.required]],
-      email: [null,  [Validators.required, Validators.email]],
-      password: [null,  [Validators.required]],
-      confirmPassword: [null,  [Validators.required]]
+      email: [null, [Validators.required, Validators.email]],
+      password: [null, [Validators.required]],
+      confirmPassword: [null, [Validators.required]]
     });
   }
 
-  onSubmitForm() : void {
+  onSubmitForm(): void {
     console.log(this.registrationForm.value);
-    let user:User = { id: 1,
-                      pseudo: this.registrationForm.value.pseudo,
-                      email : this.registrationForm.value.email,
-                      password: this.registrationForm.value.password,
-                      score : 0,
+    let user: User = {
+      id: 1,
+      pseudo: this.registrationForm.value.pseudo,
+      email: this.registrationForm.value.email,
+      password: this.registrationForm.value.password,
+      score: 0,
     }
     this.userService.addUser(user).subscribe();
-    this.router.navigateByUrl("/");
+    setTimeout(() => {
+      this.router.navigateByUrl("/");
+    },2000);
+
   }
 
 }
