@@ -18,7 +18,7 @@ export class UserService {
         'Access-Control-Allow-Origin': 'Content-Type, Authorization'
       })
     }
-    return this.http.post<User>("http://localhost:8080/cinequiz/users/addUser", user, options);
+    return this.http.post<User>("http://localhost:8080/add-user", user, options);
   }
 
 }

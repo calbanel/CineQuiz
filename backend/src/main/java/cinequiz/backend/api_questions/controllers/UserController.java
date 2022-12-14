@@ -21,9 +21,9 @@ public class UserController{
     @Autowired
     private UserRepository repository;
 
-    @PostMapping("/addUser")
+    @PostMapping("/add-user")
     @ApiOperation(value = "Adds a new user")
-    public User addUser(@Requestbody User user){
+    public User addUser(@RequestBody User user){
         return repository.save(user);
     }
 

@@ -4,8 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
+// import cinequiz.backend.repository.UserRepository;
+
 @SpringBootApplication
-@EnableMongoRepositories(basePackageClasses=UserRepository.class)
+// @EnableMongoRepositories(basePackageClasses=UserRepository.class)
 public class BackendApplication {
 
 	public static void main(String[] args) {
