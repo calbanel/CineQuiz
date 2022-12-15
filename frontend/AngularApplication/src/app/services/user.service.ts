@@ -13,7 +13,7 @@ export class UserService {
   }
 
   addUser(user: User): Observable<User> {
-    return this.http.post<User>("http://localhost:8080/add-user", user);
+    return this.http.post<User>("http://localhost:8080/add-user",user);
   }
 
 }

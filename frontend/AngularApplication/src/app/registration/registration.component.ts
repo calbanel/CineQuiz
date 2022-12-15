@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { User } from '../models/user.models';
 import { UserService } from '../services/user.service';
-import { Observable } from "rxjs";
 import { Router } from '@angular/router';
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 @Component({
   selector: 'app-inscription',
@@ -14,7 +14,8 @@ export class RegistrationComponent implements OnInit {
 
   registrationForm !: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private userService: UserService, private router: Router) { }
+  constructor(private formBuilder: FormBuilder, private userService: UserService, 
+    private router: Router,private http: HttpClient) { }
 
   ngOnInit(): void {
     this.registrationForm = this.formBuilder.group({
@@ -27,17 +28,11 @@ export class RegistrationComponent implements OnInit {
 
   onSubmitForm(): void {
     console.log(this.registrationForm.value);
-    let user: User = {
-      id: 1,
-      pseudo: this.registrationForm.value.pseudo,
-      email: this.registrationForm.value.email,
-      password: this.registrationForm.value.password,
-      score: 0,
-    }
-    this.userService.addUser(user).subscribe();
-    setTimeout(() => {
-      this.router.navigateByUrl("/");
-    },2000);
+    this.http.post<User>("http://localhost:8080/add-user",this.registrationForm.value)
+    .subscribe(result => {
+      console.log(result);
+      setTimeout(() => {this.router.navigateByUrl("/");},1000);
+    });
 
   }
 
