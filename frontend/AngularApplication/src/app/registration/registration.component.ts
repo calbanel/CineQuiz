@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { User } from '../models/user.models';
 import { UserService } from '../services/user.service';
 import { Router } from '@angular/router';
@@ -22,10 +22,34 @@ export class RegistrationComponent implements OnInit {
       pseudo: [null, [Validators.required]],
       email: [null, [Validators.required, Validators.email]],
       password: [null, [Validators.required]],
-      confirmPassword: [null, [Validators.required]]
+      confirmPassword: [null, [Validators.required]],
+    },
+    { 
+      validator: this.matchPassword('password', 'confirmPassword') 
     });
   }
 
+  matchPassword(password:string, confirmPassword:string) : ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const pwd = control.get(password)!.value;
+      const confirm = control.get(confirmPassword)!.value;
+ 
+      if (pwd != confirm) { 
+        return { 'error': true };
+      }
+      return null
+ 
+    }
+  }
+
+  isValid(field : string) {
+    return this.registrationForm.get(field)?.valid;
+  }
+
+  getField(field : string) {
+    return this.registrationForm.get(field);
+  }
+ 
   onSubmitForm(): void {
     console.log(this.registrationForm.value);
     this.http.post<User>("http://localhost:8080/add-user",this.registrationForm.value)

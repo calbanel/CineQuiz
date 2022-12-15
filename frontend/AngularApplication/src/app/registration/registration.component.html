@@ -10,6 +10,9 @@
             <label for="email" class="text-orange">Adresse mail</label>
             <input type="email" id="email" formControlName="email" required>
         </div>
+        <div class="wrongInput" *ngIf="!isValid('email') && (getField('email')?.dirty)">
+            Veuillez entrer une adresse mail valide.
+        </div>
 
         <div class="form-group">
             <label for="password" class="text-orange">Mot de passe</label>
@@ -18,7 +21,11 @@
 
         <div class="form-group">
             <label for="confirmPassword" class="text-orange">Confirmez votre mot de passe</label>
-            <input type="password" id="confirmPassword" formControlName="confirmPassword" required>
+            <input type="password" id="confirmPassword" formControlName="confirmPassword" required  
+                [ngClass] = "{ 'ng-invalid' : !isValid('confirmPassword')}">
+        </div>
+        <div class="wrongInput" *ngIf="registrationForm.invalid && (getField('confirmPassword')?.dirty)">
+            Les mots de passe sont différents
         </div>
 
         <div>

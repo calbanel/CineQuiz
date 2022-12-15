@@ -36,3 +36,9 @@ input.ng-invalid.ng-dirty{
 input.ng-valid.ng-dirty{
   border : 1.5px solid green !important;
 }
+
+.wrongInput{
+  margin: auto;
+  text-align: center;
+  color: red;
+}
