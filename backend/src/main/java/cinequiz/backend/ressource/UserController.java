@@ -2,7 +2,6 @@ package cinequiz.backend.ressource;
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import io.swagger.annotations.ApiOperation;
 
 
-import org.springframework.http.ResponseEntity;
 import cinequiz.backend.model.User;
 import cinequiz.backend.repository.UserRepository;
 import java.util.List;
@@ -29,8 +27,6 @@ public class UserController{
     @ApiOperation(value = "Adds a new user")
     public User addUser(@RequestBody User user){
 		return repository.save(user);
-		// System.out.println("OKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK" + user);
-        // return new ResponseEntity<User>(tmp, HttpStatus.CREATED); 
     }
 
     @GetMapping("/find-all-users")
