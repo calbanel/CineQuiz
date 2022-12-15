@@ -33,12 +33,18 @@ input.ng-invalid.ng-dirty{
   border : 1.5px solid red !important;
 }
 
+
+
 input.ng-valid.ng-dirty{
-  border : 1.5px solid green !important;
+  border : 1.5px solid green;
 }
 
 .wrongInput{
   margin: auto;
   text-align: center;
   color: red;
+}
+
+.invalid{
+  border : 1.5px solid red !important;
 }

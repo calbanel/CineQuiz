@@ -22,10 +22,10 @@
         <div class="form-group">
             <label for="confirmPassword" class="text-orange">Confirmez votre mot de passe</label>
             <input type="password" id="confirmPassword" formControlName="confirmPassword" required  
-                [ngClass] = "{ 'ng-invalid' : !isValid('confirmPassword')}">
+                [ngClass] = "{ invalid : (getField('confirmPassword')?.value != getField('password')?.value) && getField('confirmPassword')?.dirty }">
         </div>
-        <div class="wrongInput" *ngIf="registrationForm.invalid && (getField('confirmPassword')?.dirty)">
-            Les mots de passe sont différents
+        <div class="wrongInput" *ngIf="(getField('confirmPassword')?.value != getField('password')?.value) && (getField('confirmPassword')?.dirty)">
+            Les mots de passe sont différents.
         </div>
 
         <div>

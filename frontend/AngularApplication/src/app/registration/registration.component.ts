@@ -25,20 +25,19 @@ export class RegistrationComponent implements OnInit {
       confirmPassword: [null, [Validators.required]],
     },
     { 
-      validator: this.matchPassword('password', 'confirmPassword') 
+      validator: this.matchPassword() 
     });
   }
 
-  matchPassword(password:string, confirmPassword:string) : ValidatorFn {
+  matchPassword() : ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      const pwd = control.get(password)!.value;
-      const confirm = control.get(confirmPassword)!.value;
+      const pwd = control.get('password')!.value;
+      const confirm = control.get('confirmPassword')!.value;
  
       if (pwd != confirm) { 
-        return { 'error': true };
+        return { 'notMatching': true };
       }
       return null
- 
     }
   }
 
