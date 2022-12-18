@@ -12,7 +12,7 @@
             <label for="email" class="text-orange">Adresse mail</label>
             <input type="email" id="email" formControlName="email" required>
         </div>
-        <div class="wrongInput" *ngIf="!isValid('email') && (getField('email')?.dirty)">
+        <div class="wrongInput" *ngIf="showEmailErrors$ | async">
             Veuillez entrer une adresse mail valide.
         </div>
         
@@ -26,9 +26,9 @@
         <div class="form-group">
             <label for="confirmPassword" class="text-orange">Confirmez votre mot de passe</label>
             <input type="password" id="confirmPassword" formControlName="confirmPassword" required  
-                [ngClass] = "{ invalid : (getField('confirmPassword')?.value != getField('password')?.value) && getField('confirmPassword')?.dirty }">
+                [ngClass] = "{ invalid : showPasswordErrors$ | async }">
         </div>
-        <div class="wrongInput" *ngIf="(getField('confirmPassword')?.value != getField('password')?.value) && (getField('confirmPassword')?.dirty)">
+        <div class="wrongInput" *ngIf="showPasswordErrors$ | async">
             Les mots de passe sont différents.
         </div>
 

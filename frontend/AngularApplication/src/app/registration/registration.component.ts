@@ -5,6 +5,8 @@ import { UserService } from '../services/user.service';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import * as CryptoJS from 'crypto-js';
+import { matchPasswordsValidator } from '../validators/match-passwords';
+import { map, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-inscription',
@@ -15,8 +17,11 @@ export class RegistrationComponent implements OnInit {
 
   registrationForm !: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private userService: UserService, 
-    private router: Router,private http: HttpClient) { }
+  showPasswordErrors$ !: Observable<Boolean>;
+  showEmailErrors$ !: Observable<Boolean>;
+
+  constructor(private formBuilder: FormBuilder, private userService: UserService,
+    private router: Router, private http: HttpClient) { }
 
   ngOnInit(): void {
     this.registrationForm = this.formBuilder.group({
@@ -25,44 +30,43 @@ export class RegistrationComponent implements OnInit {
       password: [null, [Validators.required]],
       confirmPassword: [null, [Validators.required]],
     },
-    { 
-      validator: this.matchPassword() 
-    });
+      {
+        validator: [matchPasswordsValidator('password', 'confirmPassword')]
+      });
+
+    this.showPasswordErrors$ = this.registrationForm.statusChanges.pipe(
+      map(status => status === 'INVALID' &&
+        this.registrationForm.get('password')?.value &&
+        this.registrationForm.get('confirmPassword')?.dirty &&
+        this.registrationForm.hasError('confirmEqual')));
+
+    this.showEmailErrors$ = this.registrationForm.statusChanges.pipe(
+      map(status => status === 'INVALID' && 
+        this.registrationForm.get('email')!.dirty &&
+        this.registrationForm.get('email')!.invalid));
   }
 
-  matchPassword() : ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      const pwd = control.get('password')!.value;
-      const confirm = control.get('confirmPassword')!.value;
- 
-      if (pwd != confirm) { 
-        return { 'notMatching': true };
-      }
-      return null
-    }
-  }
-
-  isValid(field : string) {
+  isValid(field: string) {
     return this.registrationForm.get(field)?.valid;
   }
 
-  getField(field : string) {
+  getField(field: string) {
     return this.registrationForm.get(field);
   }
- 
+
   onSubmitForm(): void {
     let encryptedPassword = CryptoJS.SHA3(this.registrationForm.value.password, { outputLength: 224 }).toString();
     let newUser = {
-      pseudo : this.registrationForm.value.pseudo,
-      email : this.registrationForm.value.email,
-      password : encryptedPassword,
+      pseudo: this.registrationForm.value.pseudo,
+      email: this.registrationForm.value.email,
+      password: encryptedPassword,
     }
 
-    this.http.post<User>("http://localhost:8080/add-user",newUser)
-    .subscribe(result => {
-      console.log(result);
-      setTimeout(() => {this.router.navigateByUrl("/");},1000);
-    });
+    this.http.post<User>("http://localhost:8080/add-user", newUser)
+      .subscribe(result => {
+        console.log(result);
+        setTimeout(() => { this.router.navigateByUrl("/"); }, 1000);
+      });
   }
 
 }
