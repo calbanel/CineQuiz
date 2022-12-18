@@ -4,6 +4,7 @@ import { User } from '../models/user.models';
 import { UserService } from '../services/user.service';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
+import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'app-inscription',
@@ -50,8 +51,14 @@ export class RegistrationComponent implements OnInit {
   }
  
   onSubmitForm(): void {
-    console.log(this.registrationForm.value);
-    this.http.post<User>("http://localhost:8080/add-user",this.registrationForm.value)
+    let encryptedPassword = CryptoJS.SHA3(this.registrationForm.value.password, { outputLength: 224 }).toString();
+    let newUser = {
+      pseudo : this.registrationForm.value.pseudo,
+      email : this.registrationForm.value.email,
+      password : encryptedPassword,
+    }
+
+    this.http.post<User>("http://localhost:8080/add-user",newUser)
     .subscribe(result => {
       console.log(result);
       setTimeout(() => {this.router.navigateByUrl("/");},1000);
