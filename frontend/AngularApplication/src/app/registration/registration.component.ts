@@ -56,7 +56,6 @@ export class RegistrationComponent implements OnInit {
       console.log(result);
       setTimeout(() => {this.router.navigateByUrl("/");},1000);
     });
-
   }
 
 }

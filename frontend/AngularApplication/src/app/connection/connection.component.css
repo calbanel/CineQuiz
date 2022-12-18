@@ -24,7 +24,7 @@
     padding-left: 4px;
   }
   
-  button {
+  #submitButton {
     display: block;
     margin: 30px auto;
   }
