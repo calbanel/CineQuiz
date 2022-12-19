@@ -190,7 +190,9 @@ public class TvShowTmdbFetching {
 
                 // if similar isn't valid or if the target value is an duplicata we go to the
                 // next value
-                if (similar == null || checkDuplicate(similar, tvShow, tvShowList, options))
+                ArrayList<TvShowInfos> dontWantDuplicata = new ArrayList<TvShowInfos>(tvShowList);
+                dontWantDuplicata.add(tvShow);
+                if (similar == null || options.checkDuplicate(similar, dontWantDuplicata))
                     continue;
 
                 tvShowList.add(similar);
@@ -221,43 +223,6 @@ public class TvShowTmdbFetching {
 
         // null if the target similar tv show page isn't valid
         return page;
-    }
-
-    private static boolean checkDuplicate(TvShowInfos result, TvShowInfos original, ArrayList<TvShowInfos> similarList,
-            TvShowTmdbFetchOptions options) {
-        boolean isDuplicate = false;
-
-        if (options.isTitle()) {
-            if (result.name == original.name)
-                isDuplicate = true;
-
-            for (TvShowInfos similar : similarList) {
-                if (result.name == similar.name)
-                    isDuplicate = true;
-            }
-        }
-
-        if (options.isNb_episodes()) {
-            if (result.number_of_episodes == original.number_of_episodes)
-                isDuplicate = true;
-
-            for (TvShowInfos similar : similarList) {
-                if (result.number_of_episodes == similar.number_of_episodes)
-                    isDuplicate = true;
-            }
-        }
-
-        if (options.isReleaseDate() && !isDuplicate) {
-            if (result.first_air_date == original.first_air_date)
-                isDuplicate = true;
-
-            for (TvShowInfos similar : similarList) {
-                if (result.first_air_date == similar.first_air_date)
-                    isDuplicate = true;
-            }
-        }
-
-        return isDuplicate;
     }
 
     public static ArrayList<CastMember> getRandomCoherentPeopleListInTheseTvShows(int tvShowId,

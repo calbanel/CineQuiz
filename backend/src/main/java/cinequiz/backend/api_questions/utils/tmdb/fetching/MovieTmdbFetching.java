@@ -90,7 +90,9 @@ public class MovieTmdbFetching {
 
                 // if similar isn't valid or if the target value is an duplicata we go to the
                 // next value
-                if (similar == null || checkDuplicate(similar, movie, movieList, options))
+                ArrayList<MovieInfos> dontWantDuplicata = new ArrayList<MovieInfos>(movieList);
+                dontWantDuplicata.add(movie);
+                if (similar == null || options.checkDuplicate(similar, dontWantDuplicata))
                     continue;
 
                 movieList.add(similar);
@@ -105,53 +107,6 @@ public class MovieTmdbFetching {
         }
 
         return movieList;
-    }
-
-    private static boolean checkDuplicate(MovieInfos result, MovieInfos original, ArrayList<MovieInfos> similarList,
-            MovieTmdbFetchOptions options) {
-        boolean isDuplicate = false;
-
-        if (options.isTitle()) {
-            if (result.title == original.title)
-                isDuplicate = true;
-
-            for (MovieInfos similar : similarList) {
-                if (result.title == similar.title)
-                    isDuplicate = true;
-            }
-        }
-
-        if (options.isBudget()) {
-            if (result.budget == original.budget)
-                isDuplicate = true;
-
-            for (MovieInfos similar : similarList) {
-                if (result.budget == similar.budget)
-                    isDuplicate = true;
-            }
-        }
-
-        if (options.isRevenue() && !isDuplicate) {
-            if (result.revenue == original.revenue)
-                isDuplicate = true;
-
-            for (MovieInfos similar : similarList) {
-                if (result.revenue == similar.revenue)
-                    isDuplicate = true;
-            }
-        }
-
-        if (options.isReleaseDate() && !isDuplicate) {
-            if (result.release_date == original.release_date)
-                isDuplicate = true;
-
-            for (MovieInfos similar : similarList) {
-                if (result.release_date == similar.release_date)
-                    isDuplicate = true;
-            }
-        }
-
-        return isDuplicate;
     }
 
     private static MovieInfos getOneRandomValidMovie(String tmdbLanguage, MovieTmdbFetchOptions options) {
