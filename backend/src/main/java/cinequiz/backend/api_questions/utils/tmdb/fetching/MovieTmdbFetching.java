@@ -317,8 +317,10 @@ public class MovieTmdbFetching {
         // browse the clean cast list
         for (CastMember c : castFiltered) {
             // add cast to the final list if he isn't in the similar movie
-            if (!isCastIsInThisMovie(c.id, similarMovieId, tmdbLanguage))
-                peoples.add(c);
+            if (!isCastIsInThisMovie(c.id, similarMovieId, tmdbLanguage)) {
+                if (peoples.stream().filter(p -> p.name.equals(c.name)).findFirst().isEmpty())
+                    peoples.add(c);
+            }
 
             // stop the research when we have the number of peoples we want
             if (peoples.size() >= number)

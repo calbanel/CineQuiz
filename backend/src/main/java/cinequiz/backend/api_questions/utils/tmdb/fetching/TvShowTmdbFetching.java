@@ -3,6 +3,7 @@ package cinequiz.backend.api_questions.utils.tmdb.fetching;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.web.client.HttpClientErrorException;
@@ -313,8 +314,10 @@ public class TvShowTmdbFetching {
         // browse the clean cast list
         for (CastMember c : castFiltered) {
             // add cast to the final list if he isn't in the similar tv shows
-            if (!isCastIsInThisTvShow(c.id, similarTvShowId, tmdbLanguage))
-                peoples.add(c);
+            if (!isCastIsInThisTvShow(c.id, similarTvShowId, tmdbLanguage)) {
+                if (peoples.stream().filter(p -> p.name.equals(c.name)).findFirst().isEmpty())
+                    peoples.add(c);
+            }
 
             // stop the research when we have the number of peoples we want
             if (peoples.size() >= number)
