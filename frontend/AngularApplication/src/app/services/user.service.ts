@@ -1,19 +1,19 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Question } from "../models/question.model";
 import { Observable } from "rxjs";
+import { User } from "../models/user.models";
 
 @Injectable({
   providedIn: 'root'
 })
-export class QuestionService {
+export class UserService {
 
   constructor(private http: HttpClient) {
 
   }
 
-  getQuestion(): Observable<Question> {
-    return this.http.get<Question>("http://localhost:8080/cinequiz/questions/movie/random");
+  addUser(user: User): Observable<User> {
+    return this.http.post<User>("http://localhost:8080/add-user",user);
   }
 
 }

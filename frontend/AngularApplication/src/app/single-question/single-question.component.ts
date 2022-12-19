@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Question } from '../models/question.model';
 import { QuestionService } from '../services/questions.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-single-question',
@@ -9,9 +10,12 @@ import { QuestionService } from '../services/questions.service';
   styleUrls: ['./single-question.component.css']
 })
 export class SingleQuestionComponent implements OnInit, OnDestroy {
-  quest!: Question;
+  quest$!: Observable<Question>;
   answered: boolean = false;
   someSubscription: any;
+  questionNumber !: number;
+  marky !: any;
+  answerTimeInSeconds !: number;
 
   constructor(private questionService: QuestionService, private route: ActivatedRoute,
     private router: Router) {
@@ -27,23 +31,32 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.answered = false;
-    let currentId = +this.route.snapshot.params['id'];
-    this.quest = this.questionService.getQuestionByNumber(currentId);
+    this.questionNumber = +this.route.snapshot.params['id'];
+    this.quest$ = this.questionService.getQuestion();
+    this.marky = require('marky');
+    this.marky.mark('answerTime');
   }
 
-  onClick(answerClicked: string) {
+  onClick(answerClicked: string, answer: string) {
+    this.answerTimeInSeconds = this.marky.stop('answerTime')['duration']/1000;
     this.answered = true;
-    console.log(answerClicked);
-    if (answerClicked == this.quest.answer) {
+    if (answerClicked === answer) {
       document.getElementById(answerClicked)?.setAttribute("style", "background-color:#78e08f");
     } else {
       document.getElementById(answerClicked)?.setAttribute("style", "background-color:#E55039");
-      document.getElementById(this.quest.answer + this.quest.questionNumber)?.setAttribute("style", "background-color:#78e08f");
+      document.getElementById(answer)!.setAttribute("style", "background-color:#78e08f");
     }
+    setTimeout(() => {
+      this.nextQuestion();
+    },1000);
   }
 
-  onNextQuestion() {
-    this.router.navigateByUrl(`/questions/${this.quest.questionNumber + 1}`);
+  nextQuestion() {
+    if(this.questionNumber == 10){
+      this.router.navigateByUrl("/ranking");
+    }else{
+      this.router.navigateByUrl(`/questions/${this.questionNumber + 1}`);
+    }
   }
 
   ngOnDestroy() {

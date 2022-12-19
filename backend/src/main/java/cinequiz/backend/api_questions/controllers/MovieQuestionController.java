@@ -22,7 +22,9 @@ import edu.emory.mathcs.backport.java.util.Collections;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
+@CrossOrigin
 @RestController
 @RequestMapping(value = "/cinequiz/questions/movie", method = RequestMethod.GET)
 public class MovieQuestionController {

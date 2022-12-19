@@ -1,28 +1,39 @@
+<button class="text-left font-roboto ml-10 my-4 hover:bg-spray text-spray font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"> <a routerLink="/">Retour</a></button>
+
 <div class="form-card">
     <h2 class="text-3xl my-6 text-waterfall">Inscription</h2>
     <form [formGroup]="registrationForm">
         <div class="form-group">
             <label for="pseudo" class="text-orange">Nom d'utilisateur</label>
-            <input type="text" id="pseudo" formControlName="pseudo">
+            <input type="text" id="pseudo" formControlName="pseudo" required>
         </div>
 
         <div class="form-group">
             <label for="email" class="text-orange">Adresse mail</label>
-            <input type="text" id="email" formControlName="email">
+            <input type="email" id="email" formControlName="email" required>
         </div>
+        <div class="wrongInput" *ngIf="showEmailErrors$ | async">
+            Veuillez entrer une adresse mail valide.
+        </div>
+        
 
         <div class="form-group">
             <label for="password" class="text-orange">Mot de passe</label>
-            <input type="password" id="password" formControlName="password">
+            <input type="password" id="password" formControlName="password" required>
         </div>
+
 
         <div class="form-group">
             <label for="confirmPassword" class="text-orange">Confirmez votre mot de passe</label>
-            <input type="password" id="confirmPassword" formControlName="confirmPassword">
+            <input type="password" id="confirmPassword" formControlName="confirmPassword" required  
+                [ngClass] = "{ invalid : showPasswordErrors$ | async }">
+        </div>
+        <div class="wrongInput" *ngIf="showPasswordErrors$ | async">
+            Les mots de passe sont différents.
         </div>
 
         <div>
-            <button type="submit" (click)="onSubmitForm()" class="text-left font-roboto ml-20 mr-6 my-4 hover:bg-spray text-spray font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"> Inscription </button>
+            <button type="submit" (click)="onSubmitForm()" id="submitButton" class="text-left font-roboto ml-20 mr-6 my-4 bg-spray hover:bg-white hover:text-spray font-semibold text-white py-2 px-4 hover:border hover:border-blue-500 rounded" [disabled]="registrationForm.invalid"> Inscription </button>
         </div>
 
     </form>

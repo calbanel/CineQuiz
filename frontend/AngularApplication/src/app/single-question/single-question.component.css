@@ -5,3 +5,8 @@ button.disabled{
 label {
     cursor: pointer;
 }
+
+
+label.disabled {
+    cursor: not-allowed;
+}
