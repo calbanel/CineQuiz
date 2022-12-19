@@ -233,7 +233,7 @@ public class MovieQuestionController {
         ArrayList<CastMember> cast = null;
         try {
             while (cast == null) {
-                MovieTmdbFetchOptions manswerOptions = new MovieTmdbFetchOptions(true, true, false, false, false,
+                MovieTmdbFetchOptions manswerOptions = new MovieTmdbFetchOptions(true, false, true, false, false,
                         false, false);
                 MovieTmdbFetchOptions msimilaryOptions = new MovieTmdbFetchOptions(false, false, false, false, false,
                         false, false);
@@ -257,7 +257,7 @@ public class MovieQuestionController {
         Collections.shuffle(cast);
         String[] choices = { cast.get(0).name, cast.get(1).name, cast.get(2).name, cast.get(3).name };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MCQQuestion mcq = new MCQQuestion(BackendApplication.IMG_URL_BASE + movieOfQuestion.poster_path,
+        MCQQuestion mcq = new MCQQuestion(BackendApplication.IMG_URL_BASE + movieOfQuestion.backdrop_path,
                 movieOfQuestion.title,
                 MovieQuestion.TAKE_PART.getQuestion(internLanguage),
                 choicesObject,
@@ -284,7 +284,7 @@ public class MovieQuestionController {
             while (cast == null) {
                 MovieTmdbFetchOptions manswerOptions = new MovieTmdbFetchOptions(false, false, false, false, false,
                         false, false);
-                MovieTmdbFetchOptions msimilaryOptions = new MovieTmdbFetchOptions(true, true, false, false, false,
+                MovieTmdbFetchOptions msimilaryOptions = new MovieTmdbFetchOptions(true, false, true, false, false,
                         false, false);
                 movieList = MovieTmdbFetching.getRandomCoherentMovies(internLanguage.getTmdbLanguage(),
                         2,
@@ -307,7 +307,7 @@ public class MovieQuestionController {
         Collections.shuffle(cast);
         String[] choices = { cast.get(0).name, cast.get(1).name, cast.get(2).name, cast.get(3).name };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MCQQuestion mcq = new MCQQuestion(BackendApplication.IMG_URL_BASE + movieOfQuestion.poster_path,
+        MCQQuestion mcq = new MCQQuestion(BackendApplication.IMG_URL_BASE + movieOfQuestion.backdrop_path,
                 movieOfQuestion.title,
                 MovieQuestion.DOESNT_TAKE_PART.getQuestion(internLanguage),
                 choicesObject,
