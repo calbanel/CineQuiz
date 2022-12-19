@@ -71,7 +71,7 @@ public class MovieTmdbFetching {
 
             // only keeps the movies of the same language
             ArrayList<MovieResult> filtredResults = (ArrayList<MovieResult>) page.results.stream()
-                    .filter(m -> m.original_language == movie.original_language).collect(Collectors.toList());
+                    .filter(m -> m.original_language.equals(movie.original_language)).collect(Collectors.toList());
 
             // remove unvalid similar movies
             filtredResults = getFiltredMovieResultListInPage(page, options);
@@ -158,7 +158,7 @@ public class MovieTmdbFetching {
         // check if it's a valid movie according to the target values
         if (tmp != null && (!options.isBudget() || tmp.budget > 0) && (!options.isRevenue() || tmp.revenue > 0)
                 && (!options.isReleaseDate() || (tmp.release_date != null
-                        && tmp.release_date != "")))
+                        && !tmp.release_date.equals(""))))
             movie = tmp;
 
         // throw exception if we failed to fetch the movie informations or if the target
@@ -218,23 +218,23 @@ public class MovieTmdbFetching {
         return (ArrayList<MovieResult>) page.results
                 .stream()
                 .filter(
-                        (m) -> (!options.isTitle() || (m.title != null && m.title != ""))
-                                && (!options.isPoster() || (m.poster_path != null && m.poster_path != ""))
-                                && (!options.isBackdrop() || (m.backdrop_path != null && m.backdrop_path != ""))
-                                && (!options.isDescription() || (m.overview != null && m.overview != "")))
+                        (m) -> (!options.isTitle() || (m.title != null && !m.title.equals("")))
+                                && (!options.isPoster() || (m.poster_path != null && !m.poster_path.equals("")))
+                                && (!options.isBackdrop() || (m.backdrop_path != null && !m.backdrop_path.equals("")))
+                                && (!options.isDescription() || (m.overview != null && !m.overview.equals(""))))
                 .collect(Collectors.toList());
     }
 
     private static ArrayList<CastMember> getFiltredCastListInPage(CastPage page,
             PeopleTmdbFetchOptions options, int tmdbgenre) {
         ArrayList<Cast> cast = (ArrayList<Cast>) page.cast.stream()
-                .filter((c) -> (!options.isProfile_path() || (c.profile_path != null && c.profile_path != ""))
-                        && (!options.isName() || (c.name != null && c.name != ""))
+                .filter((c) -> (!options.isProfile_path() || (c.profile_path != null && !c.profile_path.equals("")))
+                        && (!options.isName() || (c.name != null && !c.name.equals("")))
                         && (!options.isGender() || c.gender == tmdbgenre))
                 .collect(Collectors.toList());
         ArrayList<Crew> crew = (ArrayList<Crew>) page.crew.stream()
-                .filter((c) -> (!options.isProfile_path() || (c.profile_path != null && c.profile_path != ""))
-                        && (!options.isName() || (c.name != null && c.name != ""))
+                .filter((c) -> (!options.isProfile_path() || (c.profile_path != null && !c.profile_path.equals("")))
+                        && (!options.isName() || (c.name != null && !c.name.equals("")))
                         && (!options.isGender() || c.gender == tmdbgenre))
                 .collect(Collectors.toList());
         ArrayList<CastMember> members = new ArrayList<CastMember>();
@@ -314,10 +314,8 @@ public class MovieTmdbFetching {
             ArrayList<ShowCredit> list = new ArrayList<ShowCredit>();
             list.addAll(creditPage.cast);
             list.addAll(creditPage.crew);
-            list = (ArrayList<ShowCredit>) list.stream().filter(m -> m.id == movieId || m.media_type == "movie")
-                    .collect(Collectors.toList());
-            if (list.size() > 0)
-                isIn = true;
+            isIn = list.stream().filter(m -> m.id == movieId && m.media_type.equals("movie"))
+                    .findFirst().isPresent();
         }
 
         return isIn;

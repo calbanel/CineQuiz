@@ -18,14 +18,14 @@ public class TvShowTmdbFetchOptions extends ShowTmdbFetchOptions {
     }
 
     public boolean checkDuplicate(TvShowInfos current, ArrayList<TvShowInfos> dontWantDuplicata) {
-        return !dontWantDuplicata.stream()
+        return dontWantDuplicata.stream()
                 .filter(show -> (this.isTitle() && current.name.equals(show.name))
                         || (this.isPoster() && current.poster_path.equals(show.poster_path))
                         || (this.isBackdrop() && current.backdrop_path.equals(show.backdrop_path))
                         || (this.isDescription() && current.overview.equals(show.overview))
                         || (this.isReleaseDate() && current.first_air_date.equals(show.first_air_date))
                         || (this.isNb_episodes() && current.number_of_episodes == show.number_of_episodes))
-                .findFirst().isEmpty();
+                .findFirst().isPresent();
     }
 
 }

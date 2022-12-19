@@ -23,7 +23,7 @@ public class MovieTmdbFetchOptions extends ShowTmdbFetchOptions {
     }
 
     public boolean checkDuplicate(MovieInfos current, ArrayList<MovieInfos> dontWantDuplicata) {
-        return !dontWantDuplicata.stream()
+        return dontWantDuplicata.stream()
                 .filter(show -> (this.isTitle() && current.title.equals(show.title))
                         || (this.isPoster() && current.poster_path.equals(show.poster_path))
                         || (this.isBackdrop() && current.backdrop_path.equals(show.backdrop_path))
@@ -31,6 +31,6 @@ public class MovieTmdbFetchOptions extends ShowTmdbFetchOptions {
                         || (this.isReleaseDate() && current.release_date.equals(show.release_date))
                         || (this.isBudget() && current.budget == show.budget)
                         || (this.isRevenue() && current.revenue == show.revenue))
-                .findFirst().isEmpty();
+                .findFirst().isPresent();
     }
 }

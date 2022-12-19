@@ -113,10 +113,10 @@ public class TvShowTmdbFetching {
         return (ArrayList<TvShowResult>) page.results
                 .stream()
                 .filter(
-                        (m) -> (!options.isTitle() || (m.name != null && m.name != ""))
-                                && (!options.isPoster() || (m.poster_path != null && m.poster_path != ""))
-                                && (!options.isBackdrop() || (m.backdrop_path != null && m.backdrop_path != ""))
-                                && (!options.isDescription() || (m.overview != null && m.overview != "")))
+                        (m) -> (!options.isTitle() || (m.name != null && !m.name.equals("")))
+                                && (!options.isPoster() || (m.poster_path != null && !m.poster_path.equals("")))
+                                && (!options.isBackdrop() || (m.backdrop_path != null && !m.backdrop_path.equals("")))
+                                && (!options.isDescription() || (m.overview != null && !m.overview.equals(""))))
                 .collect(Collectors.toList());
     }
 
@@ -142,7 +142,7 @@ public class TvShowTmdbFetching {
 
         // check if it's a valid tv show according to the target values
         if (tmp != null && (!options.isNb_episodes() || tmp.number_of_episodes > 0)
-                && (!options.isReleaseDate() || (tmp.first_air_date != null && tmp.first_air_date != "")))
+                && (!options.isReleaseDate() || (tmp.first_air_date != null && !tmp.first_air_date.equals(""))))
             tvShow = tmp;
 
         // throw exception if we failed to fetch the tv show informations or if the
@@ -171,7 +171,7 @@ public class TvShowTmdbFetching {
 
             // only keeps the tv shows of the same language
             ArrayList<TvShowResult> filtredResults = (ArrayList<TvShowResult>) page.results.stream()
-                    .filter(m -> m.original_language == tvShow.original_language).collect(Collectors.toList());
+                    .filter(m -> m.original_language.equals(tvShow.original_language)).collect(Collectors.toList());
 
             // remove unvalid similar tv shows
             filtredResults = getFiltredTvShowResultListInPage(page, options);
@@ -315,13 +315,13 @@ public class TvShowTmdbFetching {
     private static ArrayList<CastMember> getFiltredCastListInPage(CastPage page,
             PeopleTmdbFetchOptions options, int tmdbgenre) {
         ArrayList<Cast> cast = (ArrayList<Cast>) page.cast.stream()
-                .filter((c) -> (!options.isProfile_path() || (c.profile_path != null && c.profile_path != ""))
-                        && (!options.isName() || (c.name != null && c.name != ""))
+                .filter((c) -> (!options.isProfile_path() || (c.profile_path != null && !c.profile_path.equals("")))
+                        && (!options.isName() || (c.name != null && !c.name.equals("")))
                         && (!options.isGender() || c.gender == tmdbgenre))
                 .collect(Collectors.toList());
         ArrayList<Crew> crew = (ArrayList<Crew>) page.crew.stream()
-                .filter((c) -> (!options.isProfile_path() || (c.profile_path != null && c.profile_path != ""))
-                        && (!options.isName() || (c.name != null && c.name != ""))
+                .filter((c) -> (!options.isProfile_path() || (c.profile_path != null && !c.profile_path.equals("")))
+                        && (!options.isName() || (c.name != null && !c.name.equals("")))
                         && (!options.isGender() || c.gender == tmdbgenre))
                 .collect(Collectors.toList());
         ArrayList<CastMember> members = new ArrayList<CastMember>();
@@ -339,10 +339,8 @@ public class TvShowTmdbFetching {
             ArrayList<ShowCredit> list = new ArrayList<ShowCredit>();
             list.addAll(creditPage.cast);
             list.addAll(creditPage.crew);
-            list = (ArrayList<ShowCredit>) list.stream().filter(m -> m.id == tvShowId || m.media_type == "tv")
-                    .collect(Collectors.toList());
-            if (list.size() > 0)
-                isIn = true;
+            isIn = list.stream().filter(m -> m.id == tvShowId && m.media_type.equals("tv"))
+                    .findFirst().isPresent();
         }
 
         return isIn;
