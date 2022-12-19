@@ -3,7 +3,6 @@ package cinequiz.backend.api_questions.utils.tmdb.fetching;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.web.client.HttpClientErrorException;
@@ -16,17 +15,17 @@ import cinequiz.backend.api_questions.exceptions.NotEnoughSimilarShowsInTMDBExce
 import cinequiz.backend.api_questions.exceptions.NotaValidShowException;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.options.PeopleTmdbFetchOptions;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.options.TvShowTmdbFetchOptions;
-import cinequiz.backend.api_questions.utils.tmdb.objects.people.credit.ShowCredit;
-import cinequiz.backend.api_questions.utils.tmdb.objects.people.credit.ShowCreditPage;
-import cinequiz.backend.api_questions.utils.tmdb.objects.show.cast.Cast;
-import cinequiz.backend.api_questions.utils.tmdb.objects.show.cast.Crew;
-import cinequiz.backend.api_questions.utils.tmdb.objects.show.cast.CastMember;
-import cinequiz.backend.api_questions.utils.tmdb.objects.show.cast.CastPage;
-import cinequiz.backend.api_questions.utils.tmdb.objects.show.tv_show.TvShowInfos;
-import cinequiz.backend.api_questions.utils.tmdb.objects.show.tv_show.list.TvShowPage;
-import cinequiz.backend.api_questions.utils.tmdb.objects.show.tv_show.list.TvShowResult;
+import cinequiz.backend.api_questions.utils.tmdb.model.people.credit.ShowCredit;
+import cinequiz.backend.api_questions.utils.tmdb.model.people.credit.ShowCreditPage;
+import cinequiz.backend.api_questions.utils.tmdb.model.show.cast.Cast;
+import cinequiz.backend.api_questions.utils.tmdb.model.show.cast.CastMember;
+import cinequiz.backend.api_questions.utils.tmdb.model.show.cast.CastPage;
+import cinequiz.backend.api_questions.utils.tmdb.model.show.cast.Crew;
+import cinequiz.backend.api_questions.utils.tmdb.model.show.tv_show.TvShowInfos;
+import cinequiz.backend.api_questions.utils.tmdb.model.show.tv_show.list.TvShowPage;
+import cinequiz.backend.api_questions.utils.tmdb.model.show.tv_show.list.TvShowResult;
 
-public class TvShowTmdbFetching {
+public class TvShowTmdbFetching extends TmdbFetching {
     public static ArrayList<TvShowInfos> getRandomCoherentTvShows(String tmdbLanguage, int number,
             TvShowTmdbFetchOptions answerOptions, TvShowTmdbFetchOptions similaryOptions) {
         ArrayList<TvShowInfos> tvList = new ArrayList<TvShowInfos>();
@@ -92,7 +91,7 @@ public class TvShowTmdbFetching {
         // randomly
         while (page == null) {
             int randomPage = BackendApplication.random(RANDOM_PAGE_MIN, RANDOM_PAGE_MAX);
-            String url = "https://api.themoviedb.org/3/tv/popular?api_key=" + BackendApplication.API_KEY
+            String url = "https://api.themoviedb.org/3/tv/popular?api_key=" + TmdbFetching.API_KEY
                     + "&language="
                     + tmdbLanguage + "&page="
                     + randomPage;
@@ -127,7 +126,7 @@ public class TvShowTmdbFetching {
 
         // fetch the detailed informations on a tv show
         String url = "https://api.themoviedb.org/3/tv/" + result.id + "?api_key="
-                + BackendApplication.API_KEY
+                + TmdbFetching.API_KEY
                 + "&language="
                 + tmdbLanguage;
 
@@ -212,7 +211,7 @@ public class TvShowTmdbFetching {
     private static TvShowPage getSimilarTvShowsPage(int tvShowId, String tmdbLanguage, int num_page) {
         TvShowPage page = null;
         RestTemplate rt = new RestTemplate();
-        String url = "https://api.themoviedb.org/3/tv/" + tvShowId + "/similar?api_key=" + BackendApplication.API_KEY
+        String url = "https://api.themoviedb.org/3/tv/" + tvShowId + "/similar?api_key=" + TmdbFetching.API_KEY
                 + "&language=" + tmdbLanguage + "&page=" + num_page;
         try {
             page = rt.getForObject(url, TvShowPage.class);
@@ -299,7 +298,7 @@ public class TvShowTmdbFetching {
     private static CastPage getTvShowCastPage(int tvShowId, String tmdbLanguage) {
         CastPage page = null;
         RestTemplate rt = new RestTemplate();
-        String url = "https://api.themoviedb.org/3/tv/" + tvShowId + "/credits?api_key=" + BackendApplication.API_KEY
+        String url = "https://api.themoviedb.org/3/tv/" + tvShowId + "/credits?api_key=" + TmdbFetching.API_KEY
                 + "&language=" + tmdbLanguage;
         try {
             page = rt.getForObject(url, CastPage.class);
@@ -350,7 +349,7 @@ public class TvShowTmdbFetching {
         ShowCreditPage page = null;
         RestTemplate rt = new RestTemplate();
         String url = "https://api.themoviedb.org/3/person/" + personId + "/combined_credits?api_key="
-                + BackendApplication.API_KEY
+                + TmdbFetching.API_KEY
                 + "&language=" + tmdbLanguage;
         try {
             page = rt.getForObject(url, ShowCreditPage.class);

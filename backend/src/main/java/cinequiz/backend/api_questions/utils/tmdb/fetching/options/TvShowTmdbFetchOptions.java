@@ -1,7 +1,8 @@
 package cinequiz.backend.api_questions.utils.tmdb.fetching.options;
 
 import java.util.ArrayList;
-import cinequiz.backend.api_questions.utils.tmdb.objects.show.tv_show.TvShowInfos;
+
+import cinequiz.backend.api_questions.utils.tmdb.model.show.tv_show.TvShowInfos;
 
 public class TvShowTmdbFetchOptions extends ShowTmdbFetchOptions {
     private boolean nb_episodes;

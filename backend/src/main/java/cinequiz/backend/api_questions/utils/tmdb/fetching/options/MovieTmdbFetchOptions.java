@@ -1,7 +1,8 @@
 package cinequiz.backend.api_questions.utils.tmdb.fetching.options;
 
 import java.util.ArrayList;
-import cinequiz.backend.api_questions.utils.tmdb.objects.show.movie.MovieInfos;
+
+import cinequiz.backend.api_questions.utils.tmdb.model.show.movie.MovieInfos;
 
 public class MovieTmdbFetchOptions extends ShowTmdbFetchOptions {
     private boolean budget, revenue;

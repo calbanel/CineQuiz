@@ -15,10 +15,11 @@ import cinequiz.backend.api_questions.mcq.Choices;
 import cinequiz.backend.api_questions.mcq.MCQQuestion;
 import cinequiz.backend.api_questions.utils.Language;
 import cinequiz.backend.api_questions.utils.questions.TvShowQuestion;
+import cinequiz.backend.api_questions.utils.tmdb.fetching.TmdbFetching;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.TvShowTmdbFetching;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.options.TvShowTmdbFetchOptions;
-import cinequiz.backend.api_questions.utils.tmdb.objects.show.cast.CastMember;
-import cinequiz.backend.api_questions.utils.tmdb.objects.show.tv_show.TvShowInfos;
+import cinequiz.backend.api_questions.utils.tmdb.model.show.cast.CastMember;
+import cinequiz.backend.api_questions.utils.tmdb.model.show.tv_show.TvShowInfos;
 
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -87,7 +88,7 @@ public class TvShowQuestionController {
         String[] choices = { tvList.get(0).name, tvList.get(1).name, tvList.get(2).name,
                 tvList.get(3).name };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MCQQuestion mcq = new MCQQuestion(BackendApplication.IMG_URL_BASE + answer.backdrop_path, "",
+        MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + answer.backdrop_path, "",
                 TvShowQuestion.WHICH_BY_IMAGE.getQuestion(internLanguage),
                 choicesObject,
                 answer.name);
@@ -165,7 +166,7 @@ public class TvShowQuestionController {
                 tvList.get(2).first_air_date,
                 tvList.get(3).first_air_date };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MCQQuestion mcq = new MCQQuestion(BackendApplication.IMG_URL_BASE + answer.poster_path, answer.name,
+        MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + answer.poster_path, answer.name,
                 TvShowQuestion.FIRST_AIR_DATE.getQuestion(internLanguage),
                 choicesObject,
                 answer.first_air_date);
@@ -205,7 +206,7 @@ public class TvShowQuestionController {
                 Integer.toString(tvList.get(2).number_of_episodes),
                 Integer.toString(tvList.get(3).number_of_episodes) };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MCQQuestion mcq = new MCQQuestion(BackendApplication.IMG_URL_BASE + answer.poster_path, answer.name,
+        MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + answer.poster_path, answer.name,
                 TvShowQuestion.HOW_MANY_EPISODES.getQuestion(internLanguage),
                 choicesObject,
                 Integer.toString(answer.number_of_episodes));
@@ -253,7 +254,7 @@ public class TvShowQuestionController {
         Collections.shuffle(cast);
         String[] choices = { cast.get(0).name, cast.get(1).name, cast.get(2).name, cast.get(3).name };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MCQQuestion mcq = new MCQQuestion(BackendApplication.IMG_URL_BASE + tvShowOfQuestion.backdrop_path,
+        MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + tvShowOfQuestion.backdrop_path,
                 tvShowOfQuestion.name,
                 TvShowQuestion.TAKE_PART.getQuestion(internLanguage),
                 choicesObject,
@@ -302,7 +303,7 @@ public class TvShowQuestionController {
         Collections.shuffle(cast);
         String[] choices = { cast.get(0).name, cast.get(1).name, cast.get(2).name, cast.get(3).name };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MCQQuestion mcq = new MCQQuestion(BackendApplication.IMG_URL_BASE + tvShowOfQuestion.backdrop_path,
+        MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + tvShowOfQuestion.backdrop_path,
                 tvShowOfQuestion.name,
                 TvShowQuestion.DOESNT_TAKE_PART.getQuestion(internLanguage),
                 choicesObject,
