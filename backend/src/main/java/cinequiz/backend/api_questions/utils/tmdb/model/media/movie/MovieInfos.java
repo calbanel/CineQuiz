@@ -1,4 +1,4 @@
-package cinequiz.backend.api_questions.utils.tmdb.model.show.movie;
+package cinequiz.backend.api_questions.utils.tmdb.model.media.movie;
 
 import java.util.ArrayList;
 
@@ -6,10 +6,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import cinequiz.backend.api_questions.utils.tmdb.model.Item;
 import cinequiz.backend.api_questions.utils.tmdb.model.MediaInfos;
-import cinequiz.backend.api_questions.utils.tmdb.model.show.Genre;
-import cinequiz.backend.api_questions.utils.tmdb.model.show.ProductionCompany;
-import cinequiz.backend.api_questions.utils.tmdb.model.show.ProductionCountry;
-import cinequiz.backend.api_questions.utils.tmdb.model.show.SpokenLanguage;
+import cinequiz.backend.api_questions.utils.tmdb.model.media.Genre;
+import cinequiz.backend.api_questions.utils.tmdb.model.media.ProductionCompany;
+import cinequiz.backend.api_questions.utils.tmdb.model.media.ProductionCountry;
+import cinequiz.backend.api_questions.utils.tmdb.model.media.SpokenLanguage;
 
 public class MovieInfos extends Item implements MediaInfos {
 

@@ -19,7 +19,7 @@ import cinequiz.backend.api_questions.utils.tmdb.fetching.TmdbFetching;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.options.MediaTmdbFetchingOptions;
 import cinequiz.backend.api_questions.utils.tmdb.model.MediaInfos;
 import cinequiz.backend.api_questions.utils.tmdb.model.MediaType;
-import cinequiz.backend.api_questions.utils.tmdb.model.show.cast.CastMember;
+import cinequiz.backend.api_questions.utils.tmdb.model.media.cast.CastMember;
 import edu.emory.mathcs.backport.java.util.Collections;
 import org.springframework.web.bind.annotation.RequestMethod;
 

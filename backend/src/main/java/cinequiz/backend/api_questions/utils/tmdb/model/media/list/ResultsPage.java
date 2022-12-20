@@ -1,4 +1,4 @@
-package cinequiz.backend.api_questions.utils.tmdb.model.show.list;
+package cinequiz.backend.api_questions.utils.tmdb.model.media.list;
 
 import java.util.Iterator;
 import java.util.List;

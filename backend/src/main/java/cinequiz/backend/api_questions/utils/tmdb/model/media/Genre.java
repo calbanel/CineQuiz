@@ -1,4 +1,4 @@
-package cinequiz.backend.api_questions.utils.tmdb.model.show;
+package cinequiz.backend.api_questions.utils.tmdb.model.media;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;

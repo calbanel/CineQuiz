@@ -7,12 +7,12 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import cinequiz.backend.api_questions.utils.tmdb.fetching.options.PeopleTmdbFetchingOptions;
+import cinequiz.backend.api_questions.utils.tmdb.model.media.cast.Cast;
+import cinequiz.backend.api_questions.utils.tmdb.model.media.cast.CastMember;
+import cinequiz.backend.api_questions.utils.tmdb.model.media.cast.CastPage;
+import cinequiz.backend.api_questions.utils.tmdb.model.media.cast.Crew;
 import cinequiz.backend.api_questions.utils.tmdb.model.people.credit.ShowCredit;
 import cinequiz.backend.api_questions.utils.tmdb.model.people.credit.ShowCreditPage;
-import cinequiz.backend.api_questions.utils.tmdb.model.show.cast.Cast;
-import cinequiz.backend.api_questions.utils.tmdb.model.show.cast.CastMember;
-import cinequiz.backend.api_questions.utils.tmdb.model.show.cast.CastPage;
-import cinequiz.backend.api_questions.utils.tmdb.model.show.cast.Crew;
 
 public class PeopleTmdbFetching extends TmdbFetching {
 

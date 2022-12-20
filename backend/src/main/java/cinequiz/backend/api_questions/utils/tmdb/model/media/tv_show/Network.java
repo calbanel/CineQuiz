@@ -1,29 +1,19 @@
-package cinequiz.backend.api_questions.utils.tmdb.model.show;
+package cinequiz.backend.api_questions.utils.tmdb.model.media.tv_show;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
 
 import cinequiz.backend.api_questions.utils.tmdb.model.Item;
 
-@JsonRootName(value = "production_company")
-public class ProductionCompany extends Item {
-
-    @JsonProperty("logo_path")
-    private String logoPath;
+public class Network extends Item {
 
     @JsonProperty("name")
     private String name;
 
+    @JsonProperty("logo_path")
+    private String logoPath;
+
     @JsonProperty("origin_country")
     private String originCountry;
-
-    public String getLogoPath() {
-        return logoPath;
-    }
-
-    public void setLogoPath(String logoPath) {
-        this.logoPath = logoPath;
-    }
 
     public String getName() {
         return name;
@@ -31,6 +21,14 @@ public class ProductionCompany extends Item {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getLogoPath() {
+        return logoPath;
+    }
+
+    public void setLogoPath(String logoOath) {
+        this.logoPath = logoOath;
     }
 
     public String getOriginCountry() {

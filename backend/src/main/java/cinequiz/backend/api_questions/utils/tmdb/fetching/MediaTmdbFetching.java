@@ -17,10 +17,10 @@ import cinequiz.backend.api_questions.utils.tmdb.fetching.options.MediaTmdbFetch
 import cinequiz.backend.api_questions.utils.tmdb.fetching.options.PeopleTmdbFetchingOptions;
 import cinequiz.backend.api_questions.utils.tmdb.model.MediaInfos;
 import cinequiz.backend.api_questions.utils.tmdb.model.MediaType;
-import cinequiz.backend.api_questions.utils.tmdb.model.show.cast.CastMember;
-import cinequiz.backend.api_questions.utils.tmdb.model.show.cast.CastPage;
-import cinequiz.backend.api_questions.utils.tmdb.model.show.list.MovieResultsPage;
-import cinequiz.backend.api_questions.utils.tmdb.model.show.list.ResultsPage;
+import cinequiz.backend.api_questions.utils.tmdb.model.media.cast.CastMember;
+import cinequiz.backend.api_questions.utils.tmdb.model.media.cast.CastPage;
+import cinequiz.backend.api_questions.utils.tmdb.model.media.list.MovieResultsPage;
+import cinequiz.backend.api_questions.utils.tmdb.model.media.list.ResultsPage;
 
 public class MediaTmdbFetching extends TmdbFetching {
     public static ArrayList<MediaInfos> getRandomCoherentMedias(String tmdbLanguage, int number,

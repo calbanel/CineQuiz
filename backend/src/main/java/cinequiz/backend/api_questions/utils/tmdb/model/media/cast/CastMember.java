@@ -1,4 +1,4 @@
-package cinequiz.backend.api_questions.utils.tmdb.model.show.cast;
+package cinequiz.backend.api_questions.utils.tmdb.model.media.cast;
 
 public class CastMember {
     public boolean adult;

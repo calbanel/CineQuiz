@@ -20,7 +20,7 @@ import cinequiz.backend.api_questions.utils.tmdb.fetching.MediaTmdbFetching;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.options.MediaTmdbFetchingOptions;
 import cinequiz.backend.api_questions.utils.tmdb.model.MediaInfos;
 import cinequiz.backend.api_questions.utils.tmdb.model.MediaType;
-import cinequiz.backend.api_questions.utils.tmdb.model.show.cast.CastMember;
+import cinequiz.backend.api_questions.utils.tmdb.model.media.cast.CastMember;
 
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
