@@ -25,13 +25,13 @@ public class MovieTmdbFetchOptions extends ShowTmdbFetchOptions {
 
     public boolean checkDuplicate(MovieInfos current, ArrayList<MovieInfos> dontWantDuplicata) {
         return dontWantDuplicata.stream()
-                .filter(show -> (this.isTitle() && current.title.equals(show.title))
-                        || (this.isPoster() && current.poster_path.equals(show.poster_path))
-                        || (this.isBackdrop() && current.backdrop_path.equals(show.backdrop_path))
-                        || (this.isDescription() && current.overview.equals(show.overview))
-                        || (this.isReleaseDate() && current.release_date.equals(show.release_date))
-                        || (this.isBudget() && current.budget == show.budget)
-                        || (this.isRevenue() && current.revenue == show.revenue))
+                .filter(show -> (this.isTitle() && current.getTitle().equals(show.getTitle()))
+                        || (this.isPoster() && current.getPosterPath().equals(show.getPosterPath()))
+                        || (this.isBackdrop() && current.getBackdropPath().equals(show.getBackdropPath()))
+                        || (this.isDescription() && current.getOverview().equals(show.getOverview()))
+                        || (this.isReleaseDate() && current.getReleaseDate().equals(show.getReleaseDate()))
+                        || (this.isBudget() && current.getBudget() == show.getBudget())
+                        || (this.isRevenue() && current.getRevenue() == show.getRevenue()))
                 .findFirst().isPresent();
     }
 }
