@@ -10,8 +10,8 @@ import { LobbyComponent } from "./lobby/lobby.component";
 const routes : Routes = [
     {path: 'lobby', component: LobbyComponent},
     {path: 'ranking', component: RankingComponent},
-    {path: 'connection', component: ConnectionComponent},
-    {path: 'registration', component: RegistrationComponent},
+    {path: 'login', component: ConnectionComponent},
+    {path: 'sign-in', component: RegistrationComponent},
     {path: 'questions/:id', component: SingleQuestionComponent},
     {path: '', component: HomepageComponent},
 ];
