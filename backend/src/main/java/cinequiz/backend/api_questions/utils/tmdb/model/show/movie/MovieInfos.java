@@ -5,12 +5,13 @@ import java.util.ArrayList;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import cinequiz.backend.api_questions.utils.tmdb.model.Item;
+import cinequiz.backend.api_questions.utils.tmdb.model.MediaInfos;
 import cinequiz.backend.api_questions.utils.tmdb.model.show.Genre;
 import cinequiz.backend.api_questions.utils.tmdb.model.show.ProductionCompany;
 import cinequiz.backend.api_questions.utils.tmdb.model.show.ProductionCountry;
 import cinequiz.backend.api_questions.utils.tmdb.model.show.SpokenLanguage;
 
-public class MovieInfos extends Item {
+public class MovieInfos extends Item implements MediaInfos {
 
     @JsonProperty("adult")
     private boolean adult;
