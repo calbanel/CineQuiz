@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import cinequiz.backend.api_questions.utils.tmdb.fetching.options.PeopleTmdbFetchOptions;
+import cinequiz.backend.api_questions.utils.tmdb.fetching.options.PeopleTmdbFetchingOptions;
 import cinequiz.backend.api_questions.utils.tmdb.model.people.credit.ShowCredit;
 import cinequiz.backend.api_questions.utils.tmdb.model.people.credit.ShowCreditPage;
 import cinequiz.backend.api_questions.utils.tmdb.model.show.cast.Cast;
@@ -49,7 +49,7 @@ public class PeopleTmdbFetching extends TmdbFetching {
     }
 
     public static ArrayList<CastMember> getFiltredCastListInPage(CastPage page,
-            PeopleTmdbFetchOptions options, int tmdbgenre) {
+            PeopleTmdbFetchingOptions options, int tmdbgenre) {
         ArrayList<Cast> cast = (ArrayList<Cast>) page.cast.stream()
                 .filter((c) -> (!options.isProfile_path() || (c.profile_path != null && !c.profile_path.equals("")))
                         && (!options.isName() || (c.name != null && !c.name.equals("")))

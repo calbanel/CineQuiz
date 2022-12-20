@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import cinequiz.backend.api_questions.utils.tmdb.model.show.tv_show.TvShowInfos;
 
-public class TvShowTmdbFetchOptions extends ShowTmdbFetchOptions {
+public class TvShowTmdbFetchOptions extends MediaTmdbFetchingOptions {
     private boolean nb_episodes;
 
     public TvShowTmdbFetchOptions(boolean name, boolean poster, boolean backdrop, boolean description,

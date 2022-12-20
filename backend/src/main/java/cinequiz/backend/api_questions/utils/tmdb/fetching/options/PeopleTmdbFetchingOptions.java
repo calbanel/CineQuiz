@@ -1,9 +1,9 @@
 package cinequiz.backend.api_questions.utils.tmdb.fetching.options;
 
-public class PeopleTmdbFetchOptions {
+public class PeopleTmdbFetchingOptions {
     private boolean name, profile_path, gender;
 
-    public PeopleTmdbFetchOptions(boolean name, boolean profile_path, boolean gender) {
+    public PeopleTmdbFetchingOptions(boolean name, boolean profile_path, boolean gender) {
         this.name = name;
         this.profile_path = profile_path;
         this.gender = gender;

@@ -12,4 +12,6 @@ public interface MediaInfos {
     public String getBackdropPath();
 
     public String getReleaseDate();
+
+    public String getOriginalLanguage();
 }

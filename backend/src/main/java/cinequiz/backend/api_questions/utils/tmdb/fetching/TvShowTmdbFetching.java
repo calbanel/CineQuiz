@@ -13,7 +13,7 @@ import cinequiz.backend.api_questions.exceptions.CastUnavailableInTMDBException;
 import cinequiz.backend.api_questions.exceptions.NotEnoughPeoplesInCast;
 import cinequiz.backend.api_questions.exceptions.NotEnoughSimilarShowsInTMDBException;
 import cinequiz.backend.api_questions.exceptions.NotaValidShowException;
-import cinequiz.backend.api_questions.utils.tmdb.fetching.options.PeopleTmdbFetchOptions;
+import cinequiz.backend.api_questions.utils.tmdb.fetching.options.PeopleTmdbFetchingOptions;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.options.TvShowTmdbFetchOptions;
 import cinequiz.backend.api_questions.utils.tmdb.model.show.cast.CastMember;
 import cinequiz.backend.api_questions.utils.tmdb.model.show.cast.CastPage;
@@ -226,10 +226,10 @@ public class TvShowTmdbFetching extends TmdbFetching {
         ArrayList<CastMember> cast = null;
         int randomGender = BackendApplication.random(1, 2);
         try {
-            PeopleTmdbFetchOptions panswerOptions = new PeopleTmdbFetchOptions(true, true, true);
+            PeopleTmdbFetchingOptions panswerOptions = new PeopleTmdbFetchingOptions(true, true, true);
             ArrayList<CastMember> answer = getRandomCoherentPeoplesInvolvedInThisTvShow(tvShowId,
                     tmdbLanguage, numberOfPeoplesInTvShow, panswerOptions, randomGender, -1);
-            PeopleTmdbFetchOptions psimilaryOptions = new PeopleTmdbFetchOptions(true, false, true);
+            PeopleTmdbFetchingOptions psimilaryOptions = new PeopleTmdbFetchingOptions(true, false, true);
 
             ArrayList<CastMember> similaryCast = getRandomCoherentPeoplesInvolvedInThisTvShow(similarTvShowId,
                     tmdbLanguage, numberOfPeoplesInSimilarTvShow, psimilaryOptions, randomGender,
@@ -247,7 +247,7 @@ public class TvShowTmdbFetching extends TmdbFetching {
 
     private static ArrayList<CastMember> getRandomCoherentPeoplesInvolvedInThisTvShow(int tvShowId,
             String tmdbLanguage,
-            int number, PeopleTmdbFetchOptions options, int tmdbgenre, int similarTvShowId)
+            int number, PeopleTmdbFetchingOptions options, int tmdbgenre, int similarTvShowId)
             throws CastUnavailableInTMDBException, NotEnoughPeoplesInCast {
         ArrayList<CastMember> peoples = new ArrayList<CastMember>();
 
