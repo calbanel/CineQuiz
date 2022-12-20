@@ -21,11 +21,12 @@ import cinequiz.backend.api_questions.utils.tmdb.model.media.cast.CastMember;
 import cinequiz.backend.api_questions.utils.tmdb.model.media.cast.CastPage;
 import cinequiz.backend.api_questions.utils.tmdb.model.media.list.MovieResultsPage;
 import cinequiz.backend.api_questions.utils.tmdb.model.media.list.ResultsPage;
+import cinequiz.backend.api_questions.utils.tmdb.model.media.list.TvResultsPage;
 
 public class MediaTmdbFetching extends TmdbFetching {
     public static ArrayList<MediaInfos> getRandomCoherentMedias(String tmdbLanguage, int number,
             MediaTmdbFetchingOptions answerOptions, MediaTmdbFetchingOptions similaryOptions, MediaType mediaType) {
-        ArrayList<MediaInfos> movieList = new ArrayList<MediaInfos>();
+        ArrayList<MediaInfos> mediaList = new ArrayList<MediaInfos>();
 
         ArrayList<MediaInfos> similarMediaList = null;
         MediaInfos media = null;
@@ -39,26 +40,26 @@ public class MediaTmdbFetching extends TmdbFetching {
                 similarMediaList = getSimilarValidMedias(media, number - 1, tmdbLanguage, similaryOptions, mediaType);
             } catch (NotEnoughSimilarShowsInTMDBException e) {
                 System.err.println(e.getMessage());
-                movieList.clear();
+                mediaList.clear();
             }
         }
 
         // original media at index 0
-        movieList.add(media);
-        movieList.addAll(similarMediaList);
+        mediaList.add(media);
+        mediaList.addAll(similarMediaList);
 
-        return movieList;
+        return mediaList;
     }
 
     private static ArrayList<MediaInfos> getSimilarValidMedias(MediaInfos media, int number, String tmdbLanguage,
             MediaTmdbFetchingOptions options, MediaType mediaType) throws NotEnoughSimilarShowsInTMDBException {
-        ArrayList<MediaInfos> movieList = new ArrayList<MediaInfos>();
+        ArrayList<MediaInfos> mediaList = new ArrayList<MediaInfos>();
 
         // it can have several pages for similar movies in tmdb, we start at the first
         // page
         int page_number = 1;
         // we need to fill the list
-        while (movieList.size() < number) {
+        while (page_number < 3) {
 
             // try to get the similar media page
             List<? extends MediaInfos> results = getSimilarMediasPage(media.getId(), tmdbLanguage, page_number,
@@ -80,15 +81,15 @@ public class MediaTmdbFetching extends TmdbFetching {
             // browse valid similar movies
             for (MediaInfos result : filtredResults) {
                 // if the target value is an duplicata we go next
-                List<MediaInfos> dontWantDuplicata = new ArrayList<MediaInfos>(movieList);
+                List<MediaInfos> dontWantDuplicata = new ArrayList<MediaInfos>(mediaList);
                 dontWantDuplicata.add(media);
                 if (options.checkDuplicate(result, dontWantDuplicata))
                     continue;
 
-                movieList.add(result);
+                mediaList.add(result);
 
                 // if we have enough movies we stop browsing the page.
-                if (movieList.size() >= number)
+                if (mediaList.size() >= number)
                     break;
             }
 
@@ -96,7 +97,10 @@ public class MediaTmdbFetching extends TmdbFetching {
             page_number++;
         }
 
-        return movieList;
+        if (mediaList.size() < number)
+            throw new NotEnoughSimilarShowsInTMDBException();
+
+        return mediaList;
     }
 
     private static MediaInfos getOneRandomValidMedia(String tmdbLanguage, MediaTmdbFetchingOptions options,
@@ -113,7 +117,7 @@ public class MediaTmdbFetching extends TmdbFetching {
             Collections.shuffle(filtredResults);
 
             if (filtredResults.size() > 0)
-                media = filtredResults.get(0);
+                media = filtredResults.stream().findAny().get();
         }
         return media;
     }
@@ -272,8 +276,7 @@ public class MediaTmdbFetching extends TmdbFetching {
             if (mediaType == MediaType.MOVIE) {
                 page = rt.getForObject(url, MovieResultsPage.class);
             } else if (mediaType == MediaType.TV) {
-                // TvResultsPage page = rt.getForObject(url, TvResultsPage.class);
-                // list = page.getResults();
+                page = rt.getForObject(url, TvResultsPage.class);
             }
         } catch (final HttpClientErrorException e) {
             System.out.println(e.getStatusCode());
