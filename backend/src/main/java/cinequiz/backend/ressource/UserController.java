@@ -37,13 +37,13 @@ public class UserController{
 
 	@GetMapping("/find-user/{id}")
     @ApiOperation(value = "Finds a user having a specific id")
-	public Optional<User> getUser(@PathVariable int id) {
+	public Optional<User> getUser(@PathVariable String id) {
 		return repository.findById(id);
 	}
 
 	@DeleteMapping("/delete-user/{id}")
     @ApiOperation(value = "Deletes a user having a specific id")
-	public String deleteUser(@PathVariable int id) {
+	public String deleteUser(@PathVariable String id) {
 		repository.deleteById(id);
 		return "Deleted user with id : " + id;
 	}
