@@ -88,13 +88,13 @@ public class MovieQuestionController {
 
         MovieInfos answer = movieList.get(0);
         Collections.shuffle(movieList);
-        String[] choices = { movieList.get(0).title, movieList.get(1).title, movieList.get(2).title,
-                movieList.get(3).title };
+        String[] choices = { movieList.get(0).getTitle(), movieList.get(1).getTitle(), movieList.get(2).getTitle(),
+                movieList.get(3).getTitle() };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + answer.backdrop_path, "",
+        MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + answer.getBackdropPath(), "",
                 MovieQuestion.WHICH_BY_IMAGE.getQuestion(internLanguage),
                 choicesObject,
-                answer.title);
+                answer.getTitle());
 
         return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
     }
@@ -127,13 +127,13 @@ public class MovieQuestionController {
 
         MovieInfos answer = movieList.get(0);
         Collections.shuffle(movieList);
-        String[] choices = { movieList.get(0).title, movieList.get(1).title, movieList.get(2).title,
-                movieList.get(3).title };
+        String[] choices = { movieList.get(0).getTitle(), movieList.get(1).getTitle(), movieList.get(2).getTitle(),
+                movieList.get(3).getTitle() };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MCQQuestion mcq = new MCQQuestion("", answer.overview,
+        MCQQuestion mcq = new MCQQuestion("", answer.getOverview(),
                 MovieQuestion.WHICH_BY_DESCRIPTION.getQuestion(internLanguage),
                 choicesObject,
-                answer.title);
+                answer.getTitle());
 
         return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
     }
@@ -166,14 +166,14 @@ public class MovieQuestionController {
 
         MovieInfos answer = movieList.get(0);
         Collections.shuffle(movieList);
-        String[] choices = { Long.toString(movieList.get(0).budget), Long.toString(movieList.get(1).budget),
-                Long.toString(movieList.get(2).budget),
-                Long.toString(movieList.get(3).budget) };
+        String[] choices = { Long.toString(movieList.get(0).getBudget()), Long.toString(movieList.get(1).getBudget()),
+                Long.toString(movieList.get(2).getBudget()),
+                Long.toString(movieList.get(3).getBudget()) };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + answer.poster_path, answer.title,
+        MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + answer.getPosterPath(), answer.getTitle(),
                 MovieQuestion.BUDGET.getQuestion(internLanguage),
                 choicesObject,
-                Long.toString(answer.budget));
+                Long.toString(answer.getBudget()));
 
         return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
     }
@@ -206,14 +206,14 @@ public class MovieQuestionController {
 
         MovieInfos answer = movieList.get(0);
         Collections.shuffle(movieList);
-        String[] choices = { Long.toString(movieList.get(0).revenue), Long.toString(movieList.get(1).revenue),
-                Long.toString(movieList.get(2).revenue),
-                Long.toString(movieList.get(3).revenue) };
+        String[] choices = { Long.toString(movieList.get(0).getRevenue()), Long.toString(movieList.get(1).getRevenue()),
+                Long.toString(movieList.get(2).getRevenue()),
+                Long.toString(movieList.get(3).getRevenue()) };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + answer.poster_path, answer.title,
+        MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + answer.getPosterPath(), answer.getTitle(),
                 MovieQuestion.REVENUE.getQuestion(internLanguage),
                 choicesObject,
-                Long.toString(answer.revenue));
+                Long.toString(answer.getRevenue()));
 
         return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
     }
@@ -245,7 +245,8 @@ public class MovieQuestionController {
                 MovieInfos movie = movieList.get(0);
                 MovieInfos similaryMovie = movieList.get(1);
 
-                cast = MovieTmdbFetching.getRandomCoherentPeopleListInTheseMovies(movie.id, 1, similaryMovie.id, 3,
+                cast = MovieTmdbFetching.getRandomCoherentPeopleListInTheseMovies(movie.getId(), 1,
+                        similaryMovie.getId(), 3,
                         internLanguage.getTmdbLanguage());
             }
         } catch (Exception e) {
@@ -258,8 +259,8 @@ public class MovieQuestionController {
         Collections.shuffle(cast);
         String[] choices = { cast.get(0).name, cast.get(1).name, cast.get(2).name, cast.get(3).name };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + movieOfQuestion.backdrop_path,
-                movieOfQuestion.title,
+        MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + movieOfQuestion.getBackdropPath(),
+                movieOfQuestion.getTitle(),
                 MovieQuestion.TAKE_PART.getQuestion(internLanguage),
                 choicesObject,
                 answer.name);
@@ -295,7 +296,8 @@ public class MovieQuestionController {
                 MovieInfos movie = movieList.get(0);
                 MovieInfos similaryMovie = movieList.get(1);
 
-                cast = MovieTmdbFetching.getRandomCoherentPeopleListInTheseMovies(movie.id, 1, similaryMovie.id, 3,
+                cast = MovieTmdbFetching.getRandomCoherentPeopleListInTheseMovies(movie.getId(), 1,
+                        similaryMovie.getId(), 3,
                         internLanguage.getTmdbLanguage());
             }
         } catch (Exception e) {
@@ -308,8 +310,8 @@ public class MovieQuestionController {
         Collections.shuffle(cast);
         String[] choices = { cast.get(0).name, cast.get(1).name, cast.get(2).name, cast.get(3).name };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + movieOfQuestion.backdrop_path,
-                movieOfQuestion.title,
+        MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + movieOfQuestion.getBackdropPath(),
+                movieOfQuestion.getTitle(),
                 MovieQuestion.DOESNT_TAKE_PART.getQuestion(internLanguage),
                 choicesObject,
                 answer.name);
@@ -345,14 +347,14 @@ public class MovieQuestionController {
 
         MovieInfos answer = movieList.get(0);
         Collections.shuffle(movieList);
-        String[] choices = { movieList.get(0).release_date, movieList.get(1).release_date,
-                movieList.get(2).release_date,
-                movieList.get(3).release_date };
+        String[] choices = { movieList.get(0).getReleaseDate(), movieList.get(1).getReleaseDate(),
+                movieList.get(2).getReleaseDate(),
+                movieList.get(3).getReleaseDate() };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + answer.poster_path, answer.title,
+        MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + answer.getPosterPath(), answer.getTitle(),
                 MovieQuestion.RELEASE_DATE.getQuestion(internLanguage),
                 choicesObject,
-                answer.release_date);
+                answer.getReleaseDate());
 
         return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
     }
