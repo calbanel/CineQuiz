@@ -2,7 +2,7 @@ package cinequiz.backend.api_questions.utils.tmdb.fetching.options;
 
 import java.util.List;
 
-import cinequiz.backend.api_questions.utils.tmdb.model.MediaInfos;
+import cinequiz.backend.api_questions.utils.tmdb.model.media.MediaInfos;
 
 public class MediaTmdbFetchingOptions {
     private boolean title, poster, backdrop, description, releaseDate;

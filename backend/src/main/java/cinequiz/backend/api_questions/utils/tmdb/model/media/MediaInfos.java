@@ -1,4 +1,4 @@
-package cinequiz.backend.api_questions.utils.tmdb.model;
+package cinequiz.backend.api_questions.utils.tmdb.model.media;
 
 public interface MediaInfos {
     public int getId();
