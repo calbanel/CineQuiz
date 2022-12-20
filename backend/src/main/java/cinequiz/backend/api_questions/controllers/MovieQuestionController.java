@@ -160,7 +160,7 @@ public class MovieQuestionController {
 
                 cast = MediaTmdbFetching.getRandomCoherentPeopleListInTheseMovies(movie.getId(), 1,
                         similaryMovie.getId(), 3,
-                        internLanguage.getTmdbLanguage());
+                        internLanguage.getTmdbLanguage(), MediaType.MOVIE);
             }
         } catch (Exception e) {
             return new ResponseEntity<String>(e.getMessage(),
@@ -211,7 +211,7 @@ public class MovieQuestionController {
 
                 cast = MediaTmdbFetching.getRandomCoherentPeopleListInTheseMovies(movie.getId(), 1,
                         similaryMovie.getId(), 3,
-                        internLanguage.getTmdbLanguage());
+                        internLanguage.getTmdbLanguage(), MediaType.MOVIE);
             }
         } catch (Exception e) {
             return new ResponseEntity<String>(e.getMessage(),
