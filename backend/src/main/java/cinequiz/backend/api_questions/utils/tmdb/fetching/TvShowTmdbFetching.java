@@ -15,12 +15,8 @@ import cinequiz.backend.api_questions.exceptions.NotEnoughSimilarShowsInTMDBExce
 import cinequiz.backend.api_questions.exceptions.NotaValidShowException;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.options.PeopleTmdbFetchOptions;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.options.TvShowTmdbFetchOptions;
-import cinequiz.backend.api_questions.utils.tmdb.model.people.credit.ShowCredit;
-import cinequiz.backend.api_questions.utils.tmdb.model.people.credit.ShowCreditPage;
-import cinequiz.backend.api_questions.utils.tmdb.model.show.cast.Cast;
 import cinequiz.backend.api_questions.utils.tmdb.model.show.cast.CastMember;
 import cinequiz.backend.api_questions.utils.tmdb.model.show.cast.CastPage;
-import cinequiz.backend.api_questions.utils.tmdb.model.show.cast.Crew;
 import cinequiz.backend.api_questions.utils.tmdb.model.show.tv_show.TvShowInfos;
 import cinequiz.backend.api_questions.utils.tmdb.model.show.tv_show.list.TvShowPage;
 import cinequiz.backend.api_questions.utils.tmdb.model.show.tv_show.list.TvShowResult;
@@ -261,7 +257,7 @@ public class TvShowTmdbFetching extends TmdbFetching {
             throw new CastUnavailableInTMDBException();
 
         // only keeps peoples where we have the target values
-        ArrayList<CastMember> castFiltered = getFiltredCastListInPage(castPage, options, tmdbgenre);
+        ArrayList<CastMember> castFiltered = PeopleTmdbFetching.getFiltredCastListInPage(castPage, options, tmdbgenre);
 
         // we firt want the most popular casts, we want known names
         castFiltered.sort((a, b) -> new Comparator<CastMember>() {
@@ -278,7 +274,7 @@ public class TvShowTmdbFetching extends TmdbFetching {
         // browse the clean cast list
         for (CastMember c : castFiltered) {
             // add cast to the final list if he isn't in the similar tv shows
-            if (!isCastIsInThisTvShow(c.id, similarTvShowId, tmdbLanguage)) {
+            if (!PeopleTmdbFetching.isCastIsInThisShow(c.id, similarTvShowId, tmdbLanguage, "tv")) {
                 if (peoples.stream().filter(p -> p.name.equals(c.name)).findFirst().isEmpty())
                     peoples.add(c);
             }
@@ -310,55 +306,4 @@ public class TvShowTmdbFetching extends TmdbFetching {
         // null if the target cast page isn't valid
         return page;
     }
-
-    private static ArrayList<CastMember> getFiltredCastListInPage(CastPage page,
-            PeopleTmdbFetchOptions options, int tmdbgenre) {
-        ArrayList<Cast> cast = (ArrayList<Cast>) page.cast.stream()
-                .filter((c) -> (!options.isProfile_path() || (c.profile_path != null && !c.profile_path.equals("")))
-                        && (!options.isName() || (c.name != null && !c.name.equals("")))
-                        && (!options.isGender() || c.gender == tmdbgenre))
-                .collect(Collectors.toList());
-        ArrayList<Crew> crew = (ArrayList<Crew>) page.crew.stream()
-                .filter((c) -> (!options.isProfile_path() || (c.profile_path != null && !c.profile_path.equals("")))
-                        && (!options.isName() || (c.name != null && !c.name.equals("")))
-                        && (!options.isGender() || c.gender == tmdbgenre))
-                .collect(Collectors.toList());
-        ArrayList<CastMember> members = new ArrayList<CastMember>();
-        members.addAll(cast);
-        members.addAll(crew);
-        return members;
-    }
-
-    private static boolean isCastIsInThisTvShow(int personId, int tvShowId, String tmdbLanguage) {
-        boolean isIn = false;
-
-        // get all the tv shows have participated the person
-        ShowCreditPage creditPage = getPeopleTvShowCreditPage(personId, tmdbLanguage);
-        if (creditPage != null) {
-            ArrayList<ShowCredit> list = new ArrayList<ShowCredit>();
-            list.addAll(creditPage.cast);
-            list.addAll(creditPage.crew);
-            isIn = list.stream().filter(m -> m.id == tvShowId && m.media_type.equals("tv"))
-                    .findFirst().isPresent();
-        }
-
-        return isIn;
-    }
-
-    private static ShowCreditPage getPeopleTvShowCreditPage(int personId, String tmdbLanguage) {
-        ShowCreditPage page = null;
-        RestTemplate rt = new RestTemplate();
-        String url = "https://api.themoviedb.org/3/person/" + personId + "/combined_credits?api_key="
-                + TmdbFetching.API_KEY
-                + "&language=" + tmdbLanguage;
-        try {
-            page = rt.getForObject(url, ShowCreditPage.class);
-        } catch (final HttpClientErrorException e) {
-            System.out.println(e.getStatusCode());
-            System.out.println(e.getResponseBodyAsString());
-        }
-        // null if the target cast page isn't valid
-        return page;
-    }
-
 }
