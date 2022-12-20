@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { User } from '../models/user.models';
+import { AccountService } from '../services/account.service';
 
 
 @Component({
@@ -7,7 +9,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./homepage.component.css']
 })
 export class HomepageComponent implements OnInit {
+  user: User;
 
+  constructor(private accountService: AccountService) {
+      this.user = this.accountService.userValue;
+  }
   ngOnInit() {
     
   }
