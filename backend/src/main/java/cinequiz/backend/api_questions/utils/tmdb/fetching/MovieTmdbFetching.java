@@ -152,10 +152,8 @@ public class MovieTmdbFetching extends TmdbFetching {
         }
 
         // check if it's a valid movie according to the target values
-        if (tmp != null && (!options.isBudget() || tmp.getBudget() > 0)
-                && (!options.isRevenue() || tmp.getRevenue() > 0)
-                && (!options.isReleaseDate() || (tmp.getReleaseDate() != null
-                        && !tmp.getReleaseDate().equals(""))))
+        if (tmp != null && (!options.isReleaseDate() || (tmp.getReleaseDate() != null
+                && !tmp.getReleaseDate().equals(""))))
             movie = tmp;
 
         // throw exception if we failed to fetch the movie informations or if the target
