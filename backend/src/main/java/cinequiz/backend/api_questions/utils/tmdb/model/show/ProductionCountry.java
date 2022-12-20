@@ -1,8 +1,9 @@
 package cinequiz.backend.api_questions.utils.tmdb.model.show;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
 
-@JsonRootName("production_country")
+@JsonRootName(value = "production_country")
 public class ProductionCountry {
 
     @JsonProperty("iso_3166_1")

@@ -17,9 +17,8 @@ import cinequiz.backend.api_questions.utils.tmdb.fetching.options.MovieTmdbFetch
 import cinequiz.backend.api_questions.utils.tmdb.fetching.options.PeopleTmdbFetchOptions;
 import cinequiz.backend.api_questions.utils.tmdb.model.show.cast.CastMember;
 import cinequiz.backend.api_questions.utils.tmdb.model.show.cast.CastPage;
+import cinequiz.backend.api_questions.utils.tmdb.model.show.list.MovieResultsPage;
 import cinequiz.backend.api_questions.utils.tmdb.model.show.movie.MovieInfos;
-import cinequiz.backend.api_questions.utils.tmdb.model.show.movie.list.MoviePage;
-import cinequiz.backend.api_questions.utils.tmdb.model.show.movie.list.MovieResult;
 
 public class MovieTmdbFetching extends TmdbFetching {
     public static ArrayList<MovieInfos> getRandomCoherentMovies(String tmdbLanguage, int number,
@@ -60,22 +59,23 @@ public class MovieTmdbFetching extends TmdbFetching {
         while (movieList.size() < number) {
 
             // try to get the similar movie page
-            MoviePage page = getSimilarMoviesPage(movie.id, tmdbLanguage, page_number);
+            MovieResultsPage page = getSimilarMoviesPage(movie.getId(), tmdbLanguage, page_number);
             // we failed to get a similar movie page then we throw an exception
             if (page == null)
                 throw new NotEnoughSimilarShowsInTMDBException();
 
             // only keeps the movies of the same language
-            ArrayList<MovieResult> filtredResults = (ArrayList<MovieResult>) page.results.stream()
-                    .filter(m -> m.original_language.equals(movie.original_language)).collect(Collectors.toList());
+            ArrayList<MovieInfos> filtredResults = (ArrayList<MovieInfos>) page.getResults().stream()
+                    .filter(m -> m.getOriginalLanguage().equals(movie.getOriginalLanguage()))
+                    .collect(Collectors.toList());
 
             // remove unvalid similar movies
-            filtredResults = getFiltredMovieResultListInPage(page, options);
+            filtredResults = getFiltredMovieInfosListInPage(page, options);
 
             Collections.shuffle(filtredResults);
 
             // browse valid similar movies
-            for (MovieResult result : filtredResults) {
+            for (MovieInfos result : filtredResults) {
                 MovieInfos similar = null;
                 try {
                     // check the movie and get all of his infos
@@ -111,13 +111,13 @@ public class MovieTmdbFetching extends TmdbFetching {
         // as long as we don't have a valid movie, we go through the pages of popular
         // movies randomly
         while (movie == null) {
-            MoviePage page = getRandomPopularMoviesPage(tmdbLanguage);
+            MovieResultsPage page = getRandomPopularMoviesPage(tmdbLanguage);
 
             // remove unvalid movies of the popular movie page
-            ArrayList<MovieResult> filtredResults = getFiltredMovieResultListInPage(page, options);
+            ArrayList<MovieInfos> filtredResults = getFiltredMovieInfosListInPage(page, options);
             Collections.shuffle(filtredResults);
 
-            for (MovieResult result : filtredResults) {
+            for (MovieInfos result : filtredResults) {
                 try {
                     // if the movie is valid we stop the research
                     movie = getMovieIfValid(result, tmdbLanguage, options);
@@ -131,13 +131,13 @@ public class MovieTmdbFetching extends TmdbFetching {
         return movie;
     }
 
-    private static MovieInfos getMovieIfValid(MovieResult result, String tmdbLanguage,
+    private static MovieInfos getMovieIfValid(MovieInfos result, String tmdbLanguage,
             MovieTmdbFetchOptions options)
             throws NotaValidShowException {
         MovieInfos movie = null;
 
         // fetch the detailed informations on a movie
-        String url = "https://api.themoviedb.org/3/movie/" + result.id + "?api_key="
+        String url = "https://api.themoviedb.org/3/movie/" + result.getId() + "?api_key="
                 + TmdbFetching.API_KEY
                 + "&language="
                 + tmdbLanguage;
@@ -152,9 +152,10 @@ public class MovieTmdbFetching extends TmdbFetching {
         }
 
         // check if it's a valid movie according to the target values
-        if (tmp != null && (!options.isBudget() || tmp.budget > 0) && (!options.isRevenue() || tmp.revenue > 0)
-                && (!options.isReleaseDate() || (tmp.release_date != null
-                        && !tmp.release_date.equals(""))))
+        if (tmp != null && (!options.isBudget() || tmp.getBudget() > 0)
+                && (!options.isRevenue() || tmp.getRevenue() > 0)
+                && (!options.isReleaseDate() || (tmp.getReleaseDate() != null
+                        && !tmp.getReleaseDate().equals(""))))
             movie = tmp;
 
         // throw exception if we failed to fetch the movie informations or if the target
@@ -169,8 +170,8 @@ public class MovieTmdbFetching extends TmdbFetching {
     private static final int RANDOM_PAGE_MAX = 100; // I want one of the 100 first pages (the 2000 actual most popular
                                                     // // films)
 
-    private static MoviePage getRandomPopularMoviesPage(String tmdbLanguage) {
-        MoviePage page = null;
+    private static MovieResultsPage getRandomPopularMoviesPage(String tmdbLanguage) {
+        MovieResultsPage page = null;
         RestTemplate rt = new RestTemplate();
 
         // as long as we don't have a valid page, we go through the pages of popular
@@ -183,7 +184,7 @@ public class MovieTmdbFetching extends TmdbFetching {
                     + randomPage;
 
             try {
-                page = rt.getForObject(url, MoviePage.class);
+                page = rt.getForObject(url, MovieResultsPage.class);
             } catch (final HttpClientErrorException e) {
                 System.out.println(e.getStatusCode());
                 System.out.println(e.getResponseBodyAsString());
@@ -193,13 +194,13 @@ public class MovieTmdbFetching extends TmdbFetching {
         return page;
     }
 
-    private static MoviePage getSimilarMoviesPage(int movieId, String tmdbLanguage, int num_page) {
-        MoviePage page = null;
+    private static MovieResultsPage getSimilarMoviesPage(int movieId, String tmdbLanguage, int num_page) {
+        MovieResultsPage page = null;
         RestTemplate rt = new RestTemplate();
         String url = "https://api.themoviedb.org/3/movie/" + movieId + "/similar?api_key=" + TmdbFetching.API_KEY
                 + "&language=" + tmdbLanguage + "&page=" + num_page;
         try {
-            page = rt.getForObject(url, MoviePage.class);
+            page = rt.getForObject(url, MovieResultsPage.class);
         } catch (final HttpClientErrorException e) {
             System.out.println(e.getStatusCode());
             System.out.println(e.getResponseBodyAsString());
@@ -209,15 +210,17 @@ public class MovieTmdbFetching extends TmdbFetching {
         return page;
     }
 
-    private static ArrayList<MovieResult> getFiltredMovieResultListInPage(MoviePage page,
+    private static ArrayList<MovieInfos> getFiltredMovieInfosListInPage(MovieResultsPage page,
             MovieTmdbFetchOptions options) {
-        return (ArrayList<MovieResult>) page.results
+        return (ArrayList<MovieInfos>) page.getResults()
                 .stream()
                 .filter(
-                        (m) -> (!options.isTitle() || (m.title != null && !m.title.equals("")))
-                                && (!options.isPoster() || (m.poster_path != null && !m.poster_path.equals("")))
-                                && (!options.isBackdrop() || (m.backdrop_path != null && !m.backdrop_path.equals("")))
-                                && (!options.isDescription() || (m.overview != null && !m.overview.equals(""))))
+                        (m) -> (!options.isTitle() || (m.getTitle() != null && !m.getTitle().equals("")))
+                                && (!options.isPoster() || (m.getPosterPath() != null && !m.getPosterPath().equals("")))
+                                && (!options.isBackdrop()
+                                        || (m.getBackdropPath() != null && !m.getBackdropPath().equals("")))
+                                && (!options.isDescription()
+                                        || (m.getOverview() != null && !m.getOverview().equals(""))))
                 .collect(Collectors.toList());
     }
 

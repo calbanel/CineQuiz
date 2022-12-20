@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 
 import cinequiz.backend.api_questions.utils.tmdb.model.Item;
 
-@JsonRootName("production_company")
+@JsonRootName(value = "production_company")
 public class ProductionCompany extends Item {
 
     @JsonProperty("logo_path")

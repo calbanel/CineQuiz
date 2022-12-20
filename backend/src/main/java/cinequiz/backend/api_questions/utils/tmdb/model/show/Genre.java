@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 
 import cinequiz.backend.api_questions.utils.tmdb.model.Item;
 
-@JsonRootName("genre")
+@JsonRootName(value = "genre")
 public class Genre extends Item {
 
     @JsonProperty("name")

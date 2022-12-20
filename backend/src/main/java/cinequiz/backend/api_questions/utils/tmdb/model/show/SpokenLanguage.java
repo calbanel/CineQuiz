@@ -3,7 +3,7 @@ package cinequiz.backend.api_questions.utils.tmdb.model.show;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
-@JsonRootName("spoken_language")
+@JsonRootName(value = "spoken_language")
 public class SpokenLanguage {
 
     @JsonProperty("english_name")

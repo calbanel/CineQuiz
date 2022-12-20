@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 
 import cinequiz.backend.api_questions.utils.tmdb.model.Item;
 
-@JsonRootName("belongs_to_collection")
+@JsonRootName(value = "belongs_to_collection")
 public class BelongsToCollection extends Item {
 
     @JsonProperty("name")
