@@ -7,6 +7,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import * as CryptoJS from 'crypto-js';
 import { matchPasswordsValidator } from '../validators/match-passwords';
 import { map, Observable } from 'rxjs';
+import { AccountService } from '../services/account.service';
 
 @Component({
   selector: 'app-inscription',
@@ -21,7 +22,7 @@ export class RegistrationComponent implements OnInit {
   showEmailErrors$ !: Observable<Boolean>;
 
   constructor(private formBuilder: FormBuilder, private userService: UserService,
-    private router: Router, private http: HttpClient) { }
+    private router: Router, private http: HttpClient, private accountService: AccountService) { }
 
   ngOnInit(): void {
     this.registrationForm = this.formBuilder.group({
@@ -61,12 +62,7 @@ export class RegistrationComponent implements OnInit {
       email: this.registrationForm.value.email,
       password: encryptedPassword,
     }
-
-    this.http.post<User>("http://localhost:8080/add-user", newUser)
-      .subscribe(result => {
-        console.log(result);
-        setTimeout(() => { this.router.navigateByUrl("/"); }, 1000);
-      });
+    this.accountService.register(newUser);
   }
 
 }

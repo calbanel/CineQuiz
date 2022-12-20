@@ -37,8 +37,12 @@ export class AccountService {
         this.router.navigateByUrl("/");
     }
 
-    register(user: User) {
-        return this.http.post(`${environment.apiUrl}/register`, user);
+    register(user: any) {
+        this.http.post<User>(`${environment.apiUrl}/add-user`, user)
+      .subscribe(result => {
+        console.log(result);
+        setTimeout(() => { this.router.navigateByUrl("/"); }, 1000);
+      });
     }
 
     getAll() {

@@ -30,14 +30,12 @@ export class ConnectionComponent implements OnInit {
   onSubmitForm(): void {
     console.log(this.connectionForm.value);
     this.submitted = true;
-
-    // stop here if form is invalid
     if (this.connectionForm.invalid) {
       return;
     }
-
     this.loading = true;
-    this.accountService.register(this.connectionForm.value)
+    let encryptedPassword = CryptoJS.SHA3(this.connectionForm.value.password, { outputLength: 224 }).toString();
+    this.accountService.login(this.connectionForm.value.email,encryptedPassword)
       .pipe(first())
       .subscribe({
         next: () => {
