@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AccountService } from '../services/account.service';
 import { first } from 'rxjs/operators';
+import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'app-connection',
