@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Question } from '../models/question.model';
 import { QuestionService } from '../services/questions.service';
-import { Observable } from 'rxjs';
+import { interval, Observable, Subscription } from 'rxjs';
 import { User } from '../models/user.models';
 import { AccountService } from '../services/account.service';
 
@@ -19,9 +19,11 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
   marky !: any;
   answerTimeInSeconds !: number;
   user !: User;
+  timeLeft !: number;
+  interval:any;
 
   constructor(private questionService: QuestionService, private route: ActivatedRoute,
-    private router: Router, public account :AccountService) {
+    private router: Router, public account: AccountService) {
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false;
     };
@@ -31,6 +33,7 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
       }
     });
     this.user = this.account.userValue;
+    this.startTimer();
   }
 
   ngOnInit(): void {
@@ -39,40 +42,50 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
     this.quest$ = this.questionService.getQuestion();
     this.marky = require('marky');
     this.marky.mark('answerTime');
+    setTimeout(() => {
+      this.nextQuestion();
+    }, 30000);
+  }
+
+  startTimer() {
+    this.interval = setInterval(() => {
+      if (this.timeLeft > 0) {
+        this.timeLeft--;
+      } else {
+        this.timeLeft = 30;
+      }
+    }, 1000)
   }
 
   onClick(answerClicked: string, answer: string) {
-    this.answerTimeInSeconds = this.marky.stop('answerTime')['duration']/1000;
+    this.answerTimeInSeconds = this.marky.stop('answerTime')['duration'] / 1000;
     this.answered = true;
     if (answerClicked === answer) {
       document.getElementById(answerClicked)?.setAttribute("style", "background-color:#78e08f");
-      if(this.answerTimeInSeconds < 6){
+      if (this.answerTimeInSeconds < 6) {
         this.user.score += 1000;
-      }else{
-        this.user.score += Math.round((1-(this.answerTimeInSeconds/30)/2)*1000);
+      } else {
+        this.user.score += Math.round((1 - (this.answerTimeInSeconds / 30) / 2) * 1000);
       }
     } else {
       document.getElementById(answerClicked)?.setAttribute("style", "background-color:#E55039");
       document.getElementById(answer)!.setAttribute("style", "background-color:#78e08f");
     }
-    setTimeout(() => {
-      this.nextQuestion();
-    },1000);
   }
 
   nextQuestion() {
-    if(this.questionNumber == 10){
+    if (this.questionNumber == 10) {
       this.router.navigateByUrl("/ranking");
-    }else{
+    } else {
       this.router.navigateByUrl(`/questions/${this.questionNumber + 1}`);
     }
   }
 
-  isLoggedIn() : boolean{
+  isLoggedIn(): boolean {
     return this.account.isLoggedIn;
   }
 
-  logout(){
+  logout() {
     this.account.logout();
   }
 
