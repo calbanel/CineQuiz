@@ -1,7 +1,8 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { User } from '../models/user.models';
 import { AccountService } from '../services/account.service';
-import { AppService } from '../services/app.service';
 
 
 @Component({
@@ -13,11 +14,13 @@ export class HomepageComponent implements OnInit {
 
   user !: User;
 
-  constructor(private accountService: AccountService,private app: AppService) {
+  constructor(private accountService: AccountService, private router : Router) {
       this.user = this.accountService.userValue;
   }
 
-  authenticated() { return this.app.authenticated; }
+  logout(){
+    this.accountService.logout();
+  }
 
   ngOnInit() {
     

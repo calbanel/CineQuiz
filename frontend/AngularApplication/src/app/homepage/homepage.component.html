@@ -1,9 +1,13 @@
+<div *ngIf = "!user.pseudo">
 <button class="text-left font-roboto ml-20 mr-6 my-4 hover:bg-spray text-spray font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"> <a routerLink="login">Connexion</a></button>
 <button class="text-left font-roboto hover:bg-spray text-spray font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded"> <a routerLink="sign-in">Inscription</a></button>
+</div>
 
-<div [hidden]="!authenticated()">
-	<p>The ID is {{user.id}}</p>
-	<p>The content is {{user.pseudo}}</p>
+<div *ngIf = "user.pseudo">
+    <div id="user" class="min-w-[50%] flex ml-20 my-6">
+        <button class="font-roboto hover:bg-spray ml-10 mr-4 text-spray font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded" (click)="logout()">Deconnexion</button>
+        <img src="../assets/user.png" class="w-10 h-10 mr-4">{{user.pseudo}}
+    </div>
 </div>
 
 <div class="grid place-items-center flex flex-col">

@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AccountService } from '../services/account.service';
 import { first } from 'rxjs/operators';
 import * as CryptoJS from 'crypto-js';
-import { AppService } from '../services/app.service';
 
 @Component({
   selector: 'app-connection',
@@ -14,14 +13,12 @@ import { AppService } from '../services/app.service';
 export class ConnectionComponent implements OnInit {
 
   connectionForm !: FormGroup;
-  loading = false;
   submitted = false;
 
   constructor(private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private accountService: AccountService,
-    private app: AppService) { }
+    private accountService: AccountService) { }
 
   ngOnInit(): void {
     this.connectionForm = this.formBuilder.group({
@@ -32,13 +29,12 @@ export class ConnectionComponent implements OnInit {
 
   onSubmitForm() {
     console.log(this.connectionForm.value);
-    this.loading = true;
     let encryptedPassword = CryptoJS.SHA3(this.connectionForm.value.password, { outputLength: 224 }).toString();
     let credentials = { email: this.connectionForm.value.email, password: encryptedPassword };
-    this.app.authenticate(credentials, () => {
-      this.router.navigateByUrl('/');
-    });
-    return false;
+    console.log("mdp enrypté");
+    this.accountService.login(credentials);
+
+    console.log(credentials.password + " envoyé au serveur");
   }
 
 }

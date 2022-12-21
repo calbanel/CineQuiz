@@ -11,6 +11,7 @@ import { User } from '../models/user.models';
 export class AccountService {
     private userSubject: BehaviorSubject<User>;
     public user: Observable<User>;
+    public authenticated = false;
 
     constructor(private router: Router, private http: HttpClient) {
         this.userSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('user') || '{}'));
@@ -21,19 +22,33 @@ export class AccountService {
         return this.userSubject.value;
     }
 
-    login(username:string, password: string) { // ***************** TO DO ***************** 
-        return this.http.post<User>(`${environment.apiUrl}/connection`, { username, password })
-            .pipe(map(user => {
-                localStorage.setItem('user', JSON.stringify(user));
-                this.userSubject.next(user);
-                return user;
-            }));
+    public getUser(){
+        return localStorage.getItem('user');
     }
 
-    logout() { // ***************** TO DO ***************** 
+    get isLoggedIn() : boolean{
+        return this.authenticated;
+    }
+
+    login(userEntered:any) { // OK
+        return this.http.post<User>(`${environment.apiUrl}/connection`, userEntered).subscribe({
+            next : user => {localStorage.setItem('user',JSON.stringify(user));
+            this.authenticated = true;
+            console.log(localStorage.getItem('user'));
+            this.userSubject.next(user);
+            this.router.navigateByUrl("/");
+            return user;
+        },
+            error : (err) => alert("User not found")
+
+        });
+    }
+
+    logout() { // OK
         localStorage.removeItem('user');
         this.userSubject.next(null!);
-        this.router.navigateByUrl("/");
+        this.authenticated = false;
+        this.router.navigateByUrl("/login");
     }
 
     register(user: any) { // OK

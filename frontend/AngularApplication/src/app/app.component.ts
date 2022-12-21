@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AppService } from './services/app.service';
 import { finalize } from 'rxjs/operators';
+import { AccountService } from './services/account.service';
+import { User } from './models/user.models';
 
 @Component({
   selector: 'app-root',
@@ -10,14 +11,14 @@ import { finalize } from 'rxjs/operators';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  constructor(private app: AppService, private http: HttpClient, private router: Router) {
-    this.app.authenticate(undefined, undefined);
+  user !: User;
+
+  constructor(private accountService: AccountService) {
+    this.accountService.user.subscribe(x => this.user = x);
   }
+
   logout() {
-    this.http.post('logout', {}).pipe(finalize(() => {
-      this.app.authenticated = false;
-      this.router.navigateByUrl('/login');
-    })).subscribe();
+    this.accountService.logout();
   }
   ngOnInit() { }
 }
