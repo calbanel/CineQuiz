@@ -11,7 +11,6 @@ import { User } from '../models/user.models';
 export class AccountService {
     private userSubject: BehaviorSubject<User>;
     public user: Observable<User>;
-    public authenticated = false;
 
     constructor(private router: Router, private http: HttpClient) {
         this.userSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('user') || '{}'));
@@ -27,13 +26,12 @@ export class AccountService {
     }
 
     get isLoggedIn() : boolean{
-        return this.authenticated;
+        return this.getUser() !== null ? true : false;
     }
 
     login(userEntered:any) { // OK
         return this.http.post<User>(`${environment.apiUrl}/connection`, userEntered).subscribe({
             next : user => {localStorage.setItem('user',JSON.stringify(user));
-            this.authenticated = true;
             console.log(localStorage.getItem('user'));
             this.userSubject.next(user);
             this.router.navigateByUrl("/");
@@ -47,7 +45,6 @@ export class AccountService {
     logout() { // OK
         localStorage.removeItem('user');
         this.userSubject.next(null!);
-        this.authenticated = false;
         this.router.navigateByUrl("/login");
     }
 

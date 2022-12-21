@@ -3,6 +3,8 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Question } from '../models/question.model';
 import { QuestionService } from '../services/questions.service';
 import { Observable } from 'rxjs';
+import { User } from '../models/user.models';
+import { AccountService } from '../services/account.service';
 
 @Component({
   selector: 'app-single-question',
@@ -16,9 +18,10 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
   questionNumber !: number;
   marky !: any;
   answerTimeInSeconds !: number;
+  user !: User;
 
   constructor(private questionService: QuestionService, private route: ActivatedRoute,
-    private router: Router) {
+    private router: Router, public account :AccountService) {
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false;
     };
@@ -27,6 +30,7 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
         this.router.navigated = false;
       }
     });
+    this.user = this.account.userValue;
   }
 
   ngOnInit(): void {
@@ -42,6 +46,11 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
     this.answered = true;
     if (answerClicked === answer) {
       document.getElementById(answerClicked)?.setAttribute("style", "background-color:#78e08f");
+      if(this.answerTimeInSeconds < 6){
+        this.user.score += 1000;
+      }else{
+        this.user.score += Math.round((1-(this.answerTimeInSeconds/30)/2)*1000);
+      }
     } else {
       document.getElementById(answerClicked)?.setAttribute("style", "background-color:#E55039");
       document.getElementById(answer)!.setAttribute("style", "background-color:#78e08f");
@@ -57,6 +66,14 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
     }else{
       this.router.navigateByUrl(`/questions/${this.questionNumber + 1}`);
     }
+  }
+
+  isLoggedIn() : boolean{
+    return this.account.isLoggedIn;
+  }
+
+  logout(){
+    this.account.logout();
   }
 
   ngOnDestroy() {

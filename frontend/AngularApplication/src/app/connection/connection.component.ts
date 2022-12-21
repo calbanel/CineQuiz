@@ -28,13 +28,9 @@ export class ConnectionComponent implements OnInit {
   }
 
   onSubmitForm() {
-    console.log(this.connectionForm.value);
     let encryptedPassword = CryptoJS.SHA3(this.connectionForm.value.password, { outputLength: 224 }).toString();
     let credentials = { email: this.connectionForm.value.email, password: encryptedPassword };
-    console.log("mdp enrypté");
     this.accountService.login(credentials);
-
-    console.log(credentials.password + " envoyé au serveur");
   }
 
 }

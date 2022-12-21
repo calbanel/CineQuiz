@@ -14,16 +14,16 @@ export class HomepageComponent implements OnInit {
 
   user !: User;
 
-  constructor(private accountService: AccountService, private router : Router) {
-      this.user = this.accountService.userValue;
+  constructor(public account: AccountService, private router : Router) {
+      this.user = this.account.userValue;
   }
 
-  getUser(){
-    return this.user;
+  isLoggedIn() : boolean{
+    return this.account.isLoggedIn;
   }
 
   logout(){
-    this.accountService.logout();
+    this.account.logout();
   }
 
   ngOnInit() {
