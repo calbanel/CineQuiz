@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AccountService } from '../services/account.service';
 import { first } from 'rxjs/operators';
 import * as CryptoJS from 'crypto-js';
+import { AppService } from '../services/app.service';
 
 @Component({
   selector: 'app-connection',
@@ -16,10 +17,11 @@ export class ConnectionComponent implements OnInit {
   loading = false;
   submitted = false;
 
-  constructor(private formBuilder: FormBuilder, 
-              private route: ActivatedRoute, 
-              private router: Router, 
-              private accountService: AccountService,) { }
+  constructor(private formBuilder: FormBuilder,
+    private route: ActivatedRoute,
+    private router: Router,
+    private accountService: AccountService,
+    private app: AppService) { }
 
   ngOnInit(): void {
     this.connectionForm = this.formBuilder.group({
@@ -28,24 +30,15 @@ export class ConnectionComponent implements OnInit {
     });
   }
 
-  onSubmitForm(): void {
+  onSubmitForm() {
     console.log(this.connectionForm.value);
-    this.submitted = true;
-    if (this.connectionForm.invalid) {
-      return;
-    }
     this.loading = true;
     let encryptedPassword = CryptoJS.SHA3(this.connectionForm.value.password, { outputLength: 224 }).toString();
-    this.accountService.login(this.connectionForm.value.email,encryptedPassword)
-      .pipe(first())
-      .subscribe({
-        next: () => {
-          this.router.navigateByUrl('/login');
-        },
-        error: error => {
-          this.loading = false;
-        }
-      });
+    let credentials = { email: this.connectionForm.value.email, password: encryptedPassword };
+    this.app.authenticate(credentials, () => {
+      this.router.navigateByUrl('/');
+    });
+    return false;
   }
 
 }

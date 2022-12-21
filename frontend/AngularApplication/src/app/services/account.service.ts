@@ -52,11 +52,11 @@ export class AccountService {
         return this.http.get<User>(`${environment.apiUrl}/find-user/${id}`);
     }
 
-    update(id:string, params:any) { // ***************** TO DO ***************** 
-        return this.http.put<User>(`${environment.apiUrl}/add-user/${id}`, params)
+    update(id:string, user:any) { // OK
+        return this.http.put<User>(`${environment.apiUrl}/add-user/`, user)
             .pipe(map(x => {
                 if (id == this.userValue.id) {
-                    const user = { ...this.userValue, ...params };
+                    // const user = { ...this.userValue, ...user };
                     localStorage.setItem('user', JSON.stringify(user));
                     this.userSubject.next(user);
                 }
