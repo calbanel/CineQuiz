@@ -18,6 +18,10 @@ export class HomepageComponent implements OnInit {
       this.user = this.accountService.userValue;
   }
 
+  getUser(){
+    return this.user;
+  }
+
   logout(){
     this.accountService.logout();
   }
