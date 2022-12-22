@@ -1,9 +1,11 @@
 package cinequiz.backend.api_questions.utils.tmdb.model.media.tv_show;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
 
 import cinequiz.backend.api_questions.utils.tmdb.model.Item;
 
+@JsonRootName(value = "network")
 public class Network extends Item {
 
     @JsonProperty("name")
