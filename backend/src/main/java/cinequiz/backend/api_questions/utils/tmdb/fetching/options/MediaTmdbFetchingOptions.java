@@ -2,7 +2,7 @@ package cinequiz.backend.api_questions.utils.tmdb.fetching.options;
 
 import java.util.List;
 
-import cinequiz.backend.api_questions.utils.tmdb.model.media.MediaInfos;
+import cinequiz.backend.api_questions.utils.tmdb.model.media.MediaInterface;
 
 public class MediaTmdbFetchingOptions {
     private boolean title, poster, backdrop, description, releaseDate;
@@ -36,7 +36,7 @@ public class MediaTmdbFetchingOptions {
         return releaseDate;
     }
 
-    public boolean checkDuplicate(MediaInfos current, List<MediaInfos> dontWantDuplicata) {
+    public boolean checkDuplicate(MediaInterface current, List<MediaInterface> dontWantDuplicata) {
         return dontWantDuplicata.stream()
                 .filter(show -> (this.isTitle() && current.getTitle().equals(show.getTitle()))
                         || (this.isPoster() && current.getPosterPath().equals(show.getPosterPath()))
