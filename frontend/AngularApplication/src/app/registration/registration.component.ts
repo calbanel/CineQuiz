@@ -17,7 +17,6 @@ import { AccountService } from '../services/account.service';
 export class RegistrationComponent implements OnInit {
 
   registrationForm !: FormGroup;
-
   showPasswordErrors$ !: Observable<Boolean>;
   showEmailErrors$ !: Observable<Boolean>;
 
@@ -42,17 +41,9 @@ export class RegistrationComponent implements OnInit {
         this.registrationForm.hasError('confirmEqual')));
 
     this.showEmailErrors$ = this.registrationForm.statusChanges.pipe(
-      map(status => status === 'INVALID' && 
+      map(status => status === 'INVALID' &&
         this.registrationForm.get('email')!.dirty &&
         this.registrationForm.get('email')!.invalid));
-  }
-
-  isValid(field: string) {
-    return this.registrationForm.get(field)?.valid;
-  }
-
-  getField(field: string) {
-    return this.registrationForm.get(field);
   }
 
   onSubmitForm(): void {
