@@ -15,13 +15,13 @@ import cinequiz.backend.api_questions.exceptions.NotEnoughPeoplesInCast;
 import cinequiz.backend.api_questions.exceptions.NotEnoughSimilarShowsInTMDBException;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.options.MediaTmdbFetchingOptions;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.options.PeopleTmdbFetchingOptions;
+import cinequiz.backend.api_questions.utils.tmdb.model.media.MediaCredits;
 import cinequiz.backend.api_questions.utils.tmdb.model.media.MediaInfos;
 import cinequiz.backend.api_questions.utils.tmdb.model.media.MediaType;
-import cinequiz.backend.api_questions.utils.tmdb.model.media.cast.CastMember;
-import cinequiz.backend.api_questions.utils.tmdb.model.media.cast.CastPage;
 import cinequiz.backend.api_questions.utils.tmdb.model.media.list.MovieResultsPage;
 import cinequiz.backend.api_questions.utils.tmdb.model.media.list.ResultsPage;
 import cinequiz.backend.api_questions.utils.tmdb.model.media.list.TvResultsPage;
+import cinequiz.backend.api_questions.utils.tmdb.model.people.PersonMovieCredit;
 
 public class MediaTmdbFetching extends TmdbFetching {
     public static ArrayList<MediaInfos> getRandomCoherentMedias(String tmdbLanguage, int number,
@@ -173,31 +173,32 @@ public class MediaTmdbFetching extends TmdbFetching {
                 .collect(Collectors.toList());
     }
 
-    private static ArrayList<CastMember> getRandomCoherentPeoplesInvolvedInThisMedia(int movieId,
+    private static ArrayList<PersonMovieCredit> getRandomCoherentPeoplesInvolvedInThisMedia(int movieId,
             String tmdbLanguage, int number, PeopleTmdbFetchingOptions options, int tmdbgenre, MediaType mediaType)
             throws CastUnavailableInTMDBException, NotEnoughPeoplesInCast {
         return getRandomCoherentPeoplesInvolvedInThisMedia(movieId, tmdbLanguage, number, options, tmdbgenre, mediaType,
                 -1);
     }
 
-    private static ArrayList<CastMember> getRandomCoherentPeoplesInvolvedInThisMedia(int movieId,
+    private static ArrayList<PersonMovieCredit> getRandomCoherentPeoplesInvolvedInThisMedia(int movieId,
             String tmdbLanguage,
             int number, PeopleTmdbFetchingOptions options, int tmdbgenre, MediaType mediaType, int similarMediaId)
             throws CastUnavailableInTMDBException, NotEnoughPeoplesInCast {
-        ArrayList<CastMember> peoples = new ArrayList<CastMember>();
+        ArrayList<PersonMovieCredit> peoples = new ArrayList<PersonMovieCredit>();
 
-        CastPage castPage = getMediaCastPage(movieId, tmdbLanguage, mediaType);
+        MediaCredits castPage = getMediaCastPage(movieId, tmdbLanguage, mediaType);
         // if target cast page isn't valid, throw exception
         if (castPage == null)
             throw new CastUnavailableInTMDBException();
 
         // only keeps peoples where we have the target values
-        ArrayList<CastMember> castFiltered = PeopleTmdbFetching.getFiltredCastListInPage(castPage, options, tmdbgenre);
+        ArrayList<PersonMovieCredit> castFiltered = PeopleTmdbFetching.getFiltredCastListInPage(castPage, options,
+                tmdbgenre);
 
         // we firt want the most popular casts, we want known names
-        castFiltered.sort((a, b) -> new Comparator<CastMember>() {
+        castFiltered.sort((a, b) -> new Comparator<PersonMovieCredit>() {
             @Override
-            public int compare(CastMember o1, CastMember o2) {
+            public int compare(PersonMovieCredit o1, PersonMovieCredit o2) {
                 if (o1.popularity == o2.popularity)
                     return 0;
 
@@ -207,9 +208,10 @@ public class MediaTmdbFetching extends TmdbFetching {
         }.compare(a, b));
 
         // browse the clean cast list
-        for (CastMember c : castFiltered) {
+        for (PersonMovieCredit c : castFiltered) {
             // add cast to the final list if he isn't in the similar media
-            if (!PeopleTmdbFetching.isCastIsInThisShow(c.id, similarMediaId, tmdbLanguage, mediaType.getTmdbPrefix())) {
+            if (!PeopleTmdbFetching.isCastIsInThisShow(c.getId(), similarMediaId, tmdbLanguage,
+                    mediaType.getTmdbPrefix())) {
                 if (peoples.stream().filter(p -> p.name.equals(c.name)).findFirst().isEmpty())
                     peoples.add(c);
             }
@@ -226,14 +228,14 @@ public class MediaTmdbFetching extends TmdbFetching {
         return peoples;
     }
 
-    private static CastPage getMediaCastPage(int movieId, String tmdbLanguage, MediaType mediaType) {
-        CastPage page = null;
+    private static MediaCredits getMediaCastPage(int movieId, String tmdbLanguage, MediaType mediaType) {
+        MediaCredits page = null;
         RestTemplate rt = new RestTemplate();
         String url = "https://api.themoviedb.org/3/" + mediaType.getTmdbPrefix() + "/" + movieId + "/credits?api_key="
                 + TmdbFetching.API_KEY
                 + "&language=" + tmdbLanguage;
         try {
-            page = rt.getForObject(url, CastPage.class);
+            page = rt.getForObject(url, MediaCredits.class);
         } catch (final HttpClientErrorException e) {
             System.out.println(e.getStatusCode());
             System.out.println(e.getResponseBodyAsString());
@@ -243,21 +245,21 @@ public class MediaTmdbFetching extends TmdbFetching {
         return page;
     }
 
-    public static ArrayList<CastMember> getRandomCoherentPeopleListInTheseMedias(int movieId,
+    public static ArrayList<PersonMovieCredit> getRandomCoherentPeopleListInTheseMedias(int movieId,
             int numberOfPeoplesInMedia, int similarMediaId, int numberOfPeoplesInSimilarMedia, String tmdbLanguage,
             MediaType mediaType) {
-        ArrayList<CastMember> cast = null;
+        ArrayList<PersonMovieCredit> cast = null;
         int randomGender = BackendApplication.random(1, 2);
         try {
             PeopleTmdbFetchingOptions panswerOptions = new PeopleTmdbFetchingOptions(true, true, true);
-            ArrayList<CastMember> answer = getRandomCoherentPeoplesInvolvedInThisMedia(movieId,
+            ArrayList<PersonMovieCredit> answer = getRandomCoherentPeoplesInvolvedInThisMedia(movieId,
                     tmdbLanguage, numberOfPeoplesInMedia, panswerOptions, randomGender, mediaType);
             PeopleTmdbFetchingOptions psimilaryOptions = new PeopleTmdbFetchingOptions(true, false, true);
 
-            ArrayList<CastMember> similaryCast = getRandomCoherentPeoplesInvolvedInThisMedia(similarMediaId,
+            ArrayList<PersonMovieCredit> similaryCast = getRandomCoherentPeoplesInvolvedInThisMedia(similarMediaId,
                     tmdbLanguage, numberOfPeoplesInSimilarMedia, psimilaryOptions, randomGender, mediaType,
                     movieId);
-            cast = new ArrayList<CastMember>();
+            cast = new ArrayList<PersonMovieCredit>();
             cast.addAll(answer);
             cast.addAll(similaryCast);
         } catch (Exception e) {

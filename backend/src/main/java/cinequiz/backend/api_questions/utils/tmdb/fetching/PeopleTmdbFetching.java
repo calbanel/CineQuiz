@@ -7,10 +7,10 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import cinequiz.backend.api_questions.utils.tmdb.fetching.options.PeopleTmdbFetchingOptions;
-import cinequiz.backend.api_questions.utils.tmdb.model.media.cast.Cast;
-import cinequiz.backend.api_questions.utils.tmdb.model.media.cast.CastMember;
-import cinequiz.backend.api_questions.utils.tmdb.model.media.cast.CastPage;
-import cinequiz.backend.api_questions.utils.tmdb.model.media.cast.Crew;
+import cinequiz.backend.api_questions.utils.tmdb.model.media.MediaCredits;
+import cinequiz.backend.api_questions.utils.tmdb.model.people.PersonCast;
+import cinequiz.backend.api_questions.utils.tmdb.model.people.PersonCrew;
+import cinequiz.backend.api_questions.utils.tmdb.model.people.PersonMovieCredit;
 import cinequiz.backend.api_questions.utils.tmdb.model.people.credit.ShowCredit;
 import cinequiz.backend.api_questions.utils.tmdb.model.people.credit.ShowCreditPage;
 
@@ -48,19 +48,19 @@ public class PeopleTmdbFetching extends TmdbFetching {
         return page;
     }
 
-    public static ArrayList<CastMember> getFiltredCastListInPage(CastPage page,
+    public static ArrayList<PersonMovieCredit> getFiltredCastListInPage(MediaCredits page,
             PeopleTmdbFetchingOptions options, int tmdbgenre) {
-        ArrayList<Cast> cast = (ArrayList<Cast>) page.cast.stream()
+        ArrayList<PersonCast> cast = (ArrayList<PersonCast>) page.cast.stream()
                 .filter((c) -> (!options.isProfile_path() || (c.profile_path != null && !c.profile_path.equals("")))
                         && (!options.isName() || (c.name != null && !c.name.equals("")))
                         && (!options.isGender() || c.gender == tmdbgenre))
                 .collect(Collectors.toList());
-        ArrayList<Crew> crew = (ArrayList<Crew>) page.crew.stream()
+        ArrayList<PersonCrew> crew = (ArrayList<PersonCrew>) page.crew.stream()
                 .filter((c) -> (!options.isProfile_path() || (c.profile_path != null && !c.profile_path.equals("")))
                         && (!options.isName() || (c.name != null && !c.name.equals("")))
                         && (!options.isGender() || c.gender == tmdbgenre))
                 .collect(Collectors.toList());
-        ArrayList<CastMember> members = new ArrayList<CastMember>();
+        ArrayList<PersonMovieCredit> members = new ArrayList<PersonMovieCredit>();
         members.addAll(cast);
         members.addAll(crew);
         return members;

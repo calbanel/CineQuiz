@@ -20,7 +20,7 @@ import cinequiz.backend.api_questions.utils.tmdb.fetching.MediaTmdbFetching;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.options.MediaTmdbFetchingOptions;
 import cinequiz.backend.api_questions.utils.tmdb.model.media.MediaInfos;
 import cinequiz.backend.api_questions.utils.tmdb.model.media.MediaType;
-import cinequiz.backend.api_questions.utils.tmdb.model.media.cast.CastMember;
+import cinequiz.backend.api_questions.utils.tmdb.model.people.PersonMovieCredit;
 
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -181,7 +181,7 @@ public class TvShowQuestionController {
         }
 
         ArrayList<MediaInfos> tvList = new ArrayList<MediaInfos>();
-        ArrayList<CastMember> cast = null;
+        ArrayList<PersonMovieCredit> cast = null;
         try {
             while (cast == null) {
                 MediaTmdbFetchingOptions manswerOptions = new MediaTmdbFetchingOptions(true, false, true, false, false);
@@ -203,7 +203,7 @@ public class TvShowQuestionController {
         }
 
         MediaInfos tvShowOfQuestion = tvList.get(0);
-        CastMember answer = cast.get(0);
+        PersonMovieCredit answer = cast.get(0);
         Collections.shuffle(cast);
         String[] choices = { cast.get(0).name, cast.get(1).name, cast.get(2).name,
                 cast.get(3).name };
@@ -230,7 +230,7 @@ public class TvShowQuestionController {
         }
 
         ArrayList<MediaInfos> tvList = new ArrayList<MediaInfos>();
-        ArrayList<CastMember> cast = null;
+        ArrayList<PersonMovieCredit> cast = null;
         try {
             while (cast == null) {
                 MediaTmdbFetchingOptions manswerOptions = new MediaTmdbFetchingOptions(true, true, false, false, false);
@@ -252,7 +252,7 @@ public class TvShowQuestionController {
         }
 
         MediaInfos tvShowOfQuestion = tvList.get(1);
-        CastMember answer = cast.get(0);
+        PersonMovieCredit answer = cast.get(0);
         Collections.shuffle(cast);
         String[] choices = { cast.get(0).name, cast.get(1).name, cast.get(2).name,
                 cast.get(3).name };
