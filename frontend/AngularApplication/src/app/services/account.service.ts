@@ -40,8 +40,7 @@ export class AccountService {
                 this.router.navigateByUrl("/");
                 return user;
             },
-            error: (err) => Swal.fire('Utilisateur inconnu','Veuillez créer un compte avant de vous connecter','error'
-            )
+            error: (err) => Swal.fire('Utilisateur inconnu','Veuillez créer un compte avant de vous connecter','error')
 
         });
     }
@@ -54,10 +53,12 @@ export class AccountService {
 
     register(user: any) {
         this.http.post<User>(`${environment.apiUrl}/add-user`, user)
-            .subscribe(result => {
+            .subscribe({ next: result => {
                 Swal.fire('Compte créé !','','success')
                 setTimeout(() => { this.router.navigateByUrl("/"); }, 1000);
-            });
+            },
+            error: (err) => Swal.fire('Email déjà utilisé','Veuillez utiliser une autre adresse mail','error')
+        });
     }
 
     getAll() { 
@@ -68,11 +69,10 @@ export class AccountService {
         return this.http.get<User>(`${environment.apiUrl}/find-user/${id}`);
     }
 
-    update(id: string, user: any) { // A VOIR
+    update(id: string, user: any) { // A VOIR -> pour maj score par exemple
         return this.http.put<User>(`${environment.apiUrl}/add-user/`, user)
             .pipe(map(x => {
                 if (id == this.userValue.id) {
-                    // const user = { ...this.userValue, ...user };
                     localStorage.setItem('user', JSON.stringify(user));
                     this.userSubject.next(user);
                 }
