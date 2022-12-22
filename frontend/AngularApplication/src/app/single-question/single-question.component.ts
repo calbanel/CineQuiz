@@ -42,9 +42,7 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
     this.quest$ = this.questionService.getQuestion();
     this.marky = require('marky');
     this.marky.mark('answerTime');
-    setTimeout(() => {
-      this.nextQuestion();
-    }, 30000);
+    setTimeout(() => {this.nextQuestion();}, 30000);
   }
 
   startTimer() {
@@ -53,12 +51,12 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
         this.timeLeft--;
       } else {
         this.timeLeft = 30;
-      }
-    }, 1000)
+      }}, 1000)
   }
 
   onClick(answerClicked: string, question: Question) {
     this.answerTimeInSeconds = this.marky.stop('answerTime')['duration'] / 1000;
+    
     if (answerClicked === question.answer && this.answered === false) {
       this.answered = true;
       document.getElementById(answerClicked)?.setAttribute("style", "background-color:#78e08f");
