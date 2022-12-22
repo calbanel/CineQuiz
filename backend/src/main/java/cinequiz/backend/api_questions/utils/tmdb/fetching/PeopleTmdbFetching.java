@@ -10,7 +10,7 @@ import cinequiz.backend.api_questions.utils.tmdb.fetching.options.PeopleTmdbFetc
 import cinequiz.backend.api_questions.utils.tmdb.model.media.MediaCredits;
 import cinequiz.backend.api_questions.utils.tmdb.model.people.PersonCast;
 import cinequiz.backend.api_questions.utils.tmdb.model.people.PersonCrew;
-import cinequiz.backend.api_questions.utils.tmdb.model.people.PersonMovieCredit;
+import cinequiz.backend.api_questions.utils.tmdb.model.people.PersonMovieCredits;
 import cinequiz.backend.api_questions.utils.tmdb.model.people.credit.ShowCredit;
 import cinequiz.backend.api_questions.utils.tmdb.model.people.credit.ShowCreditPage;
 
@@ -48,19 +48,21 @@ public class PeopleTmdbFetching extends TmdbFetching {
         return page;
     }
 
-    public static ArrayList<PersonMovieCredit> getFiltredCastListInPage(MediaCredits page,
+    public static ArrayList<PersonMovieCredits> getFiltredCastListInPage(MediaCredits page,
             PeopleTmdbFetchingOptions options, int tmdbgenre) {
         ArrayList<PersonCast> cast = (ArrayList<PersonCast>) page.cast.stream()
-                .filter((c) -> (!options.isProfile_path() || (c.profile_path != null && !c.profile_path.equals("")))
-                        && (!options.isName() || (c.name != null && !c.name.equals("")))
-                        && (!options.isGender() || c.gender == tmdbgenre))
+                .filter((c) -> (!options.isProfile_path()
+                        || (c.getProfilePath() != null && !c.getProfilePath().equals("")))
+                        && (!options.isName() || (c.getName() != null && !c.getName().equals("")))
+                        && (!options.isGender() || c.getGender() == tmdbgenre))
                 .collect(Collectors.toList());
         ArrayList<PersonCrew> crew = (ArrayList<PersonCrew>) page.crew.stream()
-                .filter((c) -> (!options.isProfile_path() || (c.profile_path != null && !c.profile_path.equals("")))
-                        && (!options.isName() || (c.name != null && !c.name.equals("")))
-                        && (!options.isGender() || c.gender == tmdbgenre))
+                .filter((c) -> (!options.isProfile_path()
+                        || (c.getProfilePath() != null && !c.getProfilePath().equals("")))
+                        && (!options.isName() || (c.getName() != null && !c.getName().equals("")))
+                        && (!options.isGender() || c.getGender() == tmdbgenre))
                 .collect(Collectors.toList());
-        ArrayList<PersonMovieCredit> members = new ArrayList<PersonMovieCredit>();
+        ArrayList<PersonMovieCredits> members = new ArrayList<PersonMovieCredits>();
         members.addAll(cast);
         members.addAll(crew);
         return members;

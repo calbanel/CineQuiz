@@ -19,7 +19,7 @@ import cinequiz.backend.api_questions.utils.tmdb.fetching.TmdbFetching;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.options.MediaTmdbFetchingOptions;
 import cinequiz.backend.api_questions.utils.tmdb.model.media.MediaInfos;
 import cinequiz.backend.api_questions.utils.tmdb.model.media.MediaType;
-import cinequiz.backend.api_questions.utils.tmdb.model.people.PersonMovieCredit;
+import cinequiz.backend.api_questions.utils.tmdb.model.people.PersonMovieCredits;
 import edu.emory.mathcs.backport.java.util.Collections;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -144,7 +144,7 @@ public class MovieQuestionController {
         }
 
         ArrayList<MediaInfos> movieList = new ArrayList<MediaInfos>();
-        ArrayList<PersonMovieCredit> cast = null;
+        ArrayList<PersonMovieCredits> cast = null;
         try {
             while (cast == null) {
                 MediaTmdbFetchingOptions manswerOptions = new MediaTmdbFetchingOptions(true, false, true, false,
@@ -168,15 +168,16 @@ public class MovieQuestionController {
         }
 
         MediaInfos movieOfQuestion = movieList.get(0);
-        PersonMovieCredit answer = cast.get(0);
+        PersonMovieCredits answer = cast.get(0);
         Collections.shuffle(cast);
-        String[] choices = { cast.get(0).name, cast.get(1).name, cast.get(2).name, cast.get(3).name };
+        String[] choices = { cast.get(0).getName(), cast.get(1).getName(), cast.get(2).getName(),
+                cast.get(3).getName() };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
         MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + movieOfQuestion.getBackdropPath(),
                 movieOfQuestion.getTitle(),
                 MovieQuestion.TAKE_PART.getQuestion(internLanguage),
                 choicesObject,
-                answer.name);
+                answer.getName());
 
         return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
     }
@@ -194,7 +195,7 @@ public class MovieQuestionController {
         }
 
         ArrayList<MediaInfos> movieList = new ArrayList<MediaInfos>();
-        ArrayList<PersonMovieCredit> cast = null;
+        ArrayList<PersonMovieCredits> cast = null;
         try {
             while (cast == null) {
                 MediaTmdbFetchingOptions manswerOptions = new MediaTmdbFetchingOptions(false, false, false, false,
@@ -219,15 +220,16 @@ public class MovieQuestionController {
         }
 
         MediaInfos movieOfQuestion = movieList.get(1);
-        PersonMovieCredit answer = cast.get(0);
+        PersonMovieCredits answer = cast.get(0);
         Collections.shuffle(cast);
-        String[] choices = { cast.get(0).name, cast.get(1).name, cast.get(2).name, cast.get(3).name };
+        String[] choices = { cast.get(0).getName(), cast.get(1).getName(), cast.get(2).getName(),
+                cast.get(3).getName() };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
         MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + movieOfQuestion.getBackdropPath(),
                 movieOfQuestion.getTitle(),
                 MovieQuestion.DOESNT_TAKE_PART.getQuestion(internLanguage),
                 choicesObject,
-                answer.name);
+                answer.getName());
 
         return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
     }
