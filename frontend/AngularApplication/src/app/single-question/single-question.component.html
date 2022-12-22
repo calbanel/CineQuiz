@@ -31,22 +31,22 @@
                 <div id="{{quest.choices.choice1}}" class="bg-good-samaritan rounded hover:bg-spray"> <label
                         for="questA" [ngClass]="{ disabled : answered === true}"> <img src="../assets/A.png"
                             class="w-6 left pt-4 inline pb-4 ml-5"></label> <button
-                        (click)="onClick(quest.choices.choice1,quest.answer)" class="py-2 px-4 w-3/4 flex-1"
+                        (click)="onClick(quest.choices.choice1,quest)" class="py-2 px-4 w-3/4 flex-1"
                         [ngClass]="{ disabled : answered === true}" id="questA">{{quest.choices.choice1}}</button></div>
                 <div id="{{quest.choices.choice2}}" class="bg-good-samaritan rounded hover:bg-spray"> <label
                         for="questB" [ngClass]="{ disabled : answered === true}"> <img src="../assets/B.png"
                             class="w-6 left pt-4 inline pb-4 ml-5"> </label> <button
-                        (click)="onClick(quest.choices.choice2,quest.answer)" class="py-2 px-4 w-3/4 flex-1"
+                        (click)="onClick(quest.choices.choice2,quest)" class="py-2 px-4 w-3/4 flex-1"
                         [ngClass]="{ disabled : answered === true}" id="questB">{{quest.choices.choice2}}</button></div>
                 <div id="{{quest.choices.choice3}}" class="bg-good-samaritan rounded hover:bg-spray"> <label
                         for="questC" [ngClass]="{ disabled : answered === true}"> <img src="../assets/C.png"
                             class="w-6 left pt-4 inline pb-4 ml-5"> </label> <button
-                        (click)="onClick(quest.choices.choice3,quest.answer)" class="py-2 px-4 w-3/4 flex-1"
+                        (click)="onClick(quest.choices.choice3,quest)" class="py-2 px-4 w-3/4 flex-1"
                         [ngClass]="{ disabled : answered === true}" id="questC">{{quest.choices.choice3}}</button></div>
                 <div id="{{quest.choices.choice4}}" class="bg-good-samaritan rounded hover:bg-spray"> <label
                         for="questD" [ngClass]="{ disabled : answered === true}"> <img src="../assets/D.png"
                             class="w-6 left pt-4 inline pb-4 ml-5"> </label> <button
-                        (click)="onClick(quest.choices.choice4,quest.answer)" class="py-2 px-4 w-3/4 flex-1"
+                        (click)="onClick(quest.choices.choice4,quest)" class="py-2 px-4 w-3/4 flex-1"
                         [ngClass]="{ disabled : answered === true}" id="questD">{{quest.choices.choice4}}</button></div>
             </div>
         </div>

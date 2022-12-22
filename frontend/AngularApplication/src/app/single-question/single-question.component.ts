@@ -57,19 +57,21 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
     }, 1000)
   }
 
-  onClick(answerClicked: string, answer: string) {
+  onClick(answerClicked: string, question: Question) {
     this.answerTimeInSeconds = this.marky.stop('answerTime')['duration'] / 1000;
-    this.answered = true;
-    if (answerClicked === answer) {
+    if (answerClicked === question.answer && this.answered === false) {
+      this.answered = true;
       document.getElementById(answerClicked)?.setAttribute("style", "background-color:#78e08f");
+      document.getElementById(answerClicked)?.setAttribute('disabled', '');
       if (this.answerTimeInSeconds < 6) {
         this.user.score += 1000;
       } else {
         this.user.score += Math.round((1 - (this.answerTimeInSeconds / 30) / 2) * 1000);
       }
     } else {
+      this.answered = true;
       document.getElementById(answerClicked)?.setAttribute("style", "background-color:#E55039");
-      document.getElementById(answer)!.setAttribute("style", "background-color:#78e08f");
+      document.getElementById(question.answer)!.setAttribute("style", "background-color:#78e08f");
     }
   }
 
