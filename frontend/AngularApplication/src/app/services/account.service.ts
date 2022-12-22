@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 import { User } from '../models/user.models';
+import Swal from 'sweetalert2';
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
@@ -21,50 +22,53 @@ export class AccountService {
         return this.userSubject.value;
     }
 
-    public getUser(){
+    public getUser() {
         return localStorage.getItem('user');
     }
 
-    get isLoggedIn() : boolean{
+    get isLoggedIn(): boolean {
         return this.getUser() !== null ? true : false;
     }
 
-    login(userEntered:any) { // OK
+    login(userEntered: any) { 
         return this.http.post<User>(`${environment.apiUrl}/connection`, userEntered).subscribe({
-            next : user => {localStorage.setItem('user',JSON.stringify(user));
-            console.log(localStorage.getItem('user'));
-            this.userSubject.next(user);
-            this.router.navigateByUrl("/");
-            return user;
-        },
-            error : (err) => alert("User not found")
+            next: user => {
+                localStorage.setItem('user', JSON.stringify(user));
+                console.log(localStorage.getItem('user'));
+                this.userSubject.next(user);
+                Swal.fire('Connecté!','','success')
+                this.router.navigateByUrl("/");
+                return user;
+            },
+            error: (err) => Swal.fire('Utilisateur inconnu','Veuillez créer un compte avant de vous connecter','error'
+            )
 
         });
     }
 
-    logout() { // OK
+    logout() { 
         localStorage.removeItem('user');
         this.userSubject.next(null!);
         this.router.navigateByUrl("/");
     }
 
-    register(user: any) { // OK
+    register(user: any) {
         this.http.post<User>(`${environment.apiUrl}/add-user`, user)
-      .subscribe(result => {
-        console.log(result);
-        setTimeout(() => { this.router.navigateByUrl("/"); }, 1000);
-      });
+            .subscribe(result => {
+                Swal.fire('Compte créé !','','success')
+                setTimeout(() => { this.router.navigateByUrl("/"); }, 1000);
+            });
     }
 
-    getAll() { // OK
+    getAll() { 
         return this.http.get<User[]>(`${environment.apiUrl}/find-all-users`);
     }
 
-    getById(id: string) { // OK
+    getById(id: string) {
         return this.http.get<User>(`${environment.apiUrl}/find-user/${id}`);
     }
 
-    update(id:string, user:any) { // OK
+    update(id: string, user: any) { // A VOIR
         return this.http.put<User>(`${environment.apiUrl}/add-user/`, user)
             .pipe(map(x => {
                 if (id == this.userValue.id) {
@@ -76,7 +80,7 @@ export class AccountService {
             }));
     }
 
-    delete(id: string) { // OK
+    delete(id: string) { 
         return this.http.delete<User>(`${environment.apiUrl}/delete-user/${id}`)
             .pipe(map(x => {
                 if (id == this.userValue.id) {
