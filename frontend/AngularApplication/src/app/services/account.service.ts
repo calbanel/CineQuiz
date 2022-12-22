@@ -45,7 +45,7 @@ export class AccountService {
     logout() { // OK
         localStorage.removeItem('user');
         this.userSubject.next(null!);
-        this.router.navigateByUrl("/login");
+        this.router.navigateByUrl("/");
     }
 
     register(user: any) { // OK
