@@ -1,4 +1,4 @@
-package cinequiz.backend.api_questions.mcq;
+package cinequiz.backend.api_questions.schemas;
 
 public class MCQQuestion {
     private String optionalImage;

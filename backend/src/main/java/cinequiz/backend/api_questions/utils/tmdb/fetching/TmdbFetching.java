@@ -7,7 +7,7 @@ public class TmdbFetching {
 
     public static final String IMG_URL_BASE = "https://image.tmdb.org/t/p/w500";
 
-    protected static <T> T fetchTmdbApi(ApiURL apiUrl, Class<T> pojoClass) {
+    public static <T> T fetchTmdbApi(ApiURL apiUrl, Class<T> pojoClass) {
         RestTemplate rt = new RestTemplate();
 
         T object = null;

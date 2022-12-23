@@ -1,4 +1,4 @@
-package cinequiz.backend.api_questions.mcq;
+package cinequiz.backend.api_questions.schemas;
 
 public class Choices {
     private String choice1, choice2, choice3, choice4;
