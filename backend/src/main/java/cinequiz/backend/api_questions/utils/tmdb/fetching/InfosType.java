@@ -1,11 +1,11 @@
 package cinequiz.backend.api_questions.utils.tmdb.fetching;
 
-public enum MediaType {
+public enum InfosType {
     MOVIE("movie"),
     TV("tv"),
     PERSON("person");
 
-    MediaType(String tmdbValue) {
+    InfosType(String tmdbValue) {
         this.tmdbValue = tmdbValue;
     }
 

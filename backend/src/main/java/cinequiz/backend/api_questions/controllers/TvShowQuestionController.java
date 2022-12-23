@@ -17,10 +17,10 @@ import cinequiz.backend.api_questions.utils.Language;
 import cinequiz.backend.api_questions.utils.questions.TvShowQuestion;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.TmdbFetching;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.MediaTmdbFetching;
-import cinequiz.backend.api_questions.utils.tmdb.fetching.MediaType;
+import cinequiz.backend.api_questions.utils.tmdb.fetching.InfosType;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.options.MediaTmdbFetchingOptions;
 import cinequiz.backend.api_questions.utils.tmdb.model.media.MediaInterface;
-import cinequiz.backend.api_questions.utils.tmdb.model.people.PersonMovieCredits;
+import cinequiz.backend.api_questions.utils.tmdb.model.people.PersonMediaCredits;
 
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -75,7 +75,7 @@ public class TvShowQuestionController {
             MediaTmdbFetchingOptions similaryOptions = new MediaTmdbFetchingOptions(true, false, false, false, false);
             tvList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage, NB_CHOICES_IN_MCQ,
                     answerOptions,
-                    similaryOptions, MediaType.TV);
+                    similaryOptions, InfosType.TV);
         } catch (Exception e) {
             return new ResponseEntity<String>(e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR);
@@ -111,7 +111,7 @@ public class TvShowQuestionController {
             MediaTmdbFetchingOptions answerOptions = new MediaTmdbFetchingOptions(true, false, false, true, false);
             MediaTmdbFetchingOptions similaryOptions = new MediaTmdbFetchingOptions(true, false, false, false, false);
             tvList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage, NB_CHOICES_IN_MCQ,
-                    answerOptions, similaryOptions, MediaType.TV);
+                    answerOptions, similaryOptions, InfosType.TV);
         } catch (Exception e) {
             return new ResponseEntity<String>(e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR);
@@ -147,7 +147,7 @@ public class TvShowQuestionController {
             MediaTmdbFetchingOptions answerOptions = new MediaTmdbFetchingOptions(true, true, false, false, true);
             MediaTmdbFetchingOptions similaryOptions = new MediaTmdbFetchingOptions(false, false, false, false, true);
             tvList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage, NB_CHOICES_IN_MCQ,
-                    answerOptions, similaryOptions, MediaType.TV);
+                    answerOptions, similaryOptions, InfosType.TV);
         } catch (Exception e) {
             return new ResponseEntity<String>(e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR);
@@ -181,21 +181,21 @@ public class TvShowQuestionController {
         }
 
         ArrayList<MediaInterface> tvList = new ArrayList<MediaInterface>();
-        ArrayList<PersonMovieCredits> cast = null;
+        ArrayList<PersonMediaCredits> cast = null;
         try {
             while (cast == null) {
                 MediaTmdbFetchingOptions manswerOptions = new MediaTmdbFetchingOptions(true, false, true, false, false);
                 MediaTmdbFetchingOptions msimilaryOptions = new MediaTmdbFetchingOptions(false, false, false, false,
                         false);
                 tvList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage, 2,
-                        manswerOptions, msimilaryOptions, MediaType.TV);
+                        manswerOptions, msimilaryOptions, InfosType.TV);
 
                 MediaInterface tvShow = tvList.get(0);
                 MediaInterface similarTvShow = tvList.get(1);
 
                 cast = MediaTmdbFetching.getRandomCoherentPeopleListInTheseMedias(tvShow.getId(), 1,
                         similarTvShow.getId(), 3,
-                        internLanguage, MediaType.TV);
+                        internLanguage, InfosType.TV);
             }
         } catch (Exception e) {
             return new ResponseEntity<String>(e.getMessage(),
@@ -203,7 +203,7 @@ public class TvShowQuestionController {
         }
 
         MediaInterface tvShowOfQuestion = tvList.get(0);
-        PersonMovieCredits answer = cast.get(0);
+        PersonMediaCredits answer = cast.get(0);
         Collections.shuffle(cast);
         String[] choices = { cast.get(0).getName(), cast.get(1).getName(), cast.get(2).getName(),
                 cast.get(3).getName() };
@@ -230,21 +230,21 @@ public class TvShowQuestionController {
         }
 
         ArrayList<MediaInterface> tvList = new ArrayList<MediaInterface>();
-        ArrayList<PersonMovieCredits> cast = null;
+        ArrayList<PersonMediaCredits> cast = null;
         try {
             while (cast == null) {
                 MediaTmdbFetchingOptions manswerOptions = new MediaTmdbFetchingOptions(true, true, false, false, false);
                 MediaTmdbFetchingOptions msimilaryOptions = new MediaTmdbFetchingOptions(true, false, true, false,
                         false);
                 tvList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage, 2,
-                        manswerOptions, msimilaryOptions, MediaType.TV);
+                        manswerOptions, msimilaryOptions, InfosType.TV);
 
                 MediaInterface tvShow = tvList.get(0);
                 MediaInterface similarTvShow = tvList.get(1);
 
                 cast = MediaTmdbFetching.getRandomCoherentPeopleListInTheseMedias(tvShow.getId(), 1,
                         similarTvShow.getId(), 3,
-                        internLanguage, MediaType.TV);
+                        internLanguage, InfosType.TV);
             }
         } catch (Exception e) {
             return new ResponseEntity<String>(e.getMessage(),
@@ -252,7 +252,7 @@ public class TvShowQuestionController {
         }
 
         MediaInterface tvShowOfQuestion = tvList.get(1);
-        PersonMovieCredits answer = cast.get(0);
+        PersonMediaCredits answer = cast.get(0);
         Collections.shuffle(cast);
         String[] choices = { cast.get(0).getName(), cast.get(1).getName(), cast.get(2).getName(),
                 cast.get(3).getName() };

@@ -2,7 +2,7 @@ package cinequiz.backend.api_questions.utils.tmdb.model.people;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class PersonMovieCredits extends Person {
+public class PersonMediaCredits extends Person {
 
     @JsonProperty("original_name")
     private String originalName;

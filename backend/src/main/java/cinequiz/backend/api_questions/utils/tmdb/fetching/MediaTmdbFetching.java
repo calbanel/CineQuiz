@@ -17,11 +17,11 @@ import cinequiz.backend.api_questions.utils.tmdb.model.media.MediaInterface;
 import cinequiz.backend.api_questions.utils.tmdb.model.media.list.MovieResultsPage;
 import cinequiz.backend.api_questions.utils.tmdb.model.media.list.ResultsPage;
 import cinequiz.backend.api_questions.utils.tmdb.model.media.list.TvResultsPage;
-import cinequiz.backend.api_questions.utils.tmdb.model.people.PersonMovieCredits;
+import cinequiz.backend.api_questions.utils.tmdb.model.people.PersonMediaCredits;
 
 public class MediaTmdbFetching extends TmdbFetching {
     public static ArrayList<MediaInterface> getRandomCoherentMedias(Language language, int number,
-            MediaTmdbFetchingOptions answerOptions, MediaTmdbFetchingOptions similaryOptions, MediaType mediaType) {
+            MediaTmdbFetchingOptions answerOptions, MediaTmdbFetchingOptions similaryOptions, InfosType mediaType) {
         ArrayList<MediaInterface> mediaList = new ArrayList<MediaInterface>();
 
         ArrayList<MediaInterface> similarMediaList = null;
@@ -50,7 +50,7 @@ public class MediaTmdbFetching extends TmdbFetching {
 
     private static ArrayList<MediaInterface> getSimilarValidMedias(MediaInterface media, int number,
             Language language,
-            MediaTmdbFetchingOptions options, MediaType mediaType) throws NotEnoughSimilarMediasInTMDBException {
+            MediaTmdbFetchingOptions options, InfosType mediaType) throws NotEnoughSimilarMediasInTMDBException {
         ArrayList<MediaInterface> mediaList = new ArrayList<MediaInterface>();
 
         // it can have several pages for similar movies in tmdb, we start at the first
@@ -103,7 +103,7 @@ public class MediaTmdbFetching extends TmdbFetching {
     }
 
     private static MediaInterface getOneRandomValidMedia(Language language, MediaTmdbFetchingOptions options,
-            MediaType mediaType) {
+            InfosType mediaType) {
         MediaInterface media = null;
 
         // as long as we don't have a valid media, we go through the pages of popular
@@ -125,7 +125,7 @@ public class MediaTmdbFetching extends TmdbFetching {
     private static final int RANDOM_PAGE_MAX = 100; // I want one of the 100 first pages (the 2000 actual most popular
                                                     // // films)
 
-    private static List<? extends MediaInterface> getRandomPopularMediasPage(Language language, MediaType mediaType) {
+    private static List<? extends MediaInterface> getRandomPopularMediasPage(Language language, InfosType mediaType) {
         List<? extends MediaInterface> list = null;
 
         // as long as we don't have a valid page, we go through the pages of popular
@@ -142,7 +142,7 @@ public class MediaTmdbFetching extends TmdbFetching {
     }
 
     private static List<? extends MediaInterface> getSimilarMediasPage(int movieId, Language language, int numPage,
-            MediaType mediaType) {
+            InfosType mediaType) {
         List<? extends MediaInterface> list = null;
 
         ApiURL url = new ApiURL(mediaType, RessourceType.SIMILAR, movieId);
@@ -171,19 +171,19 @@ public class MediaTmdbFetching extends TmdbFetching {
                 .collect(Collectors.toList());
     }
 
-    private static ArrayList<PersonMovieCredits> getRandomCoherentPeoplesInvolvedInThisMedia(int movieId,
-            Language language, int number, PeopleTmdbFetchingOptions options, int tmdbgenre, MediaType mediaType)
+    private static ArrayList<PersonMediaCredits> getRandomCoherentPeoplesInvolvedInThisMedia(int movieId,
+            Language language, int number, PeopleTmdbFetchingOptions options, int tmdbgenre, InfosType mediaType)
             throws CastUnavailableInTMDBException, NotEnoughPeoplesInCastException {
         return getRandomCoherentPeoplesInvolvedInThisMedia(movieId, language, number, options,
                 tmdbgenre, mediaType,
                 -1);
     }
 
-    private static ArrayList<PersonMovieCredits> getRandomCoherentPeoplesInvolvedInThisMedia(int movieId,
+    private static ArrayList<PersonMediaCredits> getRandomCoherentPeoplesInvolvedInThisMedia(int movieId,
             Language language,
-            int number, PeopleTmdbFetchingOptions options, int tmdbgenre, MediaType mediaType, int similarMediaId)
+            int number, PeopleTmdbFetchingOptions options, int tmdbgenre, InfosType mediaType, int similarMediaId)
             throws CastUnavailableInTMDBException, NotEnoughPeoplesInCastException {
-        ArrayList<PersonMovieCredits> peoples = new ArrayList<PersonMovieCredits>();
+        ArrayList<PersonMediaCredits> peoples = new ArrayList<PersonMediaCredits>();
 
         MediaCredits castPage = getMediaCastPage(movieId, language, mediaType);
         // if target cast page isn't valid, throw exception
@@ -191,13 +191,13 @@ public class MediaTmdbFetching extends TmdbFetching {
             throw new CastUnavailableInTMDBException(movieId);
 
         // only keeps peoples where we have the target values
-        ArrayList<PersonMovieCredits> castFiltered = PeopleTmdbFetching.getFiltredCastListInPage(castPage, options,
+        List<PersonMediaCredits> castFiltered = PeopleTmdbFetching.getFiltredPersonMediaCredits(castPage, options,
                 tmdbgenre);
 
         // we firt want the most popular casts, we want known names
-        castFiltered.sort((a, b) -> new Comparator<PersonMovieCredits>() {
+        castFiltered.sort((a, b) -> new Comparator<PersonMediaCredits>() {
             @Override
-            public int compare(PersonMovieCredits o1, PersonMovieCredits o2) {
+            public int compare(PersonMediaCredits o1, PersonMediaCredits o2) {
                 if (o1.getPopularity() == o2.getPopularity())
                     return 0;
 
@@ -207,7 +207,7 @@ public class MediaTmdbFetching extends TmdbFetching {
         }.compare(a, b));
 
         // browse the clean cast list
-        for (PersonMovieCredits c : castFiltered) {
+        for (PersonMediaCredits c : castFiltered) {
             // add cast to the final list if he isn't in the similar media
             if (!PeopleTmdbFetching.isCastIsInThisShow(c.getId(), similarMediaId, language,
                     mediaType.getTmdbValue())) {
@@ -227,7 +227,7 @@ public class MediaTmdbFetching extends TmdbFetching {
         return peoples;
     }
 
-    private static MediaCredits getMediaCastPage(int movieId, Language language, MediaType mediaType) {
+    private static MediaCredits getMediaCastPage(int movieId, Language language, InfosType mediaType) {
         MediaCredits page = null;
 
         ApiURL url = new ApiURL(mediaType, RessourceType.CREDITS, movieId);
@@ -239,22 +239,22 @@ public class MediaTmdbFetching extends TmdbFetching {
         return page;
     }
 
-    public static ArrayList<PersonMovieCredits> getRandomCoherentPeopleListInTheseMedias(int movieId,
+    public static ArrayList<PersonMediaCredits> getRandomCoherentPeopleListInTheseMedias(int movieId,
             int numberOfPeoplesInMedia, int similarMediaId, int numberOfPeoplesInSimilarMedia, Language language,
-            MediaType mediaType) {
-        ArrayList<PersonMovieCredits> cast = null;
+            InfosType mediaType) {
+        ArrayList<PersonMediaCredits> cast = null;
         int randomGender = BackendApplication.random(1, 2);
         try {
             PeopleTmdbFetchingOptions panswerOptions = new PeopleTmdbFetchingOptions(true, true, true);
-            ArrayList<PersonMovieCredits> answer = getRandomCoherentPeoplesInvolvedInThisMedia(movieId,
+            ArrayList<PersonMediaCredits> answer = getRandomCoherentPeoplesInvolvedInThisMedia(movieId,
                     language, numberOfPeoplesInMedia, panswerOptions, randomGender, mediaType);
             PeopleTmdbFetchingOptions psimilaryOptions = new PeopleTmdbFetchingOptions(true, false, true);
 
-            ArrayList<PersonMovieCredits> similaryCast = getRandomCoherentPeoplesInvolvedInThisMedia(similarMediaId,
+            ArrayList<PersonMediaCredits> similaryCast = getRandomCoherentPeoplesInvolvedInThisMedia(similarMediaId,
                     language, numberOfPeoplesInSimilarMedia, psimilaryOptions, randomGender,
                     mediaType,
                     movieId);
-            cast = new ArrayList<PersonMovieCredits>();
+            cast = new ArrayList<PersonMediaCredits>();
             cast.addAll(answer);
             cast.addAll(similaryCast);
         } catch (Exception e) {
@@ -265,13 +265,13 @@ public class MediaTmdbFetching extends TmdbFetching {
         return cast;
     }
 
-    private static List<? extends MediaInterface> getMediaInfosListFromAnResultPage(ApiURL url, MediaType mediaType) {
+    private static List<? extends MediaInterface> getMediaInfosListFromAnResultPage(ApiURL url, InfosType mediaType) {
         List<? extends MediaInterface> list = null;
         ResultsPage<? extends MediaInterface> page = null;
 
-        if (mediaType == MediaType.MOVIE) {
+        if (mediaType == InfosType.MOVIE) {
             page = fetchTmdbApi(url, MovieResultsPage.class);
-        } else if (mediaType == MediaType.TV) {
+        } else if (mediaType == InfosType.TV) {
             page = fetchTmdbApi(url, TvResultsPage.class);
         }
 

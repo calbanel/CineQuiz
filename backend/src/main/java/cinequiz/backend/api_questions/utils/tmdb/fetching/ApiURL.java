@@ -9,7 +9,7 @@ public class ApiURL {
 
     private StringBuilder urlBuilder;
 
-    public ApiURL(MediaType media, RessourceType ressource, int id) {
+    public ApiURL(InfosType media, RessourceType ressource, int id) {
         urlBuilder = new StringBuilder(TMDB_BASE_URL);
         urlBuilder.append(media.getTmdbValue());
         urlBuilder.append("/");
@@ -20,7 +20,7 @@ public class ApiURL {
         urlBuilder.append(API_KEY);
     }
 
-    public ApiURL(MediaType media, RessourceType ressource) {
+    public ApiURL(InfosType media, RessourceType ressource) {
         urlBuilder = new StringBuilder(TMDB_BASE_URL);
         urlBuilder.append(media.getTmdbValue());
         urlBuilder.append("/");

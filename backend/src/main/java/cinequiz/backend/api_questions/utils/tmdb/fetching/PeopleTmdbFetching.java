@@ -1,6 +1,7 @@
 package cinequiz.backend.api_questions.utils.tmdb.fetching;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import cinequiz.backend.api_questions.utils.Language;
@@ -10,7 +11,7 @@ import cinequiz.backend.api_questions.utils.tmdb.model.media.MediaPersonCredits;
 import cinequiz.backend.api_questions.utils.tmdb.model.people.PersonCast;
 import cinequiz.backend.api_questions.utils.tmdb.model.people.PersonCredits;
 import cinequiz.backend.api_questions.utils.tmdb.model.people.PersonCrew;
-import cinequiz.backend.api_questions.utils.tmdb.model.people.PersonMovieCredits;
+import cinequiz.backend.api_questions.utils.tmdb.model.people.PersonMediaCredits;
 
 public class PeopleTmdbFetching extends TmdbFetching {
 
@@ -18,9 +19,9 @@ public class PeopleTmdbFetching extends TmdbFetching {
         boolean isIn = false;
 
         // get all the movies have participated the person
-        PersonCredits creditPage = PeopleTmdbFetching.getPeopleShowCreditPage(personId, language);
+        PersonCredits creditPage = PeopleTmdbFetching.getPeopleCredits(personId, language);
         if (creditPage != null) {
-            ArrayList<MediaPersonCredits> list = new ArrayList<MediaPersonCredits>();
+            List<MediaPersonCredits> list = new ArrayList<MediaPersonCredits>();
             list.addAll(creditPage.getCast());
             list.addAll(creditPage.getCrew());
             isIn = list.stream().filter(m -> m.getId() == movieId && m.getMediaType().equals(mediaType))
@@ -30,10 +31,10 @@ public class PeopleTmdbFetching extends TmdbFetching {
         return isIn;
     }
 
-    private static PersonCredits getPeopleShowCreditPage(int personId, Language language) {
+    private static PersonCredits getPeopleCredits(int personId, Language language) {
         PersonCredits page = null;
 
-        ApiURL url = new ApiURL(MediaType.PERSON, RessourceType.COMBINED_CREDITS, personId);
+        ApiURL url = new ApiURL(InfosType.PERSON, RessourceType.COMBINED_CREDITS, personId);
         url.addLanguage(language);
 
         page = fetchTmdbApi(url, PersonCredits.class);
@@ -42,21 +43,21 @@ public class PeopleTmdbFetching extends TmdbFetching {
         return page;
     }
 
-    public static ArrayList<PersonMovieCredits> getFiltredCastListInPage(MediaCredits page,
+    public static List<PersonMediaCredits> getFiltredPersonMediaCredits(MediaCredits page,
             PeopleTmdbFetchingOptions options, int tmdbgenre) {
-        ArrayList<PersonCast> cast = (ArrayList<PersonCast>) page.getCast().stream()
+        List<PersonCast> cast = (ArrayList<PersonCast>) page.getCast().stream()
                 .filter((c) -> (!options.isProfile_path()
                         || (c.getProfilePath() != null && !c.getProfilePath().equals("")))
                         && (!options.isName() || (c.getName() != null && !c.getName().equals("")))
                         && (!options.isGender() || c.getGender() == tmdbgenre))
                 .collect(Collectors.toList());
-        ArrayList<PersonCrew> crew = (ArrayList<PersonCrew>) page.getCrew().stream()
+        List<PersonCrew> crew = (ArrayList<PersonCrew>) page.getCrew().stream()
                 .filter((c) -> (!options.isProfile_path()
                         || (c.getProfilePath() != null && !c.getProfilePath().equals("")))
                         && (!options.isName() || (c.getName() != null && !c.getName().equals("")))
                         && (!options.isGender() || c.getGender() == tmdbgenre))
                 .collect(Collectors.toList());
-        ArrayList<PersonMovieCredits> members = new ArrayList<PersonMovieCredits>();
+        List<PersonMediaCredits> members = new ArrayList<PersonMediaCredits>();
         members.addAll(cast);
         members.addAll(crew);
         return members;
