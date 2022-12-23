@@ -18,7 +18,4 @@ public class TvShowQuestion extends Question {
         public static final TvShowQuestion FIRST_AIR_DATE = new TvShowQuestion(
                         "Quelle a été la date de première diffusion de cette série ?",
                         "When did this tv show first air?");
-        public static final TvShowQuestion HOW_MANY_EPISODES = new TvShowQuestion(
-                        "Combien d'épisodes compte cette série ?",
-                        "How many episodes does this tv show have?");
 }
