@@ -4,9 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import cinequiz.backend.api_questions.utils.tmdb.model.Item;
-
-public class MediaPersonCredits extends Item {
+public class MediaPersonCredits extends MediaInfos {
 
     @JsonProperty("genre_ids")
     private List<Integer> genreIds;
