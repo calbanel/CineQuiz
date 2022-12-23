@@ -17,7 +17,6 @@ import cinequiz.backend.api_questions.utils.tmdb.fetching.options.MediaTmdbFetch
 import cinequiz.backend.api_questions.utils.tmdb.fetching.options.PeopleTmdbFetchingOptions;
 import cinequiz.backend.api_questions.utils.tmdb.model.media.MediaCredits;
 import cinequiz.backend.api_questions.utils.tmdb.model.media.MediaInterface;
-import cinequiz.backend.api_questions.utils.tmdb.model.media.MediaType;
 import cinequiz.backend.api_questions.utils.tmdb.model.media.list.MovieResultsPage;
 import cinequiz.backend.api_questions.utils.tmdb.model.media.list.ResultsPage;
 import cinequiz.backend.api_questions.utils.tmdb.model.media.list.TvResultsPage;
@@ -134,7 +133,7 @@ public class MediaTmdbFetching extends TmdbFetching {
         // randomly
         while (list == null) {
             int randomPage = BackendApplication.random(RANDOM_PAGE_MIN, RANDOM_PAGE_MAX);
-            String url = "https://api.themoviedb.org/3/" + mediaType.getTmdbPrefix() + "/popular?api_key="
+            String url = "https://api.themoviedb.org/3/" + mediaType.getTmdbValue() + "/popular?api_key="
                     + TmdbFetching.API_KEY
                     + "&language="
                     + tmdbLanguage + "&page="
@@ -149,7 +148,7 @@ public class MediaTmdbFetching extends TmdbFetching {
             MediaType mediaType) {
         List<? extends MediaInterface> list = null;
 
-        String url = "https://api.themoviedb.org/3/" + mediaType.getTmdbPrefix() + "/" + movieId + "/similar?api_key="
+        String url = "https://api.themoviedb.org/3/" + mediaType.getTmdbValue() + "/" + movieId + "/similar?api_key="
                 + TmdbFetching.API_KEY
                 + "&language=" + tmdbLanguage + "&page=" + num_page;
         list = getMediaInfosListFromAnResultPage(url, mediaType);
@@ -212,7 +211,7 @@ public class MediaTmdbFetching extends TmdbFetching {
         for (PersonMovieCredits c : castFiltered) {
             // add cast to the final list if he isn't in the similar media
             if (!PeopleTmdbFetching.isCastIsInThisShow(c.getId(), similarMediaId, tmdbLanguage,
-                    mediaType.getTmdbPrefix())) {
+                    mediaType.getTmdbValue())) {
                 if (peoples.stream().filter(p -> p.getName().equals(c.getName())).findFirst().isEmpty())
                     peoples.add(c);
             }
@@ -232,7 +231,7 @@ public class MediaTmdbFetching extends TmdbFetching {
     private static MediaCredits getMediaCastPage(int movieId, String tmdbLanguage, MediaType mediaType) {
         MediaCredits page = null;
         RestTemplate rt = new RestTemplate();
-        String url = "https://api.themoviedb.org/3/" + mediaType.getTmdbPrefix() + "/" + movieId + "/credits?api_key="
+        String url = "https://api.themoviedb.org/3/" + mediaType.getTmdbValue() + "/" + movieId + "/credits?api_key="
                 + TmdbFetching.API_KEY
                 + "&language=" + tmdbLanguage;
         try {

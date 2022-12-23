@@ -5,4 +5,8 @@ public class TmdbFetching {
     protected static final String API_KEY = "c7d238dde9b0efbe8deb61921ee13f06";
     public static final String IMG_URL_BASE = "https://image.tmdb.org/t/p/w500";
 
+    protected T fetchTmdbApi(MediaType media, RessourceType ressource, Language language, Class<T> pojoClass) {
+        return null;
+    }
+
 }
