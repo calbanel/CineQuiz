@@ -73,7 +73,7 @@ public class MovieQuestionController {
         try {
             MediaTmdbFetchingOptions answerOptions = new MediaTmdbFetchingOptions(true, false, true, false, false);
             MediaTmdbFetchingOptions similaryOptions = new MediaTmdbFetchingOptions(true, false, false, false, false);
-            movieList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ,
+            movieList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage, NB_CHOICES_IN_MCQ,
                     answerOptions,
                     similaryOptions, MediaType.MOVIE);
         } catch (Exception e) {
@@ -110,7 +110,7 @@ public class MovieQuestionController {
         try {
             MediaTmdbFetchingOptions answerOptions = new MediaTmdbFetchingOptions(true, false, false, true, false);
             MediaTmdbFetchingOptions similaryOptions = new MediaTmdbFetchingOptions(true, false, false, false, false);
-            movieList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ,
+            movieList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage, NB_CHOICES_IN_MCQ,
                     answerOptions,
                     similaryOptions, MediaType.MOVIE);
         } catch (Exception e) {
@@ -151,7 +151,7 @@ public class MovieQuestionController {
                         false);
                 MediaTmdbFetchingOptions msimilaryOptions = new MediaTmdbFetchingOptions(false, false, false, false,
                         false);
-                movieList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage.getTmdbLanguage(), 2,
+                movieList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage, 2,
                         manswerOptions,
                         msimilaryOptions, MediaType.MOVIE);
 
@@ -160,7 +160,7 @@ public class MovieQuestionController {
 
                 cast = MediaTmdbFetching.getRandomCoherentPeopleListInTheseMedias(movie.getId(), 1,
                         similaryMovie.getId(), 3,
-                        internLanguage.getTmdbLanguage(), MediaType.MOVIE);
+                        internLanguage, MediaType.MOVIE);
             }
         } catch (Exception e) {
             return new ResponseEntity<String>(e.getMessage(),
@@ -202,7 +202,7 @@ public class MovieQuestionController {
                         false);
                 MediaTmdbFetchingOptions msimilaryOptions = new MediaTmdbFetchingOptions(true, false, true, false,
                         false);
-                movieList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage.getTmdbLanguage(),
+                movieList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage,
                         2,
                         manswerOptions,
                         msimilaryOptions, MediaType.MOVIE);
@@ -212,7 +212,7 @@ public class MovieQuestionController {
 
                 cast = MediaTmdbFetching.getRandomCoherentPeopleListInTheseMedias(movie.getId(), 1,
                         similaryMovie.getId(), 3,
-                        internLanguage.getTmdbLanguage(), MediaType.MOVIE);
+                        internLanguage, MediaType.MOVIE);
             }
         } catch (Exception e) {
             return new ResponseEntity<String>(e.getMessage(),
@@ -250,7 +250,7 @@ public class MovieQuestionController {
         try {
             MediaTmdbFetchingOptions answerOptions = new MediaTmdbFetchingOptions(true, true, false, false, true);
             MediaTmdbFetchingOptions similaryOptions = new MediaTmdbFetchingOptions(false, false, false, false, true);
-            movieList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ,
+            movieList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage, NB_CHOICES_IN_MCQ,
                     answerOptions,
                     similaryOptions, MediaType.MOVIE);
         } catch (Exception e) {

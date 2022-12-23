@@ -5,10 +5,9 @@ import org.springframework.web.client.RestTemplate;
 
 public class TmdbFetching {
 
-    protected static final String API_KEY = "c7d238dde9b0efbe8deb61921ee13f06";
     public static final String IMG_URL_BASE = "https://image.tmdb.org/t/p/w500";
 
-    protected <T> T fetchTmdbApi(ApiURL apiUrl, Class<T> pojoClass) {
+    protected static <T> T fetchTmdbApi(ApiURL apiUrl, Class<T> pojoClass) {
         RestTemplate rt = new RestTemplate();
 
         T object = null;

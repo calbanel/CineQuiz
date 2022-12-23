@@ -3,9 +3,7 @@ package cinequiz.backend.api_questions.utils.tmdb.fetching;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
-
+import cinequiz.backend.api_questions.utils.Language;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.options.PeopleTmdbFetchingOptions;
 import cinequiz.backend.api_questions.utils.tmdb.model.media.MediaCredits;
 import cinequiz.backend.api_questions.utils.tmdb.model.media.MediaPersonCredits;
@@ -16,11 +14,11 @@ import cinequiz.backend.api_questions.utils.tmdb.model.people.PersonMovieCredits
 
 public class PeopleTmdbFetching extends TmdbFetching {
 
-    public static boolean isCastIsInThisShow(int personId, int movieId, String tmdbLanguage, String mediaType) {
+    public static boolean isCastIsInThisShow(int personId, int movieId, Language language, String mediaType) {
         boolean isIn = false;
 
         // get all the movies have participated the person
-        PersonCredits creditPage = PeopleTmdbFetching.getPeopleShowCreditPage(personId, tmdbLanguage);
+        PersonCredits creditPage = PeopleTmdbFetching.getPeopleShowCreditPage(personId, language);
         if (creditPage != null) {
             ArrayList<MediaPersonCredits> list = new ArrayList<MediaPersonCredits>();
             list.addAll(creditPage.getCast());
@@ -32,18 +30,14 @@ public class PeopleTmdbFetching extends TmdbFetching {
         return isIn;
     }
 
-    private static PersonCredits getPeopleShowCreditPage(int personId, String tmdbLanguage) {
+    private static PersonCredits getPeopleShowCreditPage(int personId, Language language) {
         PersonCredits page = null;
-        RestTemplate rt = new RestTemplate();
-        String url = "https://api.themoviedb.org/3/person/" + personId + "/combined_credits?api_key="
-                + TmdbFetching.API_KEY
-                + "&language=" + tmdbLanguage;
-        try {
-            page = rt.getForObject(url, PersonCredits.class);
-        } catch (final HttpClientErrorException e) {
-            System.out.println(e.getStatusCode());
-            System.out.println(e.getResponseBodyAsString());
-        }
+
+        ApiURL url = new ApiURL(MediaType.PERSON, RessourceType.COMBINED_CREDITS, personId);
+        url.addLanguage(language);
+
+        page = fetchTmdbApi(url, PersonCredits.class);
+
         // null if the target cast page isn't valid
         return page;
     }

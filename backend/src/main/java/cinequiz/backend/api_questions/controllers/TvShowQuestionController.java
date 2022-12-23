@@ -73,7 +73,7 @@ public class TvShowQuestionController {
         try {
             MediaTmdbFetchingOptions answerOptions = new MediaTmdbFetchingOptions(true, false, true, false, false);
             MediaTmdbFetchingOptions similaryOptions = new MediaTmdbFetchingOptions(true, false, false, false, false);
-            tvList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ,
+            tvList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage, NB_CHOICES_IN_MCQ,
                     answerOptions,
                     similaryOptions, MediaType.TV);
         } catch (Exception e) {
@@ -110,7 +110,7 @@ public class TvShowQuestionController {
         try {
             MediaTmdbFetchingOptions answerOptions = new MediaTmdbFetchingOptions(true, false, false, true, false);
             MediaTmdbFetchingOptions similaryOptions = new MediaTmdbFetchingOptions(true, false, false, false, false);
-            tvList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ,
+            tvList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage, NB_CHOICES_IN_MCQ,
                     answerOptions, similaryOptions, MediaType.TV);
         } catch (Exception e) {
             return new ResponseEntity<String>(e.getMessage(),
@@ -146,7 +146,7 @@ public class TvShowQuestionController {
         try {
             MediaTmdbFetchingOptions answerOptions = new MediaTmdbFetchingOptions(true, true, false, false, true);
             MediaTmdbFetchingOptions similaryOptions = new MediaTmdbFetchingOptions(false, false, false, false, true);
-            tvList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage.getTmdbLanguage(), NB_CHOICES_IN_MCQ,
+            tvList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage, NB_CHOICES_IN_MCQ,
                     answerOptions, similaryOptions, MediaType.TV);
         } catch (Exception e) {
             return new ResponseEntity<String>(e.getMessage(),
@@ -187,7 +187,7 @@ public class TvShowQuestionController {
                 MediaTmdbFetchingOptions manswerOptions = new MediaTmdbFetchingOptions(true, false, true, false, false);
                 MediaTmdbFetchingOptions msimilaryOptions = new MediaTmdbFetchingOptions(false, false, false, false,
                         false);
-                tvList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage.getTmdbLanguage(), 2,
+                tvList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage, 2,
                         manswerOptions, msimilaryOptions, MediaType.TV);
 
                 MediaInterface tvShow = tvList.get(0);
@@ -195,7 +195,7 @@ public class TvShowQuestionController {
 
                 cast = MediaTmdbFetching.getRandomCoherentPeopleListInTheseMedias(tvShow.getId(), 1,
                         similarTvShow.getId(), 3,
-                        internLanguage.getTmdbLanguage(), MediaType.TV);
+                        internLanguage, MediaType.TV);
             }
         } catch (Exception e) {
             return new ResponseEntity<String>(e.getMessage(),
@@ -236,7 +236,7 @@ public class TvShowQuestionController {
                 MediaTmdbFetchingOptions manswerOptions = new MediaTmdbFetchingOptions(true, true, false, false, false);
                 MediaTmdbFetchingOptions msimilaryOptions = new MediaTmdbFetchingOptions(true, false, true, false,
                         false);
-                tvList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage.getTmdbLanguage(), 2,
+                tvList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage, 2,
                         manswerOptions, msimilaryOptions, MediaType.TV);
 
                 MediaInterface tvShow = tvList.get(0);
@@ -244,7 +244,7 @@ public class TvShowQuestionController {
 
                 cast = MediaTmdbFetching.getRandomCoherentPeopleListInTheseMedias(tvShow.getId(), 1,
                         similarTvShow.getId(), 3,
-                        internLanguage.getTmdbLanguage(), MediaType.TV);
+                        internLanguage, MediaType.TV);
             }
         } catch (Exception e) {
             return new ResponseEntity<String>(e.getMessage(),
