@@ -6,7 +6,7 @@ public enum RessourceType {
     CREDITS("credits"),
     COMBINED_CREDITS("combined_credits");
 
-    MediaType(String tmdbValue) {
+    RessourceType(String tmdbValue) {
         this.tmdbValue = tmdbValue;
     }
 
