@@ -1,6 +1,6 @@
 package cinequiz.backend.api_questions.utils;
 
-import cinequiz.backend.api_questions.exceptions.LanguageNotSupportedException;
+import cinequiz.backend.api_questions.utils.exceptions.LanguageNotSupportedException;
 
 public enum Language {
     FR("fr-FR"),

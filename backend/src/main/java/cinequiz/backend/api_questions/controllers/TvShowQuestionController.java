@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import cinequiz.backend.BackendApplication;
-import cinequiz.backend.api_questions.exceptions.LanguageNotSupportedException;
 import cinequiz.backend.api_questions.schemas.Choices;
 import cinequiz.backend.api_questions.schemas.MCQQuestion;
 import cinequiz.backend.api_questions.utils.Language;
+import cinequiz.backend.api_questions.utils.exceptions.LanguageNotSupportedException;
 import cinequiz.backend.api_questions.utils.questions.TvShowQuestion;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.TmdbFetching;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.MediaTmdbFetching;
