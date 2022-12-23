@@ -23,7 +23,7 @@ public enum Language {
         else if (language.equals("en"))
             lang = Language.EN;
         else
-            throw new LanguageNotSupportedException();
+            throw new LanguageNotSupportedException(language);
 
         return lang;
     }

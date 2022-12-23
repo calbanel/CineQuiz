@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import cinequiz.backend.BackendApplication;
 import cinequiz.backend.api_questions.exceptions.CastUnavailableInTMDBException;
-import cinequiz.backend.api_questions.exceptions.NotEnoughPeoplesInCast;
-import cinequiz.backend.api_questions.exceptions.NotEnoughSimilarShowsInTMDBException;
+import cinequiz.backend.api_questions.exceptions.NotEnoughPeoplesInCastException;
+import cinequiz.backend.api_questions.exceptions.NotEnoughSimilarMediasInTMDBException;
 import cinequiz.backend.api_questions.utils.Language;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.options.MediaTmdbFetchingOptions;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.options.PeopleTmdbFetchingOptions;
@@ -35,7 +35,7 @@ public class MediaTmdbFetching extends TmdbFetching {
             try {
                 similarMediaList = getSimilarValidMedias(media, number - 1, language, similaryOptions,
                         mediaType);
-            } catch (NotEnoughSimilarShowsInTMDBException e) {
+            } catch (NotEnoughSimilarMediasInTMDBException e) {
                 System.err.println(e.getMessage());
                 mediaList.clear();
             }
@@ -50,7 +50,7 @@ public class MediaTmdbFetching extends TmdbFetching {
 
     private static ArrayList<MediaInterface> getSimilarValidMedias(MediaInterface media, int number,
             Language language,
-            MediaTmdbFetchingOptions options, MediaType mediaType) throws NotEnoughSimilarShowsInTMDBException {
+            MediaTmdbFetchingOptions options, MediaType mediaType) throws NotEnoughSimilarMediasInTMDBException {
         ArrayList<MediaInterface> mediaList = new ArrayList<MediaInterface>();
 
         // it can have several pages for similar movies in tmdb, we start at the first
@@ -65,7 +65,7 @@ public class MediaTmdbFetching extends TmdbFetching {
                     mediaType);
             // we failed to get a similar media page then we throw an exception
             if (results == null)
-                throw new NotEnoughSimilarShowsInTMDBException();
+                throw new NotEnoughSimilarMediasInTMDBException(media.getId());
 
             // only keeps the movies of the same language
             List<? extends MediaInterface> filtredResults = (ArrayList<? extends MediaInterface>) results.stream()
@@ -97,7 +97,7 @@ public class MediaTmdbFetching extends TmdbFetching {
         }
 
         if (mediaList.size() < number)
-            throw new NotEnoughSimilarShowsInTMDBException();
+            throw new NotEnoughSimilarMediasInTMDBException(media.getId());
 
         return mediaList;
     }
@@ -173,7 +173,7 @@ public class MediaTmdbFetching extends TmdbFetching {
 
     private static ArrayList<PersonMovieCredits> getRandomCoherentPeoplesInvolvedInThisMedia(int movieId,
             Language language, int number, PeopleTmdbFetchingOptions options, int tmdbgenre, MediaType mediaType)
-            throws CastUnavailableInTMDBException, NotEnoughPeoplesInCast {
+            throws CastUnavailableInTMDBException, NotEnoughPeoplesInCastException {
         return getRandomCoherentPeoplesInvolvedInThisMedia(movieId, language, number, options,
                 tmdbgenre, mediaType,
                 -1);
@@ -182,13 +182,13 @@ public class MediaTmdbFetching extends TmdbFetching {
     private static ArrayList<PersonMovieCredits> getRandomCoherentPeoplesInvolvedInThisMedia(int movieId,
             Language language,
             int number, PeopleTmdbFetchingOptions options, int tmdbgenre, MediaType mediaType, int similarMediaId)
-            throws CastUnavailableInTMDBException, NotEnoughPeoplesInCast {
+            throws CastUnavailableInTMDBException, NotEnoughPeoplesInCastException {
         ArrayList<PersonMovieCredits> peoples = new ArrayList<PersonMovieCredits>();
 
         MediaCredits castPage = getMediaCastPage(movieId, language, mediaType);
         // if target cast page isn't valid, throw exception
         if (castPage == null)
-            throw new CastUnavailableInTMDBException();
+            throw new CastUnavailableInTMDBException(movieId);
 
         // only keeps peoples where we have the target values
         ArrayList<PersonMovieCredits> castFiltered = PeopleTmdbFetching.getFiltredCastListInPage(castPage, options,
@@ -222,7 +222,7 @@ public class MediaTmdbFetching extends TmdbFetching {
 
         // if there not enough peoples in the final list, throw exception
         if (peoples.size() < number)
-            throw new NotEnoughPeoplesInCast();
+            throw new NotEnoughPeoplesInCastException(movieId);
 
         return peoples;
     }
