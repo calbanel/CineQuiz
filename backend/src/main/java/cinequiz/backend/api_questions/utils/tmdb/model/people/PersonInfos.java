@@ -106,4 +106,9 @@ public class PersonInfos extends Person implements InfosInterface {
         return Language.EN.getTmdbLanguage();
     }
 
+    @Override
+    public int getGenre() {
+        return getGender();
+    }
+
 }

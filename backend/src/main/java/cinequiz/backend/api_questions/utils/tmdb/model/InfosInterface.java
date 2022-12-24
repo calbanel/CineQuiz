@@ -12,4 +12,6 @@ public interface InfosInterface {
     public String getDate();
 
     public String getOriginalLanguage();
+
+    public int getGenre();
 }

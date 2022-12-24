@@ -163,4 +163,9 @@ public class MediaPersonCredits extends MediaInfos {
         this.episodeCount = episodeCount;
     }
 
+    @Override
+    public int getGenre() {
+        return genreIds != null ? genreIds.get(0) : 0;
+    }
+
 }

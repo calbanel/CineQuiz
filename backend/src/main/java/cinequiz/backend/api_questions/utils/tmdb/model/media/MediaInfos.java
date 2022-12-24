@@ -196,4 +196,9 @@ public abstract class MediaInfos extends Item implements InfosInterface {
         return backdropPath;
     }
 
+    @Override
+    public int getGenre() {
+        return genres != null ? genres.get(0).getId() : 0;
+    }
+
 }

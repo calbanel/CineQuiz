@@ -19,9 +19,8 @@ import cinequiz.backend.api_questions.utils.exceptions.LanguageNotSupportedExcep
 import cinequiz.backend.api_questions.utils.questions.TvShowQuestion;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.TmdbFetching;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.MediaTmdbFetching;
-import cinequiz.backend.api_questions.utils.tmdb.fetching.PeopleTmdbFetching;
+import cinequiz.backend.api_questions.utils.tmdb.fetching.InfosTmdbFetchingOptions;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.InfosType;
-import cinequiz.backend.api_questions.utils.tmdb.fetching.options.InfosTmdbFetchingOptions;
 import cinequiz.backend.api_questions.utils.tmdb.model.InfosInterface;
 import cinequiz.backend.api_questions.utils.tmdb.model.people.PersonMediaCredits;
 
@@ -75,8 +74,8 @@ public class TvShowQuestionController {
 
         List<InfosInterface> tvList = new ArrayList<InfosInterface>();
         try {
-            InfosTmdbFetchingOptions answerOptions = new InfosTmdbFetchingOptions(true, true, false, false);
-            InfosTmdbFetchingOptions similaryOptions = new InfosTmdbFetchingOptions(true, false, false, false);
+            InfosTmdbFetchingOptions answerOptions = new InfosTmdbFetchingOptions(true, true, false, false, false);
+            InfosTmdbFetchingOptions similaryOptions = new InfosTmdbFetchingOptions(true, false, false, false, false);
             tvList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage, NB_CHOICES_IN_MCQ,
                     answerOptions,
                     similaryOptions, InfosType.TV);
@@ -112,8 +111,8 @@ public class TvShowQuestionController {
 
         List<InfosInterface> tvList = new ArrayList<InfosInterface>();
         try {
-            InfosTmdbFetchingOptions answerOptions = new InfosTmdbFetchingOptions(true, false, true, false);
-            InfosTmdbFetchingOptions similaryOptions = new InfosTmdbFetchingOptions(true, false, false, false);
+            InfosTmdbFetchingOptions answerOptions = new InfosTmdbFetchingOptions(true, false, true, false, false);
+            InfosTmdbFetchingOptions similaryOptions = new InfosTmdbFetchingOptions(true, false, false, false, false);
             tvList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage, NB_CHOICES_IN_MCQ,
                     answerOptions, similaryOptions, InfosType.TV);
         } catch (Exception e) {
@@ -148,8 +147,8 @@ public class TvShowQuestionController {
 
         List<InfosInterface> tvList = new ArrayList<InfosInterface>();
         try {
-            InfosTmdbFetchingOptions answerOptions = new InfosTmdbFetchingOptions(true, true, false, true);
-            InfosTmdbFetchingOptions similaryOptions = new InfosTmdbFetchingOptions(false, false, false, true);
+            InfosTmdbFetchingOptions answerOptions = new InfosTmdbFetchingOptions(true, true, false, true, false);
+            InfosTmdbFetchingOptions similaryOptions = new InfosTmdbFetchingOptions(false, false, false, true, false);
             tvList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage, NB_CHOICES_IN_MCQ,
                     answerOptions, similaryOptions, InfosType.TV);
         } catch (Exception e) {
@@ -188,15 +187,16 @@ public class TvShowQuestionController {
         List<PersonMediaCredits> cast = null;
         try {
             while (cast == null) {
-                InfosTmdbFetchingOptions manswerOptions = new InfosTmdbFetchingOptions(true, true, false, false);
-                InfosTmdbFetchingOptions msimilaryOptions = new InfosTmdbFetchingOptions(false, false, false, false);
+                InfosTmdbFetchingOptions manswerOptions = new InfosTmdbFetchingOptions(true, true, false, false, false);
+                InfosTmdbFetchingOptions msimilaryOptions = new InfosTmdbFetchingOptions(false, false, false, false,
+                        false);
                 tvList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage, 2,
                         manswerOptions, msimilaryOptions, InfosType.TV);
 
                 InfosInterface tvShow = tvList.get(0);
                 InfosInterface similarTvShow = tvList.get(1);
 
-                cast = PeopleTmdbFetching.getRandomCoherentPeopleListInTheseMedias(tvShow.getId(), 1,
+                cast = MediaTmdbFetching.getRandomCoherentPeopleListInTheseMedias(tvShow.getId(), 1,
                         similarTvShow.getId(), 3,
                         internLanguage, InfosType.TV);
             }
@@ -236,15 +236,17 @@ public class TvShowQuestionController {
         List<PersonMediaCredits> cast = null;
         try {
             while (cast == null) {
-                InfosTmdbFetchingOptions manswerOptions = new InfosTmdbFetchingOptions(true, false, false, false);
-                InfosTmdbFetchingOptions msimilaryOptions = new InfosTmdbFetchingOptions(true, true, false, false);
+                InfosTmdbFetchingOptions manswerOptions = new InfosTmdbFetchingOptions(true, false, false, false,
+                        false);
+                InfosTmdbFetchingOptions msimilaryOptions = new InfosTmdbFetchingOptions(true, true, false, false,
+                        false);
                 tvList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage, 2,
                         manswerOptions, msimilaryOptions, InfosType.TV);
 
                 InfosInterface tvShow = tvList.get(0);
                 InfosInterface similarTvShow = tvList.get(1);
 
-                cast = PeopleTmdbFetching.getRandomCoherentPeopleListInTheseMedias(tvShow.getId(), 1,
+                cast = MediaTmdbFetching.getRandomCoherentPeopleListInTheseMedias(tvShow.getId(), 1,
                         similarTvShow.getId(), 3,
                         internLanguage, InfosType.TV);
             }
