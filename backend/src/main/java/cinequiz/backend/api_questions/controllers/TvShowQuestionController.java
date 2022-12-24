@@ -2,6 +2,7 @@ package cinequiz.backend.api_questions.controllers;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import cinequiz.backend.api_questions.utils.exceptions.LanguageNotSupportedExcep
 import cinequiz.backend.api_questions.utils.questions.TvShowQuestion;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.TmdbFetching;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.MediaTmdbFetching;
+import cinequiz.backend.api_questions.utils.tmdb.fetching.PeopleTmdbFetching;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.InfosType;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.options.MediaTmdbFetchingOptions;
 import cinequiz.backend.api_questions.utils.tmdb.model.media.MediaInterface;
@@ -69,7 +71,7 @@ public class TvShowQuestionController {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        ArrayList<MediaInterface> tvList = new ArrayList<MediaInterface>();
+        List<MediaInterface> tvList = new ArrayList<MediaInterface>();
         try {
             MediaTmdbFetchingOptions answerOptions = new MediaTmdbFetchingOptions(true, false, true, false, false);
             MediaTmdbFetchingOptions similaryOptions = new MediaTmdbFetchingOptions(true, false, false, false, false);
@@ -106,7 +108,7 @@ public class TvShowQuestionController {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        ArrayList<MediaInterface> tvList = new ArrayList<MediaInterface>();
+        List<MediaInterface> tvList = new ArrayList<MediaInterface>();
         try {
             MediaTmdbFetchingOptions answerOptions = new MediaTmdbFetchingOptions(true, false, false, true, false);
             MediaTmdbFetchingOptions similaryOptions = new MediaTmdbFetchingOptions(true, false, false, false, false);
@@ -142,7 +144,7 @@ public class TvShowQuestionController {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        ArrayList<MediaInterface> tvList = new ArrayList<MediaInterface>();
+        List<MediaInterface> tvList = new ArrayList<MediaInterface>();
         try {
             MediaTmdbFetchingOptions answerOptions = new MediaTmdbFetchingOptions(true, true, false, false, true);
             MediaTmdbFetchingOptions similaryOptions = new MediaTmdbFetchingOptions(false, false, false, false, true);
@@ -180,8 +182,8 @@ public class TvShowQuestionController {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        ArrayList<MediaInterface> tvList = new ArrayList<MediaInterface>();
-        ArrayList<PersonMediaCredits> cast = null;
+        List<MediaInterface> tvList = new ArrayList<MediaInterface>();
+        List<PersonMediaCredits> cast = null;
         try {
             while (cast == null) {
                 MediaTmdbFetchingOptions manswerOptions = new MediaTmdbFetchingOptions(true, false, true, false, false);
@@ -193,7 +195,7 @@ public class TvShowQuestionController {
                 MediaInterface tvShow = tvList.get(0);
                 MediaInterface similarTvShow = tvList.get(1);
 
-                cast = MediaTmdbFetching.getRandomCoherentPeopleListInTheseMedias(tvShow.getId(), 1,
+                cast = PeopleTmdbFetching.getRandomCoherentPeopleListInTheseMedias(tvShow.getId(), 1,
                         similarTvShow.getId(), 3,
                         internLanguage, InfosType.TV);
             }
@@ -229,8 +231,8 @@ public class TvShowQuestionController {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        ArrayList<MediaInterface> tvList = new ArrayList<MediaInterface>();
-        ArrayList<PersonMediaCredits> cast = null;
+        List<MediaInterface> tvList = new ArrayList<MediaInterface>();
+        List<PersonMediaCredits> cast = null;
         try {
             while (cast == null) {
                 MediaTmdbFetchingOptions manswerOptions = new MediaTmdbFetchingOptions(true, true, false, false, false);
@@ -242,7 +244,7 @@ public class TvShowQuestionController {
                 MediaInterface tvShow = tvList.get(0);
                 MediaInterface similarTvShow = tvList.get(1);
 
-                cast = MediaTmdbFetching.getRandomCoherentPeopleListInTheseMedias(tvShow.getId(), 1,
+                cast = PeopleTmdbFetching.getRandomCoherentPeopleListInTheseMedias(tvShow.getId(), 1,
                         similarTvShow.getId(), 3,
                         internLanguage, InfosType.TV);
             }

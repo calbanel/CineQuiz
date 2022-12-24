@@ -17,7 +17,6 @@ import cinequiz.backend.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
 
-
 @CrossOrigin
 @RestController
 public class UserController {
@@ -26,28 +25,27 @@ public class UserController {
 
 	@PostMapping("/connection")
 	@ApiOperation(value = "Connects the user if they exist")
-	public ResponseEntity login(@RequestBody User user) {
+	public ResponseEntity<?> login(@RequestBody User user) {
 		Optional<User> userToFind = this.repository.findByEmail(user.getEmail());
-		if(userToFind.isPresent()){
+		if (userToFind.isPresent()) {
 			User userRequested = userToFind.get();
-			if(user.getPassword().equals(userRequested.getPassword())){
+			if (user.getPassword().equals(userRequested.getPassword())) {
 				return ResponseEntity.status(201).body(userRequested);
-			}else{
+			} else {
 				return ResponseEntity.status(403).body("Wrong Password");
 			}
-		}else{
+		} else {
 			return ResponseEntity.status(403).body("Wrong email");
 		}
 	}
 
-
 	@PostMapping("/add-user")
 	@ApiOperation(value = "Adds a new user")
-	public ResponseEntity addUser(@RequestBody User user) {
+	public ResponseEntity<?> addUser(@RequestBody User user) {
 		Optional<User> userToFind = this.repository.findByEmail(user.getEmail());
-		if(userToFind.isPresent()){
+		if (userToFind.isPresent()) {
 			return ResponseEntity.status(403).body("Email already used");
-		}else{
+		} else {
 			return ResponseEntity.status(201).body(repository.save(user));
 		}
 	}

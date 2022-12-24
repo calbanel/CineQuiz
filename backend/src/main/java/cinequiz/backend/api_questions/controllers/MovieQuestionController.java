@@ -1,6 +1,8 @@
 package cinequiz.backend.api_questions.controllers;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +17,7 @@ import cinequiz.backend.api_questions.utils.Language;
 import cinequiz.backend.api_questions.utils.exceptions.LanguageNotSupportedException;
 import cinequiz.backend.api_questions.utils.questions.MovieQuestion;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.MediaTmdbFetching;
+import cinequiz.backend.api_questions.utils.tmdb.fetching.PeopleTmdbFetching;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.InfosType;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.TmdbFetching;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.options.MediaTmdbFetchingOptions;
@@ -69,7 +72,7 @@ public class MovieQuestionController {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        ArrayList<MediaInterface> movieList = new ArrayList<MediaInterface>();
+        List<MediaInterface> movieList = new ArrayList<MediaInterface>();
         try {
             MediaTmdbFetchingOptions answerOptions = new MediaTmdbFetchingOptions(true, false, true, false, false);
             MediaTmdbFetchingOptions similaryOptions = new MediaTmdbFetchingOptions(true, false, false, false, false);
@@ -106,7 +109,7 @@ public class MovieQuestionController {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        ArrayList<MediaInterface> movieList = new ArrayList<MediaInterface>();
+        List<MediaInterface> movieList = new ArrayList<MediaInterface>();
         try {
             MediaTmdbFetchingOptions answerOptions = new MediaTmdbFetchingOptions(true, false, false, true, false);
             MediaTmdbFetchingOptions similaryOptions = new MediaTmdbFetchingOptions(true, false, false, false, false);
@@ -143,8 +146,8 @@ public class MovieQuestionController {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        ArrayList<MediaInterface> movieList = new ArrayList<MediaInterface>();
-        ArrayList<PersonMediaCredits> cast = null;
+        List<MediaInterface> movieList = new ArrayList<MediaInterface>();
+        List<PersonMediaCredits> cast = null;
         try {
             while (cast == null) {
                 MediaTmdbFetchingOptions manswerOptions = new MediaTmdbFetchingOptions(true, false, true, false,
@@ -158,7 +161,7 @@ public class MovieQuestionController {
                 MediaInterface movie = movieList.get(0);
                 MediaInterface similaryMovie = movieList.get(1);
 
-                cast = MediaTmdbFetching.getRandomCoherentPeopleListInTheseMedias(movie.getId(), 1,
+                cast = PeopleTmdbFetching.getRandomCoherentPeopleListInTheseMedias(movie.getId(), 1,
                         similaryMovie.getId(), 3,
                         internLanguage, InfosType.MOVIE);
             }
@@ -194,8 +197,8 @@ public class MovieQuestionController {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        ArrayList<MediaInterface> movieList = new ArrayList<MediaInterface>();
-        ArrayList<PersonMediaCredits> cast = null;
+        List<MediaInterface> movieList = new ArrayList<MediaInterface>();
+        List<PersonMediaCredits> cast = null;
         try {
             while (cast == null) {
                 MediaTmdbFetchingOptions manswerOptions = new MediaTmdbFetchingOptions(false, false, false, false,
@@ -210,7 +213,7 @@ public class MovieQuestionController {
                 MediaInterface movie = movieList.get(0);
                 MediaInterface similaryMovie = movieList.get(1);
 
-                cast = MediaTmdbFetching.getRandomCoherentPeopleListInTheseMedias(movie.getId(), 1,
+                cast = PeopleTmdbFetching.getRandomCoherentPeopleListInTheseMedias(movie.getId(), 1,
                         similaryMovie.getId(), 3,
                         internLanguage, InfosType.MOVIE);
             }
@@ -246,7 +249,7 @@ public class MovieQuestionController {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        ArrayList<MediaInterface> movieList = new ArrayList<MediaInterface>();
+        List<MediaInterface> movieList = new ArrayList<MediaInterface>();
         try {
             MediaTmdbFetchingOptions answerOptions = new MediaTmdbFetchingOptions(true, true, false, false, true);
             MediaTmdbFetchingOptions similaryOptions = new MediaTmdbFetchingOptions(false, false, false, false, true);
