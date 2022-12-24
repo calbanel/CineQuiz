@@ -111,6 +111,9 @@ public class MediaTmdbFetching extends TmdbFetching {
                 .collect(Collectors.toList());
     }
 
+    private static final int SIMILAR_START_PAGE = 1;
+    private static final int NB_MAX_BROWSING_SIMILAR_PAGE = 3;
+
     private static List<MediaInterface> getSimilarValidMedias(MediaInterface media, int number,
             Language language,
             MediaTmdbFetchingOptions options, InfosType mediaType) throws NotEnoughSimilarMediasInTMDBException {
@@ -118,9 +121,9 @@ public class MediaTmdbFetching extends TmdbFetching {
 
         // it can have several pages for similar movies in tmdb, we start at the first
         // page
-        int page_number = 1;
+        int page_number = SIMILAR_START_PAGE;
         // we need to fill the list
-        while (page_number < 3) {
+        while (page_number < NB_MAX_BROWSING_SIMILAR_PAGE) {
 
             // try to get the similar media page
             List<? extends MediaInterface> results = getSimilarMediasList(media.getId(), language,
@@ -130,9 +133,10 @@ public class MediaTmdbFetching extends TmdbFetching {
             if (results == null)
                 throw new NotEnoughSimilarMediasInTMDBException(media.getId());
 
-            // only keeps the movies of the same language
+            // only keeps the movies of the same language and different of the initial movie
             List<? extends MediaInterface> filtredResults = (ArrayList<? extends MediaInterface>) results.stream()
-                    .filter(m -> m.getOriginalLanguage().equals(media.getOriginalLanguage()))
+                    .filter(m -> m.getOriginalLanguage().equals(media.getOriginalLanguage())
+                            && m.getId() != media.getId())
                     .collect(Collectors.toList());
 
             // remove unvalid similar movies

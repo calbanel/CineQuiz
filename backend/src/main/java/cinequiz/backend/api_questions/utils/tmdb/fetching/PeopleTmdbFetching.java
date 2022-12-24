@@ -19,12 +19,15 @@ import cinequiz.backend.api_questions.utils.tmdb.model.people.PersonMediaCredits
 
 public class PeopleTmdbFetching extends TmdbFetching {
 
+        private static final int MIN_GENDER_TMDB_CODE = 1;
+        private static final int MAX_GENDER_TMDB_CODE = 2;
+
         public static List<PersonMediaCredits> getRandomCoherentPeopleListInTheseMedias(int movieId,
                         int numberOfPeoplesInMedia, int similarMediaId, int numberOfPeoplesInSimilarMedia,
                         Language language,
                         InfosType mediaType) {
                 List<PersonMediaCredits> cast = null;
-                int randomGender = BackendApplication.random(1, 2);
+                int randomGender = BackendApplication.random(MIN_GENDER_TMDB_CODE, MAX_GENDER_TMDB_CODE);
                 try {
                         PeopleTmdbFetchingOptions panswerOptions = new PeopleTmdbFetchingOptions(true, true, true);
                         List<PersonMediaCredits> answer = getRandomCoherentPeoplesInvolvedInThisMedia(movieId,
@@ -47,13 +50,15 @@ public class PeopleTmdbFetching extends TmdbFetching {
                 return cast;
         }
 
+        private static final int NO_MOVIE_ID = -1;
+
         private static List<PersonMediaCredits> getRandomCoherentPeoplesInvolvedInThisMedia(int movieId,
                         Language language, int number, PeopleTmdbFetchingOptions options, int tmdbgenre,
                         InfosType mediaType)
                         throws CastUnavailableInTMDBException, NotEnoughPeoplesInCastException {
                 return getRandomCoherentPeoplesInvolvedInThisMedia(movieId, language, number, options,
                                 tmdbgenre, mediaType,
-                                -1);
+                                NO_MOVIE_ID);
         }
 
         private static List<PersonMediaCredits> getRandomCoherentPeoplesInvolvedInThisMedia(int movieId,
@@ -88,7 +93,7 @@ public class PeopleTmdbFetching extends TmdbFetching {
                 // browse the clean cast list
                 for (PersonMediaCredits c : castFiltered) {
                         // add cast to the final list if he isn't in the similar media
-                        if (!isCastIsInThisShow(c.getId(), similarMediaId, language,
+                        if (!isCastIsInThisMedia(c.getId(), similarMediaId, language,
                                         mediaType.getTmdbValue())) {
                                 if (peoples.stream().filter(p -> p.getName().equals(c.getName())).findFirst().isEmpty())
                                         peoples.add(c);
@@ -140,7 +145,7 @@ public class PeopleTmdbFetching extends TmdbFetching {
                 return members;
         }
 
-        public static boolean isCastIsInThisShow(int personId, int movieId, Language language, String mediaType) {
+        public static boolean isCastIsInThisMedia(int personId, int movieId, Language language, String mediaType) {
                 boolean isIn = false;
 
                 // get all the movies have participated the person
