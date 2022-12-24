@@ -4,7 +4,10 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class PersonInfos extends Person {
+import cinequiz.backend.api_questions.utils.Language;
+import cinequiz.backend.api_questions.utils.tmdb.model.InfosInterface;
+
+public class PersonInfos extends Person implements InfosInterface {
 
     @JsonProperty("also_know_as")
     private List<String> alsoKnownAs;
@@ -81,6 +84,26 @@ public class PersonInfos extends Person {
 
     public void setPlaceOfBirth(String placeOfBirth) {
         this.placeOfBirth = placeOfBirth;
+    }
+
+    @Override
+    public String getDescription() {
+        return biography;
+    }
+
+    @Override
+    public String getImage() {
+        return getProfilePath();
+    }
+
+    @Override
+    public String getDate() {
+        return birthday;
+    }
+
+    @Override
+    public String getOriginalLanguage() {
+        return Language.EN.getTmdbLanguage();
     }
 
 }
