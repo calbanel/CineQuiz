@@ -5,9 +5,10 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import cinequiz.backend.api_questions.utils.tmdb.model.Item;
+import cinequiz.backend.api_questions.utils.tmdb.model.InfosInterface;
 import cinequiz.backend.api_questions.utils.tmdb.model.media.movie.BelongsToCollection;
 
-public abstract class MediaInfos extends Item implements MediaInterface {
+public abstract class MediaInfos extends Item implements InfosInterface {
 
     @JsonProperty("adult")
     private boolean adult;
@@ -183,6 +184,16 @@ public abstract class MediaInfos extends Item implements MediaInterface {
 
     public void setVoteCount(int voteCount) {
         this.voteCount = voteCount;
+    }
+
+    @Override
+    public String getDescription() {
+        return overview;
+    }
+
+    @Override
+    public String getImage() {
+        return backdropPath;
     }
 
 }

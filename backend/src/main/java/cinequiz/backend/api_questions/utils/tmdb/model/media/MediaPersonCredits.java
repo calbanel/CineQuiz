@@ -98,7 +98,7 @@ public class MediaPersonCredits extends MediaInfos {
         this.originalTitle = originalTitle;
     }
 
-    public String getReleaseDate() {
+    public String getDate() {
         return releaseDate == null ? firstAirDate : releaseDate;
     }
 
@@ -106,12 +106,13 @@ public class MediaPersonCredits extends MediaInfos {
         this.releaseDate = releaseDate;
     }
 
-    public String getTitle() {
+    @Override
+    public String getName() {
         return title == null ? name : title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public boolean isVideo() {
@@ -146,12 +147,12 @@ public class MediaPersonCredits extends MediaInfos {
         this.firstAirDate = firstAirDate;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public int getEpisodeCount() {

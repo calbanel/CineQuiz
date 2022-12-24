@@ -112,10 +112,6 @@ public class TvShowInfos extends MediaInfos {
         this.lastEpisodeToAir = lastEpisodeToAir;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -185,12 +181,12 @@ public class TvShowInfos extends MediaInfos {
     }
 
     @Override
-    public String getTitle() {
+    public String getName() {
         return this.name;
     }
 
     @Override
-    public String getReleaseDate() {
+    public String getDate() {
         return this.firstAirDate;
     }
 

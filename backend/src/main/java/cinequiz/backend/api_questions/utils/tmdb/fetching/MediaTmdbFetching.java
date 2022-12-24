@@ -7,19 +7,19 @@ import java.util.stream.Collectors;
 import cinequiz.backend.BackendApplication;
 import cinequiz.backend.api_questions.utils.Language;
 import cinequiz.backend.api_questions.utils.exceptions.NotEnoughSimilarMediasInTMDBException;
-import cinequiz.backend.api_questions.utils.tmdb.fetching.options.MediaTmdbFetchingOptions;
-import cinequiz.backend.api_questions.utils.tmdb.model.media.MediaInterface;
+import cinequiz.backend.api_questions.utils.tmdb.fetching.options.InfosTmdbFetchingOptions;
+import cinequiz.backend.api_questions.utils.tmdb.model.InfosInterface;
 import cinequiz.backend.api_questions.utils.tmdb.model.media.list.MovieResultsPage;
 import cinequiz.backend.api_questions.utils.tmdb.model.media.list.ResultsPage;
 import cinequiz.backend.api_questions.utils.tmdb.model.media.list.TvResultsPage;
 
 public class MediaTmdbFetching extends TmdbFetching {
-    public static List<MediaInterface> getRandomCoherentMedias(Language language, int number,
-            MediaTmdbFetchingOptions answerOptions, MediaTmdbFetchingOptions similaryOptions, InfosType mediaType) {
-        List<MediaInterface> mediaList = new ArrayList<MediaInterface>();
+    public static List<InfosInterface> getRandomCoherentMedias(Language language, int number,
+            InfosTmdbFetchingOptions answerOptions, InfosTmdbFetchingOptions similaryOptions, InfosType mediaType) {
+        List<InfosInterface> mediaList = new ArrayList<InfosInterface>();
 
-        List<MediaInterface> similarMediaList = null;
-        MediaInterface media = null;
+        List<InfosInterface> similarMediaList = null;
+        InfosInterface media = null;
 
         // try to find a media with an similar media list valid in tmdb
         while (similarMediaList == null) {
@@ -41,17 +41,17 @@ public class MediaTmdbFetching extends TmdbFetching {
         return mediaList;
     }
 
-    private static MediaInterface getOneRandomValidMedia(Language language, MediaTmdbFetchingOptions options,
+    private static InfosInterface getOneRandomValidMedia(Language language, InfosTmdbFetchingOptions options,
             InfosType mediaType) {
-        MediaInterface media = null;
+        InfosInterface media = null;
 
         // as long as we don't have a valid media, we go through the pages of popular
         // movies randomly
         while (media == null) {
-            List<? extends MediaInterface> page = getRandomPopularMediasList(language, mediaType);
+            List<? extends InfosInterface> page = getRandomPopularMediasList(language, mediaType);
 
             // remove unvalid movies of the popular media page
-            List<? extends MediaInterface> filtredResults = filterMediaInfosList(page, options);
+            List<? extends InfosInterface> filtredResults = filterMediaInfosList(page, options);
             Collections.shuffle(filtredResults);
 
             if (filtredResults.size() > 0)
@@ -63,8 +63,8 @@ public class MediaTmdbFetching extends TmdbFetching {
     private static final int RANDOM_PAGE_MIN = 1;
     private static final int RANDOM_PAGE_MAX = 100; // I want one of the 100 first pages (the 2000 actual most popular)
 
-    private static List<? extends MediaInterface> getRandomPopularMediasList(Language language, InfosType mediaType) {
-        List<? extends MediaInterface> list = null;
+    private static List<? extends InfosInterface> getRandomPopularMediasList(Language language, InfosType mediaType) {
+        List<? extends InfosInterface> list = null;
 
         // as long as we don't have a valid page, we go through the pages of popular
         // randomly
@@ -79,9 +79,9 @@ public class MediaTmdbFetching extends TmdbFetching {
         return list;
     }
 
-    private static List<? extends MediaInterface> getMediaInfosListFromAnResultPage(ApiURL url, InfosType mediaType) {
-        List<? extends MediaInterface> list = null;
-        ResultsPage<? extends MediaInterface> page = null;
+    private static List<? extends InfosInterface> getMediaInfosListFromAnResultPage(ApiURL url, InfosType mediaType) {
+        List<? extends InfosInterface> list = null;
+        ResultsPage<? extends InfosInterface> page = null;
 
         if (mediaType == InfosType.MOVIE) {
             page = fetchTmdbApi(url, MovieResultsPage.class);
@@ -95,29 +95,28 @@ public class MediaTmdbFetching extends TmdbFetching {
         return list;
     }
 
-    private static List<? extends MediaInterface> filterMediaInfosList(List<? extends MediaInterface> list,
-            MediaTmdbFetchingOptions options) {
-        return (List<? extends MediaInterface>) list
+    private static List<? extends InfosInterface> filterMediaInfosList(List<? extends InfosInterface> list,
+            InfosTmdbFetchingOptions options) {
+        return (List<? extends InfosInterface>) list
                 .stream()
                 .filter(
-                        (m) -> (!options.isTitle() || (m.getTitle() != null && !m.getTitle().equals("")))
-                                && (!options.isPoster() || (m.getPosterPath() != null && !m.getPosterPath().equals("")))
-                                && (!options.isBackdrop()
-                                        || (m.getBackdropPath() != null && !m.getBackdropPath().equals("")))
+                        (m) -> (!options.isName() || (m.getName() != null && !m.getName().equals("")))
+                                && (!options.isImage()
+                                        || (m.getImage() != null && !m.getImage().equals("")))
                                 && (!options.isDescription()
-                                        || (m.getOverview() != null && !m.getOverview().equals("")))
-                                && (!options.isReleaseDate()
-                                        || (m.getReleaseDate() != null && !m.getReleaseDate().equals(""))))
+                                        || (m.getDescription() != null && !m.getDescription().equals("")))
+                                && (!options.isDate()
+                                        || (m.getDate() != null && !m.getDate().equals(""))))
                 .collect(Collectors.toList());
     }
 
     private static final int SIMILAR_START_PAGE = 1;
     private static final int NB_MAX_BROWSING_SIMILAR_PAGE = 3;
 
-    private static List<MediaInterface> getSimilarValidMedias(MediaInterface media, int number,
+    private static List<InfosInterface> getSimilarValidMedias(InfosInterface media, int number,
             Language language,
-            MediaTmdbFetchingOptions options, InfosType mediaType) throws NotEnoughSimilarMediasInTMDBException {
-        List<MediaInterface> mediaList = new ArrayList<MediaInterface>();
+            InfosTmdbFetchingOptions options, InfosType mediaType) throws NotEnoughSimilarMediasInTMDBException {
+        List<InfosInterface> mediaList = new ArrayList<InfosInterface>();
 
         // it can have several pages for similar movies in tmdb, we start at the first
         // page
@@ -126,7 +125,7 @@ public class MediaTmdbFetching extends TmdbFetching {
         while (page_number < NB_MAX_BROWSING_SIMILAR_PAGE) {
 
             // try to get the similar media page
-            List<? extends MediaInterface> results = getSimilarMediasList(media.getId(), language,
+            List<? extends InfosInterface> results = getSimilarMediasList(media.getId(), language,
                     page_number,
                     mediaType);
             // we failed to get a similar media page then we throw an exception
@@ -134,7 +133,7 @@ public class MediaTmdbFetching extends TmdbFetching {
                 throw new NotEnoughSimilarMediasInTMDBException(media.getId());
 
             // only keeps the movies of the same language and different of the initial movie
-            List<? extends MediaInterface> filtredResults = (ArrayList<? extends MediaInterface>) results.stream()
+            List<? extends InfosInterface> filtredResults = (ArrayList<? extends InfosInterface>) results.stream()
                     .filter(m -> m.getOriginalLanguage().equals(media.getOriginalLanguage())
                             && m.getId() != media.getId())
                     .collect(Collectors.toList());
@@ -145,9 +144,9 @@ public class MediaTmdbFetching extends TmdbFetching {
             Collections.shuffle(filtredResults);
 
             // browse valid similar movies
-            for (MediaInterface result : filtredResults) {
+            for (InfosInterface result : filtredResults) {
                 // if the target value is an duplicata we go next
-                List<MediaInterface> dontWantDuplicata = new ArrayList<MediaInterface>(mediaList);
+                List<InfosInterface> dontWantDuplicata = new ArrayList<InfosInterface>(mediaList);
                 dontWantDuplicata.add(media);
                 if (options.checkDuplicate(result, dontWantDuplicata))
                     continue;
@@ -169,9 +168,9 @@ public class MediaTmdbFetching extends TmdbFetching {
         return mediaList;
     }
 
-    private static List<? extends MediaInterface> getSimilarMediasList(int movieId, Language language, int numPage,
+    private static List<? extends InfosInterface> getSimilarMediasList(int movieId, Language language, int numPage,
             InfosType mediaType) {
-        List<? extends MediaInterface> list = null;
+        List<? extends InfosInterface> list = null;
 
         ApiURL url = new ApiURL(mediaType, RessourceType.SIMILAR, movieId);
         url.addLanguage(language);

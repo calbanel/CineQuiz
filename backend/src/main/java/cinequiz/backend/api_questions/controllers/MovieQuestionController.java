@@ -20,8 +20,8 @@ import cinequiz.backend.api_questions.utils.tmdb.fetching.MediaTmdbFetching;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.PeopleTmdbFetching;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.InfosType;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.TmdbFetching;
-import cinequiz.backend.api_questions.utils.tmdb.fetching.options.MediaTmdbFetchingOptions;
-import cinequiz.backend.api_questions.utils.tmdb.model.media.MediaInterface;
+import cinequiz.backend.api_questions.utils.tmdb.fetching.options.InfosTmdbFetchingOptions;
+import cinequiz.backend.api_questions.utils.tmdb.model.InfosInterface;
 import cinequiz.backend.api_questions.utils.tmdb.model.people.PersonMediaCredits;
 import edu.emory.mathcs.backport.java.util.Collections;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -72,10 +72,10 @@ public class MovieQuestionController {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        List<MediaInterface> movieList = new ArrayList<MediaInterface>();
+        List<InfosInterface> movieList = new ArrayList<InfosInterface>();
         try {
-            MediaTmdbFetchingOptions answerOptions = new MediaTmdbFetchingOptions(true, false, true, false, false);
-            MediaTmdbFetchingOptions similaryOptions = new MediaTmdbFetchingOptions(true, false, false, false, false);
+            InfosTmdbFetchingOptions answerOptions = new InfosTmdbFetchingOptions(true, true, false, false);
+            InfosTmdbFetchingOptions similaryOptions = new InfosTmdbFetchingOptions(true, false, false, false);
             movieList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage, NB_CHOICES_IN_MCQ,
                     answerOptions,
                     similaryOptions, InfosType.MOVIE);
@@ -84,15 +84,15 @@ public class MovieQuestionController {
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        MediaInterface answer = movieList.get(0);
+        InfosInterface answer = movieList.get(0);
         Collections.shuffle(movieList);
-        String[] choices = { movieList.get(0).getTitle(), movieList.get(1).getTitle(), movieList.get(2).getTitle(),
-                movieList.get(3).getTitle() };
+        String[] choices = { movieList.get(0).getName(), movieList.get(1).getName(), movieList.get(2).getName(),
+                movieList.get(3).getName() };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + answer.getBackdropPath(), "",
+        MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + answer.getImage(), "",
                 MovieQuestion.WHICH_BY_IMAGE.getQuestion(internLanguage),
                 choicesObject,
-                answer.getTitle());
+                answer.getName());
 
         return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
     }
@@ -109,10 +109,10 @@ public class MovieQuestionController {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        List<MediaInterface> movieList = new ArrayList<MediaInterface>();
+        List<InfosInterface> movieList = new ArrayList<InfosInterface>();
         try {
-            MediaTmdbFetchingOptions answerOptions = new MediaTmdbFetchingOptions(true, false, false, true, false);
-            MediaTmdbFetchingOptions similaryOptions = new MediaTmdbFetchingOptions(true, false, false, false, false);
+            InfosTmdbFetchingOptions answerOptions = new InfosTmdbFetchingOptions(true, false, true, false);
+            InfosTmdbFetchingOptions similaryOptions = new InfosTmdbFetchingOptions(true, false, false, false);
             movieList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage, NB_CHOICES_IN_MCQ,
                     answerOptions,
                     similaryOptions, InfosType.MOVIE);
@@ -121,15 +121,15 @@ public class MovieQuestionController {
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        MediaInterface answer = movieList.get(0);
+        InfosInterface answer = movieList.get(0);
         Collections.shuffle(movieList);
-        String[] choices = { movieList.get(0).getTitle(), movieList.get(1).getTitle(), movieList.get(2).getTitle(),
-                movieList.get(3).getTitle() };
+        String[] choices = { movieList.get(0).getName(), movieList.get(1).getName(), movieList.get(2).getName(),
+                movieList.get(3).getName() };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MCQQuestion mcq = new MCQQuestion("", answer.getOverview(),
+        MCQQuestion mcq = new MCQQuestion("", answer.getDescription(),
                 MovieQuestion.WHICH_BY_DESCRIPTION.getQuestion(internLanguage),
                 choicesObject,
-                answer.getTitle());
+                answer.getName());
 
         return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
     }
@@ -146,20 +146,20 @@ public class MovieQuestionController {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        List<MediaInterface> movieList = new ArrayList<MediaInterface>();
+        List<InfosInterface> movieList = new ArrayList<InfosInterface>();
         List<PersonMediaCredits> cast = null;
         try {
             while (cast == null) {
-                MediaTmdbFetchingOptions manswerOptions = new MediaTmdbFetchingOptions(true, false, true, false,
+                InfosTmdbFetchingOptions manswerOptions = new InfosTmdbFetchingOptions(true, true, false,
                         false);
-                MediaTmdbFetchingOptions msimilaryOptions = new MediaTmdbFetchingOptions(false, false, false, false,
+                InfosTmdbFetchingOptions msimilaryOptions = new InfosTmdbFetchingOptions(false, false, false,
                         false);
                 movieList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage, 2,
                         manswerOptions,
                         msimilaryOptions, InfosType.MOVIE);
 
-                MediaInterface movie = movieList.get(0);
-                MediaInterface similaryMovie = movieList.get(1);
+                InfosInterface movie = movieList.get(0);
+                InfosInterface similaryMovie = movieList.get(1);
 
                 cast = PeopleTmdbFetching.getRandomCoherentPeopleListInTheseMedias(movie.getId(), 1,
                         similaryMovie.getId(), 3,
@@ -170,14 +170,14 @@ public class MovieQuestionController {
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        MediaInterface movieOfQuestion = movieList.get(0);
+        InfosInterface movieOfQuestion = movieList.get(0);
         PersonMediaCredits answer = cast.get(0);
         Collections.shuffle(cast);
         String[] choices = { cast.get(0).getName(), cast.get(1).getName(), cast.get(2).getName(),
                 cast.get(3).getName() };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + movieOfQuestion.getBackdropPath(),
-                movieOfQuestion.getTitle(),
+        MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + movieOfQuestion.getImage(),
+                movieOfQuestion.getName(),
                 MovieQuestion.TAKE_PART.getQuestion(internLanguage),
                 choicesObject,
                 answer.getName());
@@ -197,21 +197,21 @@ public class MovieQuestionController {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        List<MediaInterface> movieList = new ArrayList<MediaInterface>();
+        List<InfosInterface> movieList = new ArrayList<InfosInterface>();
         List<PersonMediaCredits> cast = null;
         try {
             while (cast == null) {
-                MediaTmdbFetchingOptions manswerOptions = new MediaTmdbFetchingOptions(false, false, false, false,
+                InfosTmdbFetchingOptions manswerOptions = new InfosTmdbFetchingOptions(false, false, false,
                         false);
-                MediaTmdbFetchingOptions msimilaryOptions = new MediaTmdbFetchingOptions(true, false, true, false,
+                InfosTmdbFetchingOptions msimilaryOptions = new InfosTmdbFetchingOptions(true, true, false,
                         false);
                 movieList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage,
                         2,
                         manswerOptions,
                         msimilaryOptions, InfosType.MOVIE);
 
-                MediaInterface movie = movieList.get(0);
-                MediaInterface similaryMovie = movieList.get(1);
+                InfosInterface movie = movieList.get(0);
+                InfosInterface similaryMovie = movieList.get(1);
 
                 cast = PeopleTmdbFetching.getRandomCoherentPeopleListInTheseMedias(movie.getId(), 1,
                         similaryMovie.getId(), 3,
@@ -222,14 +222,14 @@ public class MovieQuestionController {
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        MediaInterface movieOfQuestion = movieList.get(1);
+        InfosInterface movieOfQuestion = movieList.get(1);
         PersonMediaCredits answer = cast.get(0);
         Collections.shuffle(cast);
         String[] choices = { cast.get(0).getName(), cast.get(1).getName(), cast.get(2).getName(),
                 cast.get(3).getName() };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + movieOfQuestion.getBackdropPath(),
-                movieOfQuestion.getTitle(),
+        MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + movieOfQuestion.getImage(),
+                movieOfQuestion.getName(),
                 MovieQuestion.DOESNT_TAKE_PART.getQuestion(internLanguage),
                 choicesObject,
                 answer.getName());
@@ -249,10 +249,10 @@ public class MovieQuestionController {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        List<MediaInterface> movieList = new ArrayList<MediaInterface>();
+        List<InfosInterface> movieList = new ArrayList<InfosInterface>();
         try {
-            MediaTmdbFetchingOptions answerOptions = new MediaTmdbFetchingOptions(true, true, false, false, true);
-            MediaTmdbFetchingOptions similaryOptions = new MediaTmdbFetchingOptions(false, false, false, false, true);
+            InfosTmdbFetchingOptions answerOptions = new InfosTmdbFetchingOptions(true, true, false, true);
+            InfosTmdbFetchingOptions similaryOptions = new InfosTmdbFetchingOptions(false, false, false, true);
             movieList = MediaTmdbFetching.getRandomCoherentMedias(internLanguage, NB_CHOICES_IN_MCQ,
                     answerOptions,
                     similaryOptions, InfosType.MOVIE);
@@ -261,16 +261,16 @@ public class MovieQuestionController {
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        MediaInterface answer = movieList.get(0);
+        InfosInterface answer = movieList.get(0);
         Collections.shuffle(movieList);
-        String[] choices = { movieList.get(0).getReleaseDate(), movieList.get(1).getReleaseDate(),
-                movieList.get(2).getReleaseDate(),
-                movieList.get(3).getReleaseDate() };
+        String[] choices = { movieList.get(0).getDate(), movieList.get(1).getDate(),
+                movieList.get(2).getDate(),
+                movieList.get(3).getDate() };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
-        MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + answer.getPosterPath(), answer.getTitle(),
+        MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + answer.getImage(), answer.getName(),
                 MovieQuestion.RELEASE_DATE.getQuestion(internLanguage),
                 choicesObject,
-                answer.getReleaseDate());
+                answer.getDate());
 
         return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
     }

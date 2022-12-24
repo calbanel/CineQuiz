@@ -94,4 +94,14 @@ public class MovieInfos extends MediaInfos {
         this.video = video;
     }
 
+    @Override
+    public String getName() {
+        return title;
+    }
+
+    @Override
+    public String getDate() {
+        return releaseDate;
+    }
+
 }
