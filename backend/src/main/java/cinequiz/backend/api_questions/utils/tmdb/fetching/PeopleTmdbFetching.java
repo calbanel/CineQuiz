@@ -29,10 +29,12 @@ public class PeopleTmdbFetching extends TmdbFetching {
                 List<PersonMediaCredits> cast = null;
                 int randomGender = BackendApplication.random(MIN_GENDER_TMDB_CODE, MAX_GENDER_TMDB_CODE);
                 try {
-                        PeopleTmdbFetchingOptions panswerOptions = new PeopleTmdbFetchingOptions(true, true, true);
+                        PeopleTmdbFetchingOptions panswerOptions = new PeopleTmdbFetchingOptions(true, true, false,
+                                        false, true);
                         List<PersonMediaCredits> answer = getRandomCoherentPeoplesInvolvedInThisMedia(movieId,
                                         language, numberOfPeoplesInMedia, panswerOptions, randomGender, mediaType);
-                        PeopleTmdbFetchingOptions psimilaryOptions = new PeopleTmdbFetchingOptions(true, false, true);
+                        PeopleTmdbFetchingOptions psimilaryOptions = new PeopleTmdbFetchingOptions(true, false, false,
+                                        false, true);
 
                         List<PersonMediaCredits> similaryCast = getRandomCoherentPeoplesInvolvedInThisMedia(
                                         similarMediaId,
@@ -126,14 +128,14 @@ public class PeopleTmdbFetching extends TmdbFetching {
         public static List<PersonMediaCredits> getFiltredPersonMediaCredits(MediaCredits page,
                         PeopleTmdbFetchingOptions options, int tmdbgenre) {
                 List<PersonCast> cast = (ArrayList<PersonCast>) page.getCast().stream()
-                                .filter((c) -> (!options.isProfile_path()
+                                .filter((c) -> (!options.isImage()
                                                 || (c.getProfilePath() != null && !c.getProfilePath().equals("")))
                                                 && (!options.isName()
                                                                 || (c.getName() != null && !c.getName().equals("")))
                                                 && (!options.isGender() || c.getGender() == tmdbgenre))
                                 .collect(Collectors.toList());
                 List<PersonCrew> crew = (ArrayList<PersonCrew>) page.getCrew().stream()
-                                .filter((c) -> (!options.isProfile_path()
+                                .filter((c) -> (!options.isImage()
                                                 || (c.getProfilePath() != null && !c.getProfilePath().equals("")))
                                                 && (!options.isName()
                                                                 || (c.getName() != null && !c.getName().equals("")))
