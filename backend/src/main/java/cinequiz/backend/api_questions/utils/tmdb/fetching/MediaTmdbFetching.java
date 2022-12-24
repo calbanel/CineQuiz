@@ -9,9 +9,9 @@ import cinequiz.backend.api_questions.utils.Language;
 import cinequiz.backend.api_questions.utils.exceptions.NotEnoughSimilarMediasInTMDBException;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.options.InfosTmdbFetchingOptions;
 import cinequiz.backend.api_questions.utils.tmdb.model.InfosInterface;
-import cinequiz.backend.api_questions.utils.tmdb.model.media.list.MovieResultsPage;
-import cinequiz.backend.api_questions.utils.tmdb.model.media.list.ResultsPage;
-import cinequiz.backend.api_questions.utils.tmdb.model.media.list.TvResultsPage;
+import cinequiz.backend.api_questions.utils.tmdb.model.results_pages.MovieResultsPage;
+import cinequiz.backend.api_questions.utils.tmdb.model.results_pages.ResultsPage;
+import cinequiz.backend.api_questions.utils.tmdb.model.results_pages.TvResultsPage;
 
 public class MediaTmdbFetching extends TmdbFetching {
     public static List<InfosInterface> getRandomCoherentMedias(Language language, int number,

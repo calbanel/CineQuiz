@@ -1,4 +1,4 @@
-package cinequiz.backend.api_questions.utils.tmdb.model.media.list;
+package cinequiz.backend.api_questions.utils.tmdb.model.results_pages;
 
 import cinequiz.backend.api_questions.utils.tmdb.model.media.movie.MovieInfos;
 
