@@ -4,7 +4,8 @@ public enum RessourceType {
     POPULAR("popular"),
     SIMILAR("similar"),
     CREDITS("credits"),
-    COMBINED_CREDITS("combined_credits");
+    COMBINED_CREDITS("combined_credits"),
+    INFOS("");
 
     RessourceType(String tmdbValue) {
         this.tmdbValue = tmdbValue;

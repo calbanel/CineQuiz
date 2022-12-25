@@ -11,6 +11,7 @@ import org.springframework.web.client.RestTemplate;
 import cinequiz.backend.BackendApplication;
 import cinequiz.backend.api_questions.utils.Language;
 import cinequiz.backend.api_questions.utils.tmdb.model.InfosInterface;
+import cinequiz.backend.api_questions.utils.tmdb.model.people.PersonInfos;
 import cinequiz.backend.api_questions.utils.tmdb.model.results_pages.MovieResultsPage;
 import cinequiz.backend.api_questions.utils.tmdb.model.results_pages.PersonResultsPage;
 import cinequiz.backend.api_questions.utils.tmdb.model.results_pages.ResultsPage;
@@ -47,19 +48,36 @@ public class TmdbFetching {
             List<? extends InfosInterface> page = getRandomPopularInfosList(language, type);
 
             // remove unvalid infos of the popular pages
-            List<? extends InfosInterface> filtredResults = filterInfosList(page, options);
+            List<? extends InfosInterface> filtredResults;
 
             if (type.equals(InfosType.PERSON)) {
+                InfosTmdbFetchingOptions adaptedOptions = new InfosTmdbFetchingOptions(options.isName(),
+                        options.isImage(), false, false, options.isGenre());
+                filtredResults = filterInfosList(page, adaptedOptions);
+
                 int randomGenre = BackendApplication.random(MIN_GENDER_TMDB_CODE, MAX_GENDER_TMDB_CODE);
-                filtredResults = (List<? extends InfosInterface>) filtredResults.stream()
+                filtredResults = (List<? extends InfosInterface>) page.stream()
                         .filter(p -> p.getGenre() == randomGenre).collect(Collectors.toList());
+            } else {
+                filtredResults = filterInfosList(page, options);
             }
 
             Collections.shuffle(filtredResults);
 
             for (InfosInterface info : filtredResults) {
-                if (!infosList.contains(info))
-                    infosList.add(info);
+                if (type.equals(InfosType.PERSON) && (options.isDescription() || options.isDate())) {
+                    ApiURL url = new ApiURL(type, RessourceType.INFOS, info.getId());
+                    url.addLanguage(language);
+                    PersonInfos moreInfos = fetchTmdbApi(url, PersonInfos.class);
+                    if ((!options.isDescription()
+                            || (moreInfos.getDescription() != null && !moreInfos.getDescription().equals("")))
+                            && (!options.isDate() || (moreInfos.getDate() != null && !moreInfos.getDate().equals(""))))
+                        if (!infosList.contains(moreInfos))
+                            infosList.add(moreInfos);
+                } else {
+                    if (!infosList.contains(info))
+                        infosList.add(info);
+                }
 
                 if (infosList.size() >= number)
                     break;
@@ -70,8 +88,8 @@ public class TmdbFetching {
     }
 
     private static final int RANDOM_PAGE_MIN = 1;
-    private static final int RANDOM_PAGE_MAX = 100; // I want one of the 100 first pages (the 2000 actual most popular
-                                                    // items)
+    private static final int RANDOM_PAGE_MAX = 50; // I want one of the 100 first pages (the 1000 actual most popular
+                                                   // items)
 
     public static List<? extends InfosInterface> getRandomPopularInfosList(Language language, InfosType type) {
         List<? extends InfosInterface> list = null;

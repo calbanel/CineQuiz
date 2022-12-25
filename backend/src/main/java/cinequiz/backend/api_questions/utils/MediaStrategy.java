@@ -12,7 +12,8 @@ import cinequiz.backend.api_questions.utils.tmdb.model.InfosInterface;
 
 public abstract class MediaStrategy extends GlobalStrategy {
     @Override
-    protected List<InfosInterface> getInfosListForMCQ(Language language, InfosType type)
+    protected List<InfosInterface> getInfosListForMCQ(Language language, InfosType type,
+            InfosTmdbFetchingOptions options)
             throws ImpossibleToFetchTmdbException, BadInfosTypeException {
 
         if (type == InfosType.PERSON) {
@@ -20,10 +21,9 @@ public abstract class MediaStrategy extends GlobalStrategy {
         }
         List<InfosInterface> mediaList = new ArrayList<InfosInterface>();
         try {
-            InfosTmdbFetchingOptions answerOptions = new InfosTmdbFetchingOptions(true, true, false, false, false);
             InfosTmdbFetchingOptions similaryOptions = new InfosTmdbFetchingOptions(true, false, false, false, false);
             mediaList = MediaTmdbFetching.getRandomCoherentMedias(language, NB_CHOICES_IN_MCQ,
-                    answerOptions,
+                    options,
                     similaryOptions, InfosType.TV);
         } catch (Exception e) {
             throw new ImpossibleToFetchTmdbException();

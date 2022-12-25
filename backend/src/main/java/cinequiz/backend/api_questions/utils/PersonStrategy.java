@@ -14,12 +14,6 @@ import cinequiz.backend.api_questions.utils.tmdb.model.InfosInterface;
 public class PersonStrategy extends GlobalStrategy {
 
     @Override
-    public MCQQuestion whichByDescription(Language language) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public MCQQuestion date(Language language) {
         // TODO Auto-generated method stub
         return null;
@@ -43,16 +37,22 @@ public class PersonStrategy extends GlobalStrategy {
     }
 
     @Override
-    protected List<InfosInterface> getInfosListForMCQ(Language language, InfosType type)
+    protected List<InfosInterface> getInfosListForMCQ(Language language, InfosType type,
+            InfosTmdbFetchingOptions options)
             throws ImpossibleToFetchTmdbException, BadInfosTypeException {
-        List<InfosInterface> personList = new ArrayList<InfosInterface>();
         try {
-            InfosTmdbFetchingOptions options = new InfosTmdbFetchingOptions(true, true, false, false, false);
-            personList = TmdbFetching.getRandomValidInfos(language, options, InfosType.PERSON, NB_CHOICES_IN_MCQ);
+            InfosInterface answer = TmdbFetching.getRandomValidInfos(language, options, InfosType.PERSON, 1).get(0);
+            InfosTmdbFetchingOptions otherOptions = new InfosTmdbFetchingOptions(true, false, false, false, true);
+            List<InfosInterface> others = TmdbFetching.getRandomValidInfos(language, otherOptions, InfosType.PERSON,
+                    NB_CHOICES_IN_MCQ - 1);
+
+            List<InfosInterface> list = new ArrayList<InfosInterface>();
+            list.add(answer);
+            list.addAll(others);
+            return list;
         } catch (Exception e) {
             throw new ImpossibleToFetchTmdbException();
         }
-        return personList;
     }
 
 }

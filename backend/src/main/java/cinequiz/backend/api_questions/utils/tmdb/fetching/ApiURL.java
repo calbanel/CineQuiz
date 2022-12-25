@@ -14,8 +14,12 @@ public class ApiURL {
         urlBuilder.append(media.getTmdbValue());
         urlBuilder.append("/");
         urlBuilder.append(Integer.toString(id));
-        urlBuilder.append("/");
-        urlBuilder.append(ressource.getTmdbValue());
+
+        if (!ressource.equals(RessourceType.INFOS)) {
+            urlBuilder.append("/");
+            urlBuilder.append(ressource.getTmdbValue());
+        }
+
         urlBuilder.append("?api_key=");
         urlBuilder.append(API_KEY);
     }
