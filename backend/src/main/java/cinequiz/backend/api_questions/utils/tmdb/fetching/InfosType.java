@@ -14,4 +14,13 @@ public enum InfosType {
     }
 
     private final String tmdbValue;
+
+    public static boolean checkType(String value) {
+        boolean valid = false;
+        for (InfosType type : InfosType.values()) {
+            if (value.equals(type.getTmdbValue()))
+                valid = true;
+        }
+        return valid;
+    }
 }
