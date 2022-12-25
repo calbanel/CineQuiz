@@ -164,7 +164,7 @@ public class TvShowQuestionController {
                 tvList.get(3).getDate() };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
         MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + answer.getImage(), answer.getName(),
-                TvShowQuestion.FIRST_AIR_DATE.getQuestion(internLanguage),
+                TvShowQuestion.DATE.getQuestion(internLanguage),
                 choicesObject,
                 answer.getDate());
 

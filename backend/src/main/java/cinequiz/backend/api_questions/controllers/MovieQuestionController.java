@@ -266,7 +266,7 @@ public class MovieQuestionController {
                 movieList.get(3).getDate() };
         Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
         MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + answer.getImage(), answer.getName(),
-                MovieQuestion.RELEASE_DATE.getQuestion(internLanguage),
+                MovieQuestion.DATE.getQuestion(internLanguage),
                 choicesObject,
                 answer.getDate());
 

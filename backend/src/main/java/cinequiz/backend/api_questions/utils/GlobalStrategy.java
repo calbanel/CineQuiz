@@ -33,18 +33,8 @@ public abstract class GlobalStrategy implements MCQStrategy {
                             .getQuestion(language),
                     choicesObject,
                     answer.getName());
-        } catch (IllegalArgumentException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (SecurityException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw new ImpossibleToFetchTmdbException();
         }
 
         return mcq;

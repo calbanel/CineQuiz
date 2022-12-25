@@ -14,9 +14,8 @@ import cinequiz.backend.api_questions.utils.MCQStrategy;
 import cinequiz.backend.api_questions.utils.MovieStrategy;
 import cinequiz.backend.api_questions.utils.PersonStrategy;
 import cinequiz.backend.api_questions.utils.TvStrategy;
-import cinequiz.backend.api_questions.utils.exceptions.BadInfosTypeException;
-import cinequiz.backend.api_questions.utils.exceptions.ImpossibleToFetchTmdbException;
 import cinequiz.backend.api_questions.utils.exceptions.LanguageNotSupportedException;
+import cinequiz.backend.api_questions.utils.exceptions.TypeNotSupportedException;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.InfosType;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -46,50 +45,60 @@ public class QuestionController {
         }
     }
 
+    private class CleanParams {
+        private Language language;
+        private InfosType type;
+
+        public CleanParams(String language, String type)
+                throws LanguageNotSupportedException, TypeNotSupportedException {
+            this.language = Language.languageCheck(language);
+
+            if (type.equals("random"))
+                this.type = InfosType.getRandomType();
+            else {
+                this.type = InfosType.typeCheck(type);
+            }
+        }
+
+        public Language getLanguage() {
+            return language;
+        }
+
+        public InfosType getType() {
+            return type;
+        }
+    }
+
+    private MCQStrategy getStrategyForType(InfosType type) {
+        MCQStrategy strategy = null;
+        if (type.equals(InfosType.MOVIE)) {
+            strategy = new MovieStrategy();
+        } else if (type.equals(InfosType.TV)) {
+            strategy = new TvStrategy();
+        } else {
+            strategy = new PersonStrategy();
+        }
+        return strategy;
+    }
+
     @ApiOperation(value = "Gets a mcq : guess from a picture")
     @GetMapping(value = "/which-by-image", produces = { "application/json" })
     public ResponseEntity<?> whichByImage(
             @RequestParam(required = false, value = "type", defaultValue = "random") String type,
             @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
 
-        Language internLanguage;
         try {
-            internLanguage = Language.languageCheck(language);
-        } catch (LanguageNotSupportedException e) {
+
+            CleanParams params = new CleanParams(language, type);
+
+            MCQStrategy strategy = getStrategyForType(params.getType());
+
+            MCQQuestion mcq = strategy.whichByImage(params.getLanguage());
+
+            return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
+
+        } catch (Exception e) {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-
-        String infosType;
-        if (type.equals("random"))
-            infosType = InfosType.values()[BackendApplication.random(0, InfosType.values().length - 1)].getTmdbValue();
-        else
-            infosType = type;
-
-        if (!InfosType.checkType(infosType)) {
-            return new ResponseEntity<String>("Invalid type: " + type, HttpStatus.BAD_REQUEST);
-        }
-
-        MCQStrategy strategy;
-
-        if (infosType.equals(InfosType.MOVIE.getTmdbValue())) {
-            strategy = new MovieStrategy();
-        } else if (infosType.equals(InfosType.TV.getTmdbValue())) {
-            strategy = new TvStrategy();
-        } else if (infosType.equals(InfosType.PERSON.getTmdbValue())) {
-            strategy = new PersonStrategy();
-        } else {
-            return new ResponseEntity<String>("Invalid type: " + type, HttpStatus.BAD_REQUEST);
-        }
-
-        MCQQuestion mcq = null;
-        try {
-            mcq = strategy.whichByImage(internLanguage);
-        } catch (ImpossibleToFetchTmdbException e) {
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (BadInfosTypeException e) {
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-
-        return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
     }
 }

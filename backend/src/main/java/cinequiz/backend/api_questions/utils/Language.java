@@ -3,8 +3,8 @@ package cinequiz.backend.api_questions.utils;
 import cinequiz.backend.api_questions.utils.exceptions.LanguageNotSupportedException;
 
 public enum Language {
-    FR("fr-FR"),
-    EN("en-US");
+    FR("fr"),
+    EN("en");
 
     Language(String tmdbLanguage) {
         this.tmdbLanguage = tmdbLanguage;
@@ -16,15 +16,14 @@ public enum Language {
 
     private final String tmdbLanguage;
 
-    public static Language languageCheck(String language) throws LanguageNotSupportedException {
-        Language lang;
-        if (language.equals("fr"))
-            lang = Language.FR;
-        else if (language.equals("en"))
-            lang = Language.EN;
-        else
-            throw new LanguageNotSupportedException(language);
+    public static Language languageCheck(String value) throws LanguageNotSupportedException {
 
-        return lang;
+        for (Language lan : Language.values()) {
+            if (value.equals(lan.getTmdbLanguage()))
+                return lan;
+        }
+
+        throw new LanguageNotSupportedException(value);
+
     }
 }
