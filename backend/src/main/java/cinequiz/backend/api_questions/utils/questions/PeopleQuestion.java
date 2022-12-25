@@ -7,7 +7,10 @@ public class PeopleQuestion extends Question {
 
         public static final PeopleQuestion WHICH_BY_IMAGE = new PeopleQuestion("Qui est cette personne ?",
                         "Who is this person?");
-        public static final PeopleQuestion BIRTHDATE = new PeopleQuestion(
+        public static final PeopleQuestion WHICH_BY_DESCRIPTION = new PeopleQuestion(
+                        "A quelle personne correspond cette description ?",
+                        "Which person fits this description?");
+        public static final PeopleQuestion DATE = new PeopleQuestion(
                         "Quelle est la date de naissance de cette personne ?",
                         "What is the date of birth of this person?");
         public static final PeopleQuestion TAKE_PART = new PeopleQuestion("A quel show a participé cette personne ?",

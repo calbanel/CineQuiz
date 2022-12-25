@@ -15,6 +15,6 @@ public class MovieQuestion extends Question {
                         "Who was involved in this film?");
         public static final MovieQuestion DOESNT_TAKE_PART = new MovieQuestion(
                         "Quelle personne n'a pas participé à ce film ?", "Who hasn't participated in this film?");
-        public static final MovieQuestion RELEASE_DATE = new MovieQuestion("A quelle date est sortie ce film ?",
+        public static final MovieQuestion DATE = new MovieQuestion("A quelle date est sortie ce film ?",
                         "When was this film released?");
 }

@@ -15,7 +15,7 @@ public class TvShowQuestion extends Question {
         public static final TvShowQuestion DOESNT_TAKE_PART = new TvShowQuestion(
                         "Quelle personne n'a pas participé à cette série ?",
                         "Who hasn't participated in this tv show?");
-        public static final TvShowQuestion FIRST_AIR_DATE = new TvShowQuestion(
+        public static final TvShowQuestion DATE = new TvShowQuestion(
                         "Quelle a été la date de première diffusion de cette série ?",
                         "When did this tv show first air?");
 }

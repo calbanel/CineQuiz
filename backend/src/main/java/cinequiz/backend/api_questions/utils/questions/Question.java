@@ -40,5 +40,5 @@ public abstract class Question {
 
     public static final MovieQuestion DOESNT_TAKE_PART = null;
 
-    public static final MovieQuestion RELEASE_DATE = null;
+    public static final MovieQuestion DATE = null;
 }
