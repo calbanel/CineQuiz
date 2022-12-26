@@ -8,15 +8,10 @@ import java.util.stream.Collectors;
 
 import cinequiz.backend.BackendApplication;
 import cinequiz.backend.api_questions.utils.Language;
-import cinequiz.backend.api_questions.utils.exceptions.CastUnavailableInTMDBException;
-import cinequiz.backend.api_questions.utils.exceptions.NotEnoughPeoplesInCastException;
+import cinequiz.backend.api_questions.utils.exceptions.NotEnoughItemsInCreditPageException;
 import cinequiz.backend.api_questions.utils.exceptions.NotEnoughSimilarMediasInTMDBException;
 import cinequiz.backend.api_questions.utils.tmdb.model.InfosInterface;
-import cinequiz.backend.api_questions.utils.tmdb.model.media.MediaCredits;
-import cinequiz.backend.api_questions.utils.tmdb.model.media.MediaPersonCredits;
-import cinequiz.backend.api_questions.utils.tmdb.model.people.PersonCast;
 import cinequiz.backend.api_questions.utils.tmdb.model.people.PersonCredits;
-import cinequiz.backend.api_questions.utils.tmdb.model.people.PersonCrew;
 import cinequiz.backend.api_questions.utils.tmdb.model.people.PersonMediaCredits;
 
 public class MediaTmdbFetching extends TmdbFetching {
@@ -150,33 +145,31 @@ public class MediaTmdbFetching extends TmdbFetching {
         return cast;
     }
 
-    private static final int NO_MOVIE_ID = -1;
-
-    public static List<PersonMediaCredits> getRandomCoherentPeoplesInvolvedInThisMedia(int movieId,
+    public static List<PersonMediaCredits> getRandomCoherentPeoplesInvolvedInThisMedia(int mediaId,
             Language language, int number, InfosTmdbFetchingOptions options, int tmdbgenre,
             InfosType mediaType)
-            throws CastUnavailableInTMDBException, NotEnoughPeoplesInCastException {
-        return getRandomCoherentPeoplesInvolvedInThisMedia(movieId, language, number, options,
+            throws NotEnoughItemsInCreditPageException {
+        return getRandomCoherentPeoplesInvolvedInThisMedia(mediaId, language, number, options,
                 tmdbgenre, mediaType,
-                NO_MOVIE_ID);
+                TmdbFetching.UNVAILABLE_ID);
     }
 
-    public static List<PersonMediaCredits> getRandomCoherentPeoplesInvolvedInThisMedia(int movieId,
+    public static List<PersonMediaCredits> getRandomCoherentPeoplesInvolvedInThisMedia(int mediaId,
             Language language,
             int number, InfosTmdbFetchingOptions options, int tmdbgenre, InfosType mediaType,
             int similarMediaId)
-            throws CastUnavailableInTMDBException, NotEnoughPeoplesInCastException {
+            throws NotEnoughItemsInCreditPageException {
         List<PersonMediaCredits> peoples = new ArrayList<PersonMediaCredits>();
 
-        MediaCredits castPage = getMediaCastPage(movieId, language, mediaType);
+        List<InfosInterface> credits = TmdbFetching.getCredits(mediaId, language, mediaType);
         // if target cast page isn't valid, throw exception
-        if (castPage == null)
-            throw new CastUnavailableInTMDBException(movieId);
+        if (credits == null)
+            throw new NotEnoughItemsInCreditPageException(mediaId);
 
-        // only keeps peoples where we have the target values
-        List<PersonMediaCredits> castFiltered = getFiltredPersonMediaCredits(castPage,
-                options,
-                tmdbgenre);
+        List<PersonMediaCredits> castFiltered = new ArrayList<PersonMediaCredits>();
+        for (InfosInterface i : credits)
+            castFiltered.add((PersonMediaCredits) i);
+        castFiltered = filterPersonMediaCredits(castFiltered, options, tmdbgenre);
 
         // we firt want the most popular casts, we want known names
         castFiltered.sort((a, b) -> new Comparator<PersonMediaCredits>() {
@@ -206,62 +199,12 @@ public class MediaTmdbFetching extends TmdbFetching {
 
         // if there not enough peoples in the final list, throw exception
         if (peoples.size() < number)
-            throw new NotEnoughPeoplesInCastException(movieId);
+            throw new NotEnoughItemsInCreditPageException(mediaId);
 
         return peoples;
     }
 
-    public static MediaCredits getMediaCastPage(int movieId, Language language, InfosType mediaType) {
-        MediaCredits page = null;
-
-        ApiURL url = new ApiURL(mediaType, RessourceType.CREDITS, movieId);
-        url.addLanguage(language);
-
-        page = fetchTmdbApi(url, MediaCredits.class);
-
-        // null if the target cast page isn't valid
-        return page;
-    }
-
-    public static List<PersonMediaCredits> getFiltredPersonMediaCredits(MediaCredits page,
-            InfosTmdbFetchingOptions options, int tmdbgenre) {
-        List<PersonCast> cast = (ArrayList<PersonCast>) page.getCast().stream()
-                .filter((c) -> (!options.isImage()
-                        || (c.getProfilePath() != null && !c.getProfilePath().equals("")))
-                        && (!options.isName()
-                                || (c.getName() != null && !c.getName().equals("")))
-                        && (!options.isGenre() || c.getGender() == tmdbgenre))
-                .collect(Collectors.toList());
-        List<PersonCrew> crew = (ArrayList<PersonCrew>) page.getCrew().stream()
-                .filter((c) -> (!options.isImage()
-                        || (c.getProfilePath() != null && !c.getProfilePath().equals("")))
-                        && (!options.isName()
-                                || (c.getName() != null && !c.getName().equals("")))
-                        && (!options.isGenre() || c.getGender() == tmdbgenre))
-                .collect(Collectors.toList());
-        List<PersonMediaCredits> members = new ArrayList<PersonMediaCredits>();
-        members.addAll(cast);
-        members.addAll(crew);
-        return members;
-    }
-
-    public static boolean isCastIsInThisMedia(int personId, int movieId, Language language, String mediaType) {
-        boolean isIn = false;
-
-        // get all the movies have participated the person
-        PersonCredits creditPage = getPeopleCredits(personId, language);
-        if (creditPage != null) {
-            List<MediaPersonCredits> list = new ArrayList<MediaPersonCredits>();
-            list.addAll(creditPage.getCast());
-            list.addAll(creditPage.getCrew());
-            isIn = list.stream().filter(m -> m.getId() == movieId && m.getMediaType().equals(mediaType))
-                    .findFirst().isPresent();
-        }
-
-        return isIn;
-    }
-
-    public static PersonCredits getPeopleCredits(int personId, Language language) {
+    public static PersonCredits getPeopleCredits(int personId, Language language, InfosType mediaType) {
         PersonCredits page = null;
 
         ApiURL url = new ApiURL(InfosType.PERSON, RessourceType.COMBINED_CREDITS, personId);
@@ -271,5 +214,30 @@ public class MediaTmdbFetching extends TmdbFetching {
 
         // null if the target cast page isn't valid
         return page;
+    }
+
+    public static List<PersonMediaCredits> filterPersonMediaCredits(List<PersonMediaCredits> page,
+            InfosTmdbFetchingOptions options, int tmdbgenre) {
+        List<PersonMediaCredits> list = (ArrayList<PersonMediaCredits>) page.stream()
+                .filter((c) -> (!options.isImage()
+                        || (c.getImage() != null && !c.getImage().equals("")))
+                        && (!options.isName()
+                                || (c.getName() != null && !c.getName().equals("")))
+                        && (!options.isGenre() || c.getGenre() == tmdbgenre))
+                .collect(Collectors.toList());
+        return list;
+    }
+
+    public static boolean isCastIsInThisMedia(int personId, int movieId, Language language, String mediaType) {
+        boolean isIn = false;
+
+        List<InfosInterface> credits = TmdbFetching.getCredits(personId, language,
+                InfosType.PERSON);
+        if (credits != null)
+            isIn = credits.stream()
+                    .filter(m -> m.getId() == movieId && m.getInfosType().getTmdbValue().equals(mediaType))
+                    .findFirst().isPresent();
+
+        return isIn;
     }
 }

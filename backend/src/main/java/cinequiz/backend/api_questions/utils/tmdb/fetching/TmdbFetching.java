@@ -11,7 +11,10 @@ import org.springframework.web.client.RestTemplate;
 import cinequiz.backend.BackendApplication;
 import cinequiz.backend.api_questions.utils.Language;
 import cinequiz.backend.api_questions.utils.tmdb.model.InfosInterface;
+import cinequiz.backend.api_questions.utils.tmdb.model.media.MediaCredits;
+import cinequiz.backend.api_questions.utils.tmdb.model.people.PersonCredits;
 import cinequiz.backend.api_questions.utils.tmdb.model.people.PersonInfos;
+import cinequiz.backend.api_questions.utils.tmdb.model.results_pages.CreditsPage;
 import cinequiz.backend.api_questions.utils.tmdb.model.results_pages.MovieResultsPage;
 import cinequiz.backend.api_questions.utils.tmdb.model.results_pages.PersonResultsPage;
 import cinequiz.backend.api_questions.utils.tmdb.model.results_pages.ResultsPage;
@@ -19,8 +22,9 @@ import cinequiz.backend.api_questions.utils.tmdb.model.results_pages.TvResultsPa
 
 public class TmdbFetching {
 
-    static final int MIN_GENDER_TMDB_CODE = 1;
-    static final int MAX_GENDER_TMDB_CODE = 2;
+    protected static final int UNVAILABLE_ID = -1;
+    public static final int MIN_GENDER_TMDB_CODE = 1;
+    public static final int MAX_GENDER_TMDB_CODE = 2;
     public static final String IMG_URL_BASE = "https://image.tmdb.org/t/p/w500";
 
     public static <T> T fetchTmdbApi(ApiURL apiUrl, Class<T> pojoClass) {
@@ -140,6 +144,31 @@ public class TmdbFetching {
                                 && (!options.isDate()
                                         || (m.getDate() != null && !m.getDate().equals(""))))
                 .collect(Collectors.toList());
+    }
+
+    public static List<InfosInterface> getCredits(int id, Language language, InfosType type) {
+        CreditsPage<? extends InfosInterface> page = null;
+
+        RessourceType ressource = RessourceType.CREDITS;
+        Class<? extends CreditsPage<? extends InfosInterface>> pojoClass = MediaCredits.class;
+
+        if (type.equals(InfosType.PERSON)) {
+            ressource = RessourceType.COMBINED_CREDITS;
+            pojoClass = PersonCredits.class;
+        }
+
+        ApiURL url = new ApiURL(type, ressource, id);
+        url.addLanguage(language);
+
+        page = fetchTmdbApi(url, pojoClass);
+
+        List<InfosInterface> credits = null;
+        if (page != null) {
+            credits = new ArrayList<InfosInterface>(page.getCast());
+            credits.addAll(page.getCrew());
+        }
+
+        return credits;
     }
 
 }

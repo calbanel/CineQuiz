@@ -147,4 +147,25 @@ public class QuestionController {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @ApiOperation(value = "Gets a mcq : find which taked part")
+    @GetMapping(value = "/take-part", produces = { "application/json" })
+    public ResponseEntity<?> takePart(
+            @RequestParam(required = false, value = "type", defaultValue = "random") String type,
+            @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
+
+        try {
+
+            CleanParams params = new CleanParams(language, type);
+
+            MCQStrategy strategy = getStrategyForType(params.getType());
+
+            MCQQuestion mcq = strategy.takePart(params.getLanguage());
+
+            return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
+
+        } catch (Exception e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }

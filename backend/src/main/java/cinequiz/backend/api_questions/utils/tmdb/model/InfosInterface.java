@@ -1,5 +1,7 @@
 package cinequiz.backend.api_questions.utils.tmdb.model;
 
+import cinequiz.backend.api_questions.utils.tmdb.fetching.InfosType;
+
 public interface InfosInterface {
     public int getId();
 
@@ -14,4 +16,6 @@ public interface InfosInterface {
     public String getOriginalLanguage();
 
     public int getGenre();
+
+    public InfosType getInfosType();
 }

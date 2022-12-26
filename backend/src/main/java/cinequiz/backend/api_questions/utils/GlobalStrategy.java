@@ -7,6 +7,7 @@ import cinequiz.backend.api_questions.schemas.Choices;
 import cinequiz.backend.api_questions.schemas.MCQQuestion;
 import cinequiz.backend.api_questions.utils.exceptions.BadInfosTypeException;
 import cinequiz.backend.api_questions.utils.exceptions.ImpossibleToFetchTmdbException;
+import cinequiz.backend.api_questions.utils.exceptions.NotEnoughItemsInCreditPageException;
 import cinequiz.backend.api_questions.utils.questions.Question;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.InfosTmdbFetchingOptions;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.InfosType;
@@ -15,6 +16,8 @@ import cinequiz.backend.api_questions.utils.tmdb.model.InfosInterface;
 
 public abstract class GlobalStrategy implements MCQStrategy {
     protected final int NB_CHOICES_IN_MCQ = 4;
+    protected final int NB_FOR_TAKE_PART_MAIN_ITEM = 1;
+    protected final int NB_FOR_TAKE_PART_OTHER_ITEM = 3;
 
     @Override
     public MCQQuestion whichByImage(Language language) throws ImpossibleToFetchTmdbException {
@@ -33,9 +36,10 @@ public abstract class GlobalStrategy implements MCQStrategy {
                     list.get(3).getName() };
             Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
 
+            String question = ((Question) Question.getByInfosType(type).getDeclaredField("WHICH_BY_IMAGE").get(null))
+                    .getQuestion(language);
             MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + answer.getImage(), "",
-                    ((Question) Question.getByInfosType(type).getDeclaredField("WHICH_BY_IMAGE").get(null))
-                            .getQuestion(language),
+                    question,
                     choicesObject,
                     answer.getName());
 
@@ -69,9 +73,11 @@ public abstract class GlobalStrategy implements MCQStrategy {
             for (String name : names)
                 cleanDescription = cleanDescription.replace(name, "-");
 
+            String question = ((Question) Question.getByInfosType(type).getDeclaredField("WHICH_BY_DESCRIPTION")
+                    .get(null))
+                    .getQuestion(language);
             MCQQuestion mcq = new MCQQuestion("", cleanDescription,
-                    ((Question) Question.getByInfosType(type).getDeclaredField("WHICH_BY_DESCRIPTION").get(null))
-                            .getQuestion(language),
+                    question,
                     choicesObject,
                     answer.getName());
 
@@ -100,9 +106,10 @@ public abstract class GlobalStrategy implements MCQStrategy {
                     list.get(3).getDate() };
             Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
 
+            String question = ((Question) Question.getByInfosType(type).getDeclaredField("DATE").get(null))
+                    .getQuestion(language);
             MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + answer.getImage(), answer.getName(),
-                    ((Question) Question.getByInfosType(type).getDeclaredField("DATE").get(null))
-                            .getQuestion(language),
+                    question,
                     choicesObject,
                     answer.getDate());
 
@@ -114,9 +121,64 @@ public abstract class GlobalStrategy implements MCQStrategy {
         }
     }
 
+    @Override
+    public MCQQuestion takePart(Language language) throws ImpossibleToFetchTmdbException {
+        try {
+            InfosType type = this.getInfosType();
+
+            InfosTmdbFetchingOptions options = new InfosTmdbFetchingOptions(true, false, false, false, false);
+            TakePartList takePartList = this.getTakePartListForMCQ(language, type, NB_FOR_TAKE_PART_MAIN_ITEM,
+                    NB_FOR_TAKE_PART_OTHER_ITEM, options);
+
+            InfosInterface mainItem = takePartList.getItem();
+            List<InfosInterface> credits = takePartList.getList();
+
+            InfosInterface answer = credits.get(0);
+
+            Collections.shuffle(credits);
+            String[] choices = { credits.get(0).getName(), credits.get(1).getName(), credits.get(2).getName(),
+                    credits.get(3).getName() };
+            Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
+
+            String question = ((Question) Question.getByInfosType(type).getDeclaredField("TAKE_PART").get(null))
+                    .getQuestion(language);
+            MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + mainItem.getImage(), mainItem.getName(),
+                    question,
+                    choicesObject,
+                    answer.getName());
+
+            return mcq;
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            throw new ImpossibleToFetchTmdbException();
+        }
+    }
+
     protected abstract InfosType getInfosType();
 
     protected abstract List<InfosInterface> getInfosListForMCQ(Language language, InfosType type,
             InfosTmdbFetchingOptions options, InfosTmdbFetchingOptions similaryOptions)
             throws ImpossibleToFetchTmdbException, BadInfosTypeException;
+
+    protected class TakePartList {
+        private InfosInterface item;
+        private List<InfosInterface> list;
+
+        public TakePartList(InfosInterface item, List<InfosInterface> list) {
+            this.item = item;
+            this.list = list;
+        }
+
+        public InfosInterface getItem() {
+            return item;
+        }
+
+        public List<InfosInterface> getList() {
+            return list;
+        }
+    }
+
+    protected abstract TakePartList getTakePartListForMCQ(Language language, InfosType type,
+            int numberTakingPart, int numberNotTakingPart, InfosTmdbFetchingOptions options)
+            throws BadInfosTypeException, NotEnoughItemsInCreditPageException;
 }

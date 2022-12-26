@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import cinequiz.backend.api_questions.utils.Language;
 import cinequiz.backend.api_questions.utils.tmdb.model.InfosInterface;
+import cinequiz.backend.api_questions.utils.tmdb.fetching.InfosType;
 
 public class PersonInfos extends Person implements InfosInterface {
 
@@ -109,6 +110,11 @@ public class PersonInfos extends Person implements InfosInterface {
     @Override
     public int getGenre() {
         return getGender();
+    }
+
+    @Override
+    public InfosType getInfosType() {
+        return InfosType.PERSON;
     }
 
 }

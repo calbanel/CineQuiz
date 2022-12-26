@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import cinequiz.backend.api_questions.utils.tmdb.fetching.InfosType;
 import cinequiz.backend.api_questions.utils.tmdb.model.media.MediaInfos;
 
 public class TvShowInfos extends MediaInfos {
@@ -188,6 +189,11 @@ public class TvShowInfos extends MediaInfos {
     @Override
     public String getDate() {
         return this.firstAirDate;
+    }
+
+    @Override
+    public InfosType getInfosType() {
+        return InfosType.TV;
     }
 
 }

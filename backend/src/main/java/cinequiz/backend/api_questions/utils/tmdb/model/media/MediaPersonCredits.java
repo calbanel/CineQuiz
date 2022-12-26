@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import cinequiz.backend.api_questions.utils.tmdb.fetching.InfosType;
+
 public class MediaPersonCredits extends MediaInfos {
 
     @JsonProperty("genre_ids")
@@ -166,6 +168,14 @@ public class MediaPersonCredits extends MediaInfos {
     @Override
     public int getGenre() {
         return genreIds != null ? genreIds.get(0) : 0;
+    }
+
+    @Override
+    public InfosType getInfosType() {
+        if(this.mediaType == "tv")
+            return InfosType.TV;
+        else
+            return InfosType.MOVIE;
     }
 
 }

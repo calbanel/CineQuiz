@@ -3,6 +3,7 @@ package cinequiz.backend.api_questions.utils.tmdb.model.media.movie;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import cinequiz.backend.api_questions.utils.tmdb.model.media.MediaInfos;
+import cinequiz.backend.api_questions.utils.tmdb.fetching.InfosType;
 
 public class MovieInfos extends MediaInfos {
 
@@ -102,6 +103,11 @@ public class MovieInfos extends MediaInfos {
     @Override
     public String getDate() {
         return releaseDate;
+    }
+
+    @Override
+    public InfosType getInfosType() {
+        return InfosType.MOVIE;
     }
 
 }
