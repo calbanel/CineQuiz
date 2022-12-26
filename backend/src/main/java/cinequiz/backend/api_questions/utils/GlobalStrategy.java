@@ -23,7 +23,8 @@ public abstract class GlobalStrategy implements MCQStrategy {
 
             InfosType type = this.getInfosType();
             InfosTmdbFetchingOptions options = new InfosTmdbFetchingOptions(true, true, false, false, false);
-            List<InfosInterface> list = this.getInfosListForMCQ(language, type, options);
+            InfosTmdbFetchingOptions similaryOptions = new InfosTmdbFetchingOptions(true, false, false, false, false);
+            List<InfosInterface> list = this.getInfosListForMCQ(language, type, options, similaryOptions);
 
             InfosInterface answer = list.get(0);
 
@@ -53,7 +54,8 @@ public abstract class GlobalStrategy implements MCQStrategy {
 
             InfosType type = this.getInfosType();
             InfosTmdbFetchingOptions options = new InfosTmdbFetchingOptions(true, false, true, false, false);
-            List<InfosInterface> list = this.getInfosListForMCQ(language, type, options);
+            InfosTmdbFetchingOptions similaryOptions = new InfosTmdbFetchingOptions(true, false, false, false, false);
+            List<InfosInterface> list = this.getInfosListForMCQ(language, type, options, similaryOptions);
 
             InfosInterface answer = list.get(0);
 
@@ -81,9 +83,40 @@ public abstract class GlobalStrategy implements MCQStrategy {
         }
     }
 
+    @Override
+    public MCQQuestion date(Language language) throws ImpossibleToFetchTmdbException {
+
+        try {
+
+            InfosType type = this.getInfosType();
+            InfosTmdbFetchingOptions options = new InfosTmdbFetchingOptions(true, true, false, true, false);
+            InfosTmdbFetchingOptions similaryOptions = new InfosTmdbFetchingOptions(true, false, false, true, false);
+            List<InfosInterface> list = this.getInfosListForMCQ(language, type, options, similaryOptions);
+
+            InfosInterface answer = list.get(0);
+
+            Collections.shuffle(list);
+            String[] choices = { list.get(0).getDate(), list.get(1).getDate(), list.get(2).getDate(),
+                    list.get(3).getDate() };
+            Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
+
+            MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + answer.getImage(), answer.getName(),
+                    ((Question) Question.getByInfosType(type).getDeclaredField("DATE").get(null))
+                            .getQuestion(language),
+                    choicesObject,
+                    answer.getDate());
+
+            return mcq;
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            throw new ImpossibleToFetchTmdbException();
+        }
+    }
+
     protected abstract InfosType getInfosType();
 
     protected abstract List<InfosInterface> getInfosListForMCQ(Language language, InfosType type,
-            InfosTmdbFetchingOptions options)
+            InfosTmdbFetchingOptions options, InfosTmdbFetchingOptions similaryOptions)
             throws ImpossibleToFetchTmdbException, BadInfosTypeException;
 }

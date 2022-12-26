@@ -27,7 +27,7 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping(value = "/api/questions", method = RequestMethod.GET)
 public class QuestionController {
 
-    private final int NB_DEFINED_QUESTIONS = 2;
+    private final int NB_DEFINED_QUESTIONS = 3;
 
     @ApiOperation(value = "Gets a random mcq")
     @GetMapping("/random")
@@ -41,6 +41,8 @@ public class QuestionController {
                 return whichByImage(type, language);
             case 2:
                 return whichByDescription(type, language);
+            case 3:
+                return date(type, language);
             default:
                 return whichByImage(type, language);
 
@@ -117,6 +119,27 @@ public class QuestionController {
             MCQStrategy strategy = getStrategyForType(params.getType());
 
             MCQQuestion mcq = strategy.whichByDescription(params.getLanguage());
+
+            return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
+
+        } catch (Exception e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @ApiOperation(value = "Gets a mcq : find the good date")
+    @GetMapping(value = "/date", produces = { "application/json" })
+    public ResponseEntity<?> date(
+            @RequestParam(required = false, value = "type", defaultValue = "random") String type,
+            @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
+
+        try {
+
+            CleanParams params = new CleanParams(language, type);
+
+            MCQStrategy strategy = getStrategyForType(params.getType());
+
+            MCQQuestion mcq = strategy.date(params.getLanguage());
 
             return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
 

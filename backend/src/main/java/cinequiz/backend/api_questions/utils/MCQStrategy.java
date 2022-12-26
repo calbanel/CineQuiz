@@ -8,7 +8,7 @@ public interface MCQStrategy {
 
     public MCQQuestion whichByDescription(Language language) throws ImpossibleToFetchTmdbException;
 
-    public MCQQuestion date(Language language);
+    public MCQQuestion date(Language language) throws ImpossibleToFetchTmdbException;
 
     public MCQQuestion takePart(Language language);
 

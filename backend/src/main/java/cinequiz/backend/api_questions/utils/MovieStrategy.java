@@ -6,12 +6,6 @@ import cinequiz.backend.api_questions.utils.tmdb.fetching.InfosType;
 public class MovieStrategy extends MediaStrategy {
 
     @Override
-    public MCQQuestion date(Language language) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public MCQQuestion takePart(Language language) {
         // TODO Auto-generated method stub
         return null;

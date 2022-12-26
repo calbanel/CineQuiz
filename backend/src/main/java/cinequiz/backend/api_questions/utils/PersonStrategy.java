@@ -14,12 +14,6 @@ import cinequiz.backend.api_questions.utils.tmdb.model.InfosInterface;
 public class PersonStrategy extends GlobalStrategy {
 
     @Override
-    public MCQQuestion date(Language language) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public MCQQuestion takePart(Language language) {
         // TODO Auto-generated method stub
         return null;
@@ -38,12 +32,11 @@ public class PersonStrategy extends GlobalStrategy {
 
     @Override
     protected List<InfosInterface> getInfosListForMCQ(Language language, InfosType type,
-            InfosTmdbFetchingOptions options)
+            InfosTmdbFetchingOptions options, InfosTmdbFetchingOptions similaryOptions)
             throws ImpossibleToFetchTmdbException, BadInfosTypeException {
         try {
             InfosInterface answer = TmdbFetching.getRandomValidInfos(language, options, InfosType.PERSON, 1).get(0);
-            InfosTmdbFetchingOptions otherOptions = new InfosTmdbFetchingOptions(true, false, false, false, true);
-            List<InfosInterface> others = TmdbFetching.getRandomValidInfos(language, otherOptions, InfosType.PERSON,
+            List<InfosInterface> others = TmdbFetching.getRandomValidInfos(language, similaryOptions, InfosType.PERSON,
                     NB_CHOICES_IN_MCQ - 1);
 
             List<InfosInterface> list = new ArrayList<InfosInterface>();
