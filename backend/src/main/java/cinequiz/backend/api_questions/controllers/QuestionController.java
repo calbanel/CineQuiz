@@ -27,7 +27,7 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping(value = "/api/questions", method = RequestMethod.GET)
 public class QuestionController {
 
-    private final int NB_DEFINED_QUESTIONS = 3;
+    private final int NB_DEFINED_QUESTIONS = 5;
 
     @ApiOperation(value = "Gets a random mcq")
     @GetMapping("/random")
@@ -43,6 +43,10 @@ public class QuestionController {
                 return whichByDescription(type, language);
             case 3:
                 return date(type, language);
+            case 4:
+                return takePart(type, language);
+            case 5:
+                return doesntTakePart(type, language);
             default:
                 return whichByImage(type, language);
 
@@ -161,6 +165,27 @@ public class QuestionController {
             MCQStrategy strategy = getStrategyForType(params.getType());
 
             MCQQuestion mcq = strategy.takePart(params.getLanguage());
+
+            return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
+
+        } catch (Exception e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @ApiOperation(value = "Gets a mcq : find which not taked part")
+    @GetMapping(value = "/doesnt-take-part", produces = { "application/json" })
+    public ResponseEntity<?> doesntTakePart(
+            @RequestParam(required = false, value = "type", defaultValue = "random") String type,
+            @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
+
+        try {
+
+            CleanParams params = new CleanParams(language, type);
+
+            MCQStrategy strategy = getStrategyForType(params.getType());
+
+            MCQQuestion mcq = strategy.doesntTakePart(params.getLanguage());
 
             return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
 

@@ -12,5 +12,5 @@ public interface MCQStrategy {
 
     public MCQQuestion takePart(Language language) throws ImpossibleToFetchTmdbException;
 
-    public MCQQuestion doesntTakePart(Language language);
+    public MCQQuestion doesntTakePart(Language language) throws ImpossibleToFetchTmdbException;
 }

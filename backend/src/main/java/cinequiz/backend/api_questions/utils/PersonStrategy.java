@@ -3,7 +3,6 @@ package cinequiz.backend.api_questions.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import cinequiz.backend.api_questions.schemas.MCQQuestion;
 import cinequiz.backend.api_questions.utils.exceptions.BadInfosTypeException;
 import cinequiz.backend.api_questions.utils.exceptions.ImpossibleToFetchTmdbException;
 import cinequiz.backend.api_questions.utils.exceptions.NotEnoughItemsInCreditPageException;
@@ -14,12 +13,6 @@ import cinequiz.backend.api_questions.utils.tmdb.fetching.TmdbFetching;
 import cinequiz.backend.api_questions.utils.tmdb.model.InfosInterface;
 
 public class PersonStrategy extends GlobalStrategy {
-
-    @Override
-    public MCQQuestion doesntTakePart(Language language) {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
     @Override
     protected InfosType getInfosType() {

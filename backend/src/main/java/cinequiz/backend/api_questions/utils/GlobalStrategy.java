@@ -16,8 +16,8 @@ import cinequiz.backend.api_questions.utils.tmdb.model.InfosInterface;
 
 public abstract class GlobalStrategy implements MCQStrategy {
     protected final int NB_CHOICES_IN_MCQ = 4;
-    protected final int NB_FOR_TAKE_PART_MAIN_ITEM = 1;
-    protected final int NB_FOR_TAKE_PART_OTHER_ITEM = 3;
+    protected final int NB_TAKING_PART = 1;
+    protected final int NB_NOT_TAKING_PART = 3;
 
     @Override
     public MCQQuestion whichByImage(Language language) throws ImpossibleToFetchTmdbException {
@@ -127,8 +127,8 @@ public abstract class GlobalStrategy implements MCQStrategy {
             InfosType type = this.getInfosType();
 
             InfosTmdbFetchingOptions options = new InfosTmdbFetchingOptions(true, false, false, false, false);
-            TakePartList takePartList = this.getTakePartListForMCQ(language, type, NB_FOR_TAKE_PART_MAIN_ITEM,
-                    NB_FOR_TAKE_PART_OTHER_ITEM, options);
+            TakePartList takePartList = this.getTakePartListForMCQ(language, type, NB_TAKING_PART,
+                    NB_NOT_TAKING_PART, options);
 
             InfosInterface mainItem = takePartList.getItem();
             List<InfosInterface> credits = takePartList.getList();
@@ -141,6 +141,39 @@ public abstract class GlobalStrategy implements MCQStrategy {
             Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
 
             String question = ((Question) Question.getByInfosType(type).getDeclaredField("TAKE_PART").get(null))
+                    .getQuestion(language);
+            MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + mainItem.getImage(), mainItem.getName(),
+                    question,
+                    choicesObject,
+                    answer.getName());
+
+            return mcq;
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            throw new ImpossibleToFetchTmdbException();
+        }
+    }
+
+    @Override
+    public MCQQuestion doesntTakePart(Language language) throws ImpossibleToFetchTmdbException {
+        try {
+            InfosType type = this.getInfosType();
+
+            InfosTmdbFetchingOptions options = new InfosTmdbFetchingOptions(true, false, false, false, false);
+            TakePartList takePartList = this.getTakePartListForMCQ(language, type, NB_NOT_TAKING_PART,
+                    NB_TAKING_PART, options);
+
+            InfosInterface mainItem = takePartList.getItem();
+            List<InfosInterface> credits = takePartList.getList();
+
+            InfosInterface answer = credits.get(NB_CHOICES_IN_MCQ - 1);
+
+            Collections.shuffle(credits);
+            String[] choices = { credits.get(0).getName(), credits.get(1).getName(), credits.get(2).getName(),
+                    credits.get(3).getName() };
+            Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
+
+            String question = ((Question) Question.getByInfosType(type).getDeclaredField("DOESNT_TAKE_PART").get(null))
                     .getQuestion(language);
             MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + mainItem.getImage(), mainItem.getName(),
                     question,
