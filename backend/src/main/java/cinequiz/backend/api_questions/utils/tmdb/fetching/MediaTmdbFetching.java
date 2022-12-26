@@ -6,12 +6,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import cinequiz.backend.BackendApplication;
 import cinequiz.backend.api_questions.utils.Language;
 import cinequiz.backend.api_questions.utils.exceptions.NotEnoughItemsInCreditPageException;
 import cinequiz.backend.api_questions.utils.exceptions.NotEnoughSimilarMediasInTMDBException;
 import cinequiz.backend.api_questions.utils.tmdb.model.InfosInterface;
-import cinequiz.backend.api_questions.utils.tmdb.model.people.PersonCredits;
 import cinequiz.backend.api_questions.utils.tmdb.model.people.PersonMediaCredits;
 
 public class MediaTmdbFetching extends TmdbFetching {
@@ -114,37 +112,6 @@ public class MediaTmdbFetching extends TmdbFetching {
         return list;
     }
 
-    public static List<PersonMediaCredits> getRandomCoherentPeopleListInTheseMedias(int movieId,
-            int numberOfPeoplesInMedia, int similarMediaId, int numberOfPeoplesInSimilarMedia,
-            Language language,
-            InfosType mediaType) {
-        List<PersonMediaCredits> cast = null;
-        int randomGender = BackendApplication.random(TmdbFetching.MIN_GENDER_TMDB_CODE,
-                TmdbFetching.MAX_GENDER_TMDB_CODE);
-        try {
-            InfosTmdbFetchingOptions panswerOptions = new InfosTmdbFetchingOptions(true, true, false,
-                    false, true);
-            List<PersonMediaCredits> answer = getRandomCoherentPeoplesInvolvedInThisMedia(movieId,
-                    language, numberOfPeoplesInMedia, panswerOptions, randomGender, mediaType);
-            InfosTmdbFetchingOptions psimilaryOptions = new InfosTmdbFetchingOptions(true, false, false,
-                    false, true);
-
-            List<PersonMediaCredits> similaryCast = getRandomCoherentPeoplesInvolvedInThisMedia(
-                    similarMediaId,
-                    language, numberOfPeoplesInSimilarMedia, psimilaryOptions, randomGender,
-                    mediaType,
-                    movieId);
-            cast = new ArrayList<PersonMediaCredits>();
-            cast.addAll(answer);
-            cast.addAll(similaryCast);
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-        }
-
-        // null if we failed to get a valid cast for these movies
-        return cast;
-    }
-
     public static List<PersonMediaCredits> getRandomCoherentPeoplesInvolvedInThisMedia(int mediaId,
             Language language, int number, InfosTmdbFetchingOptions options, int tmdbgenre,
             InfosType mediaType)
@@ -202,18 +169,6 @@ public class MediaTmdbFetching extends TmdbFetching {
             throw new NotEnoughItemsInCreditPageException(mediaId);
 
         return peoples;
-    }
-
-    public static PersonCredits getPeopleCredits(int personId, Language language, InfosType mediaType) {
-        PersonCredits page = null;
-
-        ApiURL url = new ApiURL(InfosType.PERSON, RessourceType.COMBINED_CREDITS, personId);
-        url.addLanguage(language);
-
-        page = fetchTmdbApi(url, PersonCredits.class);
-
-        // null if the target cast page isn't valid
-        return page;
     }
 
     public static List<PersonMediaCredits> filterPersonMediaCredits(List<PersonMediaCredits> page,
