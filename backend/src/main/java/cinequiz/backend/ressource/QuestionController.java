@@ -13,6 +13,7 @@ import cinequiz.backend.api_questions.utils.MCQStrategy;
 import cinequiz.backend.api_questions.utils.MovieStrategy;
 import cinequiz.backend.api_questions.utils.PersonStrategy;
 import cinequiz.backend.api_questions.utils.TvStrategy;
+import cinequiz.backend.api_questions.utils.exceptions.ImpossibleToFetchTmdbException;
 import cinequiz.backend.api_questions.utils.exceptions.LanguageNotSupportedException;
 import cinequiz.backend.api_questions.utils.exceptions.TypeNotSupportedException;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.InfosType;
@@ -92,12 +93,11 @@ public class QuestionController {
 
     @ApiOperation(value = "Gets a mcq : guess from a picture")
     @GetMapping(value = "/which-by-image", produces = { "application/json" })
-    public ResponseEntity<?> whichByImage(
+    public ResponseEntity<MCQQuestion> whichByImage(
             @RequestParam(required = false, value = "type", defaultValue = "random") String type,
             @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
 
         try {
-
             CleanParams params = new CleanParams(language, type);
 
             MCQStrategy strategy = getStrategyForType(params.getType());
@@ -105,20 +105,23 @@ public class QuestionController {
             MCQQuestion mcq = strategy.whichByImage(params.getLanguage());
 
             return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
-
-        } catch (Exception e) {
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (ImpossibleToFetchTmdbException e) {
+            e.printStackTrace();
+            return new ResponseEntity<MCQQuestion>(new MCQQuestion(), HttpStatus.SERVICE_UNAVAILABLE);
+        } catch (LanguageNotSupportedException | TypeNotSupportedException e) {
+            e.printStackTrace();
+            return new ResponseEntity<MCQQuestion>(new MCQQuestion(), HttpStatus.BAD_REQUEST);
         }
+
     }
 
     @ApiOperation(value = "Gets a mcq : guess from a description")
     @GetMapping(value = "/which-by-description", produces = { "application/json" })
-    public ResponseEntity<?> whichByDescription(
+    public ResponseEntity<MCQQuestion> whichByDescription(
             @RequestParam(required = false, value = "type", defaultValue = "random") String type,
             @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
 
         try {
-
             CleanParams params = new CleanParams(language, type);
 
             MCQStrategy strategy = getStrategyForType(params.getType());
@@ -126,20 +129,22 @@ public class QuestionController {
             MCQQuestion mcq = strategy.whichByDescription(params.getLanguage());
 
             return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
-
-        } catch (Exception e) {
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (ImpossibleToFetchTmdbException e) {
+            e.printStackTrace();
+            return new ResponseEntity<MCQQuestion>(new MCQQuestion(), HttpStatus.SERVICE_UNAVAILABLE);
+        } catch (LanguageNotSupportedException | TypeNotSupportedException e) {
+            e.printStackTrace();
+            return new ResponseEntity<MCQQuestion>(new MCQQuestion(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @ApiOperation(value = "Gets a mcq : find the good date")
     @GetMapping(value = "/date", produces = { "application/json" })
-    public ResponseEntity<?> date(
+    public ResponseEntity<MCQQuestion> date(
             @RequestParam(required = false, value = "type", defaultValue = "random") String type,
             @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
 
         try {
-
             CleanParams params = new CleanParams(language, type);
 
             MCQStrategy strategy = getStrategyForType(params.getType());
@@ -147,20 +152,22 @@ public class QuestionController {
             MCQQuestion mcq = strategy.date(params.getLanguage());
 
             return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
-
-        } catch (Exception e) {
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (ImpossibleToFetchTmdbException e) {
+            e.printStackTrace();
+            return new ResponseEntity<MCQQuestion>(new MCQQuestion(), HttpStatus.SERVICE_UNAVAILABLE);
+        } catch (LanguageNotSupportedException | TypeNotSupportedException e) {
+            e.printStackTrace();
+            return new ResponseEntity<MCQQuestion>(new MCQQuestion(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @ApiOperation(value = "Gets a mcq : find which taked part")
     @GetMapping(value = "/take-part", produces = { "application/json" })
-    public ResponseEntity<?> takePart(
+    public ResponseEntity<MCQQuestion> takePart(
             @RequestParam(required = false, value = "type", defaultValue = "random") String type,
             @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
 
         try {
-
             CleanParams params = new CleanParams(language, type);
 
             MCQStrategy strategy = getStrategyForType(params.getType());
@@ -168,20 +175,22 @@ public class QuestionController {
             MCQQuestion mcq = strategy.takePart(params.getLanguage());
 
             return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
-
-        } catch (Exception e) {
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (ImpossibleToFetchTmdbException e) {
+            e.printStackTrace();
+            return new ResponseEntity<MCQQuestion>(new MCQQuestion(), HttpStatus.SERVICE_UNAVAILABLE);
+        } catch (LanguageNotSupportedException | TypeNotSupportedException e) {
+            e.printStackTrace();
+            return new ResponseEntity<MCQQuestion>(new MCQQuestion(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @ApiOperation(value = "Gets a mcq : find which not taked part")
     @GetMapping(value = "/doesnt-take-part", produces = { "application/json" })
-    public ResponseEntity<?> doesntTakePart(
+    public ResponseEntity<MCQQuestion> doesntTakePart(
             @RequestParam(required = false, value = "type", defaultValue = "random") String type,
             @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
 
         try {
-
             CleanParams params = new CleanParams(language, type);
 
             MCQStrategy strategy = getStrategyForType(params.getType());
@@ -189,9 +198,12 @@ public class QuestionController {
             MCQQuestion mcq = strategy.doesntTakePart(params.getLanguage());
 
             return new ResponseEntity<MCQQuestion>(mcq, HttpStatus.OK);
-
-        } catch (Exception e) {
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (ImpossibleToFetchTmdbException e) {
+            e.printStackTrace();
+            return new ResponseEntity<MCQQuestion>(new MCQQuestion(), HttpStatus.SERVICE_UNAVAILABLE);
+        } catch (LanguageNotSupportedException | TypeNotSupportedException e) {
+            e.printStackTrace();
+            return new ResponseEntity<MCQQuestion>(new MCQQuestion(), HttpStatus.BAD_REQUEST);
         }
     }
 }
