@@ -8,13 +8,13 @@ import io.swagger.annotations.ApiModel;
 public class ListOfMCQ {
     private List<MCQQuestion> list;
     private String type;
-    private String number;
+    private Integer number;
     private String language;
 
     public ListOfMCQ() {
     }
 
-    public ListOfMCQ(List<MCQQuestion> list, String type, String number, String language) {
+    public ListOfMCQ(List<MCQQuestion> list, String type, Integer number, String language) {
         this.list = list;
         this.type = type;
         this.number = number;
@@ -37,11 +37,11 @@ public class ListOfMCQ {
         this.type = type;
     }
 
-    public String getNumber() {
+    public Integer getNumber() {
         return number;
     }
 
-    public void setNumber(String number) {
+    public void setNumber(Integer number) {
         this.number = number;
     }
 

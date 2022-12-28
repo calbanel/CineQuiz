@@ -1,5 +1,8 @@
 package cinequiz.backend.ressource;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,6 +20,7 @@ import cinequiz.backend.api_questions.utils.exceptions.ImpossibleToFetchTmdbExce
 import cinequiz.backend.api_questions.utils.exceptions.LanguageNotSupportedException;
 import cinequiz.backend.api_questions.utils.exceptions.TypeNotSupportedException;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.InfosType;
+import cinequiz.backend.model.ListOfMCQ;
 import cinequiz.backend.model.MCQQuestion;
 
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -205,5 +209,35 @@ public class QuestionController {
             e.printStackTrace();
             return new ResponseEntity<MCQQuestion>(new MCQQuestion(), HttpStatus.BAD_REQUEST);
         }
+    }
+
+    private final int MIN_NUMBER_PARAM = 1;
+    private final int MAX_NUMBER_PARAM = 10;
+
+    @ApiOperation(value = "Gets a random list of mcq")
+    @GetMapping("/random-list")
+    public ResponseEntity<ListOfMCQ> random_list(
+            @RequestParam(required = false, value = "number", defaultValue = "1") Integer number,
+            @RequestParam(required = false, value = "type", defaultValue = "random") String type,
+            @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
+
+        if (number < MIN_NUMBER_PARAM || number > MAX_NUMBER_PARAM)
+            return new ResponseEntity<ListOfMCQ>(new ListOfMCQ(), HttpStatus.BAD_REQUEST);
+
+        List<MCQQuestion> list = new ArrayList<MCQQuestion>();
+        for (int i = 0; i < number; i++) {
+            ResponseEntity<MCQQuestion> randomQuestion = random_question(type, language);
+
+            if (randomQuestion.getStatusCode().equals(HttpStatus.BAD_REQUEST))
+                return new ResponseEntity<ListOfMCQ>(new ListOfMCQ(), HttpStatus.BAD_REQUEST);
+
+            if (randomQuestion.getStatusCode().equals(HttpStatus.SERVICE_UNAVAILABLE))
+                return new ResponseEntity<ListOfMCQ>(new ListOfMCQ(), HttpStatus.SERVICE_UNAVAILABLE);
+
+            list.add(randomQuestion.getBody());
+        }
+
+        ListOfMCQ result = new ListOfMCQ(list, type, number, language);
+        return new ResponseEntity<ListOfMCQ>(result, HttpStatus.OK);
     }
 }
