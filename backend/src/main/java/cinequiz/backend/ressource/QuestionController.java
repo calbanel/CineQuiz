@@ -1,4 +1,4 @@
-package cinequiz.backend.api_questions.controllers;
+package cinequiz.backend.ressource;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import cinequiz.backend.BackendApplication;
-import cinequiz.backend.api_questions.schemas.MCQQuestion;
 import cinequiz.backend.api_questions.utils.Language;
 import cinequiz.backend.api_questions.utils.MCQStrategy;
 import cinequiz.backend.api_questions.utils.MovieStrategy;
@@ -17,6 +16,8 @@ import cinequiz.backend.api_questions.utils.TvStrategy;
 import cinequiz.backend.api_questions.utils.exceptions.LanguageNotSupportedException;
 import cinequiz.backend.api_questions.utils.exceptions.TypeNotSupportedException;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.InfosType;
+import cinequiz.backend.model.MCQQuestion;
+
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 

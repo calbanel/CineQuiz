@@ -3,8 +3,6 @@ package cinequiz.backend.api_questions.utils;
 import java.util.Collections;
 import java.util.List;
 
-import cinequiz.backend.api_questions.schemas.Choices;
-import cinequiz.backend.api_questions.schemas.MCQQuestion;
 import cinequiz.backend.api_questions.utils.exceptions.BadInfosTypeException;
 import cinequiz.backend.api_questions.utils.exceptions.ImpossibleToFetchTmdbException;
 import cinequiz.backend.api_questions.utils.exceptions.NotEnoughItemsInCreditPageException;
@@ -13,6 +11,8 @@ import cinequiz.backend.api_questions.utils.tmdb.fetching.InfosTmdbFetchingOptio
 import cinequiz.backend.api_questions.utils.tmdb.fetching.InfosType;
 import cinequiz.backend.api_questions.utils.tmdb.fetching.TmdbFetching;
 import cinequiz.backend.api_questions.utils.tmdb.model.InfosInterface;
+import cinequiz.backend.model.Choices;
+import cinequiz.backend.model.MCQQuestion;
 
 public abstract class GlobalStrategy implements MCQStrategy {
     protected final int NB_CHOICES_IN_MCQ = 4;

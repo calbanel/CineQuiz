@@ -1,5 +1,8 @@
-package cinequiz.backend.api_questions.schemas;
+package cinequiz.backend.model;
 
+import io.swagger.annotations.ApiModel;
+
+@ApiModel(description = "A multiple choice question")
 public class MCQQuestion {
     private String optionalImage;
     private String optionalText;
