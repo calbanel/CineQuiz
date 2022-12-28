@@ -33,7 +33,7 @@ public class QuestionController {
 
     @ApiOperation(value = "Gets a random mcq")
     @GetMapping("/random")
-    public ResponseEntity<?> random_question(
+    public ResponseEntity<MCQQuestion> random_question(
             @RequestParam(required = false, value = "type", defaultValue = "random") String type,
             @RequestParam(required = false, value = "language", defaultValue = "fr") String language) {
 
