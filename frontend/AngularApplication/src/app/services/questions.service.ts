@@ -13,7 +13,7 @@ export class QuestionService {
   }
 
   getQuestion(): Observable<Question> {
-    return this.http.get<Question>("http://localhost:8080/cinequiz/questions/movie/random");
+    return this.http.get<Question>("http://localhost:8080/api/questions/random");
   }
 
 }
