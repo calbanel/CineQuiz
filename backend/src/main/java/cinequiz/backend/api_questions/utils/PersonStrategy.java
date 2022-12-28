@@ -28,14 +28,7 @@ public class PersonStrategy extends GlobalStrategy {
             throw new BadInfosTypeException(type, "getMediaListForMCQ");
         }
         try {
-            InfosInterface answer = TmdbFetching.getRandomValidInfos(language, options, InfosType.PERSON, 1).get(0);
-            List<InfosInterface> others = TmdbFetching.getRandomValidInfos(language, similaryOptions, InfosType.PERSON,
-                    NB_CHOICES_IN_MCQ - 1);
-
-            List<InfosInterface> list = new ArrayList<InfosInterface>();
-            list.add(answer);
-            list.addAll(others);
-            return list;
+            return TmdbFetching.getRandomValidInfos(language, options, InfosType.PERSON, NB_CHOICES_IN_MCQ);
         } catch (Exception e) {
             throw new ImpossibleToFetchTmdbException();
         }
