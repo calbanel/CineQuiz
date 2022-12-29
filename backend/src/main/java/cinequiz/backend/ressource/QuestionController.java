@@ -165,7 +165,7 @@ public class QuestionController {
         }
     }
 
-    @ApiOperation(value = "Gets a mcq : find which taked part")
+    @ApiOperation(value = "Gets a mcq : find who took part")
     @GetMapping(value = "/take-part", produces = { "application/json" })
     public ResponseEntity<MCQQuestion> takePart(
             @RequestParam(required = false, value = "type", defaultValue = "random") String type,
@@ -188,7 +188,7 @@ public class QuestionController {
         }
     }
 
-    @ApiOperation(value = "Gets a mcq : find which not taked part")
+    @ApiOperation(value = "Gets a mcq : find who did not take part")
     @GetMapping(value = "/doesnt-take-part", produces = { "application/json" })
     public ResponseEntity<MCQQuestion> doesntTakePart(
             @RequestParam(required = false, value = "type", defaultValue = "random") String type,

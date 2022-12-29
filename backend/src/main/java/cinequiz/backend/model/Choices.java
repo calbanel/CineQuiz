@@ -2,7 +2,7 @@ package cinequiz.backend.model;
 
 import io.swagger.annotations.ApiModel;
 
-@ApiModel(description = "A mcq choice")
+@ApiModel(description = "The 4 choices presented for one question")
 public class Choices {
     private String choice1, choice2, choice3, choice4;
 

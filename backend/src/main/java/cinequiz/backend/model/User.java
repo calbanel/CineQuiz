@@ -7,17 +7,27 @@ import javax.persistence.GenerationType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 @Getter
 @Setter
-@ApiModel(description = "A user")
+@ApiModel(description = "A user having an account")
 @Document(collection="User")
 public class User{
     @Id
+    @ApiModelProperty("The user id")
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private String id;
+
+    @ApiModelProperty("The user pseudo in the app")
     private String pseudo;
+
+    @ApiModelProperty("The user email")
     private String email;
+
+    @ApiModelProperty("The user password")
     private String password;
+
+    @ApiModelProperty("The user score")
     private int score;
 }

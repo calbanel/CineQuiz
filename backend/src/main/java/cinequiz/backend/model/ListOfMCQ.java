@@ -3,12 +3,20 @@ package cinequiz.backend.model;
 import java.util.List;
 
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(description = "List of multiple choice questions")
 public class ListOfMCQ {
+    @ApiModelProperty("The list of mcq")
     private List<MCQQuestion> list;
+
+    @ApiModelProperty("Type of the mcq")
     private String type;
+
+    @ApiModelProperty("The number of mcq")
     private Integer number;
+
+    @ApiModelProperty("The language of the mcq")
     private String language;
 
     public ListOfMCQ() {

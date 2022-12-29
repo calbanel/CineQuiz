@@ -1,13 +1,23 @@
 package cinequiz.backend.model;
 
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(description = "A multiple choice question")
 public class MCQQuestion {
+    @ApiModelProperty("An image of the movie/show/someone to recognise")
     private String optionalImage;
+
+    @ApiModelProperty("A description or the movie/show title")
     private String optionalText;
+
+    @ApiModelProperty("The question")
     private String question;
+
+    @ApiModelProperty("The choices presented")
     private Choices choices;
+
+    @ApiModelProperty("The correct answer")
     private String answer;
 
     public MCQQuestion() {
