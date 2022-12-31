@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import io.swagger.annotations.ApiOperation;
-
+import cinequiz.backend.model.Game;
 import cinequiz.backend.model.User;
 import cinequiz.backend.repository.UserRepository;
 import java.util.List;
@@ -79,6 +79,19 @@ public class UserController {
 	public String deleteUser(@PathVariable String id) {
 		repository.deleteById(id);
 		return "Deleted user with id : " + id;
+	}
+
+	@PostMapping("/add-game-to-user/{id}")
+	@ApiOperation(value = "Adds a new user")
+	public ResponseEntity<?> addUser(@PathVariable String id, @RequestBody Game game) {
+		Optional<User> optionalUser = repository.findById(id);
+		if (optionalUser.isEmpty()) {
+			return ResponseEntity.status(403).body("Bad user ID");
+		} else {
+			User user = optionalUser.get();
+			user.addGame(game);
+			return ResponseEntity.status(200).body(repository.save(user));
+		}
 	}
 
 }

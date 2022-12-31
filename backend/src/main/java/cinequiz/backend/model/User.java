@@ -33,4 +33,9 @@ public class User {
 
     @ApiModelProperty("The user played games")
     private List<Game> games;
+
+    public void addGame(Game game) {
+        // TODO gestion des erreurs
+        games.add(game);
+    }
 }
