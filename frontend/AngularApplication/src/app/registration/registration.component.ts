@@ -52,6 +52,7 @@ export class RegistrationComponent implements OnInit {
       pseudo: this.registrationForm.value.pseudo,
       email: this.registrationForm.value.email,
       password: encryptedPassword,
+      games: new Array
     }
     this.accountService.register(newUser);
   }
