@@ -4,6 +4,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.GenerationType;
+
+import java.util.List;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import io.swagger.annotations.ApiModel;
@@ -12,11 +15,11 @@ import io.swagger.annotations.ApiModelProperty;
 @Getter
 @Setter
 @ApiModel(description = "A user having an account")
-@Document(collection="User")
-public class User{
+@Document(collection = "User")
+public class User {
     @Id
     @ApiModelProperty("The user id")
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
     @ApiModelProperty("The user pseudo in the app")
@@ -28,6 +31,6 @@ public class User{
     @ApiModelProperty("The user password")
     private String password;
 
-    @ApiModelProperty("The user score")
-    private int score;
+    @ApiModelProperty("The user played games")
+    private List<Game> games;
 }
