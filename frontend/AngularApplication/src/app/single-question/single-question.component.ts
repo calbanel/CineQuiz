@@ -40,6 +40,7 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
     this.answered = false;
     this.questionNumber = +this.route.snapshot.params['id'];
     this.quest$ = this.questionService.getQuestion();
+    this.quest$.subscribe(res => console.log(res));
     this.marky = require('marky');
     this.marky.mark('answerTime');
     setTimeout(() => {this.nextQuestion();}, 30000);

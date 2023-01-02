@@ -88,6 +88,9 @@ public class MediaTmdbFetching extends TmdbFetching {
                     break;
             }
 
+            if (mediaList.size() >= number)
+                break;
+
             // go to the next similar media page
             page_number++;
         }
