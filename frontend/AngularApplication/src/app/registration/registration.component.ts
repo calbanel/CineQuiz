@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { User } from '../models/user.models';
-import { UserService } from '../services/user.service';
-import { Router } from '@angular/router';
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { HttpClient } from "@angular/common/http";
 import * as CryptoJS from 'crypto-js';
 import { matchPasswordsValidator } from '../validators/match-passwords';
 import { map, Observable } from 'rxjs';
@@ -20,8 +17,7 @@ export class RegistrationComponent implements OnInit {
   showPasswordErrors$ !: Observable<Boolean>;
   showEmailErrors$ !: Observable<Boolean>;
 
-  constructor(private formBuilder: FormBuilder, private userService: UserService,
-    private router: Router, private http: HttpClient, private accountService: AccountService) { }
+  constructor(private formBuilder: FormBuilder, private http: HttpClient, private accountService: AccountService) { }
 
   ngOnInit(): void {
     this.registrationForm = this.formBuilder.group({

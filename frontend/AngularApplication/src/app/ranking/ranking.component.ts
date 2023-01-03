@@ -1,28 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { User } from '../models/user.models';
-import { AccountService } from '../services/account.service';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-ranking',
   templateUrl: './ranking.component.html',
   styleUrls: ['./ranking.component.css']
 })
-export class RankingComponent implements OnInit {
-  user !: User;
+export class RankingComponent {
 
-  constructor(public account : AccountService) {
-    this.user = this.account.userValue;
+  constructor() {
   }
-
-  isLoggedIn() : boolean{
-    return this.account.isLoggedIn;
-  }
-
-  logout(){
-    this.account.logout();
-  }
-
-  ngOnInit(): void {
-  }
-
 }

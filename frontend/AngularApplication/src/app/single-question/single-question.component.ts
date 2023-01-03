@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Question } from '../models/question.model';
-import { AccountService } from '../services/account.service';
 import { QuestionList } from '../models/questionlist.models';
 import { environment } from 'src/environments/environment';
 import { GameService } from '../services/game.service';

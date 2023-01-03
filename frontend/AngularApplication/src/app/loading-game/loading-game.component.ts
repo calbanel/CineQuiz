@@ -1,11 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import Swal from 'sweetalert2';
 import { Question } from '../models/question.model';
-import { QuestionList } from '../models/questionlist.models';
-import { User } from '../models/user.models';
-import { AccountService } from '../services/account.service';
 import { GameService } from '../services/game.service';
 
 

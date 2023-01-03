@@ -1,27 +1,5 @@
-<div *ngIf="!isLoggedIn()"><button
-    class="text-left font-roboto ml-20 mr-6 my-4 hover:bg-spray text-spray font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
-    <a routerLink="connection">Connexion</a></button>
-<button
-    class="text-left font-roboto hover:bg-spray text-spray font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded">
-    <a routerLink="registration">Inscription</a></button>
-</div>
-
-<div *ngIf="isLoggedIn()">
-<button
-    class="float-right mr-10 font-roboto hover:bg-spray text-spray font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded"
-    (click)="logout()">Deconnexion</button>
-</div>
-
 <div class="container mx-auto px-40">
     <div class="grid bg-waterfall text-white font-roboto my-16 space-y-4 rounded-t-3xl rounded-b-xl w-full mx-auto">
-        <div id="nbQuestion" class="bg-jalapeno-red rounded-full py-2 px-4 text-center text-2xl"> Classement final </div>
-
-        <div class="bg-orange mx-auto pl-6 pr-12 py-4 text-2xl min-w-[55%] rounded-md flex space-x-60"> <div class="min-w-[50%] flex"><img src="../assets/user.png" class="w-10 mr-4">{{user.pseudo}}</div>  <div class="float-right pr-36">{{user.score}}</div></div>
-        <div class="bg-orange mx-auto pl-6 pr-6 py-4 text-2xl min-w-[55%] rounded-md flex space-x-60"> <div class="min-w-[50%] flex"><img src="../assets/user.png" class="w-10 mr-4"></div> <div class="float-right pr-36">  </div></div>
-        <div class="bg-orange mx-auto pl-6 pr-6 py-4 text-2xl min-w-[55%] rounded-md flex space-x-60"> <div class="min-w-[50%] flex"><img src="../assets/user.png" class="w-10 mr-4"></div> <div class="float-right pr-36">  </div></div>
-        <div class="bg-orange mx-auto pl-6 pr-6 py-4 text-2xl min-w-[55%] rounded-md flex space-x-60"> <div class="min-w-[50%] flex"><img src="../assets/user.png" class="w-10 mr-4"></div> <div class="float-right pr-36">  </div></div>
-        <div class="bg-orange mx-auto pl-6 pr-6 py-4 text-2xl min-w-[55%] rounded-md flex space-x-60"> <div class="min-w-[50%] flex"><img src="../assets/user.png" class="w-10 mr-4"></div> <div class="float-right pr-36">  </div></div>
-
         <div class="text-right mr-20 mt-2">
             <button class="ml-60 font-roboto hover:bg-jalapeno-red text-jalapeno-red font-semibold hover:text-white py-2 px-2 
             border border-blue-500 hover:border-transparent rounded mb-4 text-2xl">

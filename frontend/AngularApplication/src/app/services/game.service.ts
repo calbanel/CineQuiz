@@ -1,6 +1,5 @@
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable, ɵisListLikeIterable } from "@angular/core";
-import { Question } from "../models/question.model";
 import { Observable, throwError } from "rxjs";
 import { environment } from "src/environments/environment";
 import { QuestionList } from "../models/questionlist.models";
