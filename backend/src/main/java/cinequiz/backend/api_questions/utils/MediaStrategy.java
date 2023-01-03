@@ -28,8 +28,9 @@ public abstract class MediaStrategy extends GlobalStrategy {
         try {
             mediaList = MediaTmdbFetching.getRandomCoherentMedias(language, NB_CHOICES_IN_MCQ,
                     options,
-                    similaryOptions, InfosType.TV);
+                    similaryOptions, type);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ImpossibleToFetchTmdbException();
         }
 

@@ -2,10 +2,18 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Question } from '../models/question.model';
 import { QuestionService } from '../services/questions.service';
-import { interval, Observable, Subscription } from 'rxjs';
+import { interval, Observable, timer } from 'rxjs';
 import { User } from '../models/user.models';
 import { AccountService } from '../services/account.service';
 
+const TIME_TO_ANSWER = 15;
+const TIME_BETWEEN_TWO_QUESTIONS = 3;
+const MILISECONDS_FOR_ONE_SECOND = 1000;
+
+const TIMING_TO_GET_MAX_SCORE_ON_ONE_QUESTION = 4;
+const MAX_SCORE_FOR_ONE_QUESTION = 1000;
+
+const NB_QUESTIONS_IN_QUIZ = 10;
 @Component({
   selector: 'app-single-question',
   templateUrl: './single-question.component.html',
@@ -19,8 +27,8 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
   marky !: any;
   answerTimeInSeconds !: number;
   user !: User;
-  timeLeft !: number;
-  interval:any;
+  timeToAnswer: number = TIME_TO_ANSWER;
+  interval !: any;
 
   constructor(private questionService: QuestionService, private route: ActivatedRoute,
     private router: Router, public account: AccountService) {
@@ -33,39 +41,41 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
       }
     });
     this.user = this.account.userValue;
-    this.startTimer();
+    this.startQuestionTimer();
   }
 
   ngOnInit(): void {
     this.answered = false;
     this.questionNumber = +this.route.snapshot.params['id'];
     this.quest$ = this.questionService.getQuestion();
-    this.quest$.subscribe(res => console.log(res));
     this.marky = require('marky');
     this.marky.mark('answerTime');
-    setTimeout(() => {this.nextQuestion();}, 30000);
+
   }
 
-  startTimer() {
+  startQuestionTimer() {
     this.interval = setInterval(() => {
-      if (this.timeLeft > 0) {
-        this.timeLeft--;
+      if(this.timeToAnswer > 0) {
+        this.timeToAnswer--;
       } else {
-        this.timeLeft = 30;
-      }}, 1000)
+        this.timeToAnswer = TIME_TO_ANSWER;
+        clearInterval(this.interval);
+        this.nextQuestion();
+      }
+    },MILISECONDS_FOR_ONE_SECOND)
   }
 
   onClick(answerClicked: string, question: Question) {
-    this.answerTimeInSeconds = this.marky.stop('answerTime')['duration'] / 1000;
+    this.answerTimeInSeconds = this.marky.stop('answerTime')['duration'] / MILISECONDS_FOR_ONE_SECOND;
     
     if (answerClicked === question.answer && this.answered === false) {
       this.answered = true;
       document.getElementById(answerClicked)?.setAttribute("style", "background-color:#78e08f");
       document.getElementById(answerClicked)?.setAttribute('disabled', '');
-      if (this.answerTimeInSeconds < 6) {
-        this.user.score += 1000;
+      if (this.answerTimeInSeconds <= TIMING_TO_GET_MAX_SCORE_ON_ONE_QUESTION) {
+        this.user.score += MAX_SCORE_FOR_ONE_QUESTION;
       } else {
-        this.user.score += Math.round((1 - (this.answerTimeInSeconds / 30) / 2) * 1000);
+        this.user.score += Math.round((1 - (this.answerTimeInSeconds / TIME_TO_ANSWER) / 2) * MAX_SCORE_FOR_ONE_QUESTION);
       }
     } else {
       this.answered = true;
@@ -75,7 +85,7 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
   }
 
   nextQuestion() {
-    if (this.questionNumber == 10) {
+    if (this.questionNumber == NB_QUESTIONS_IN_QUIZ) {
       this.router.navigateByUrl("/ranking");
     } else {
       this.router.navigateByUrl(`/questions/${this.questionNumber + 1}`);
