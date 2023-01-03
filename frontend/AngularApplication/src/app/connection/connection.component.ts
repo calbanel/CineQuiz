@@ -31,7 +31,6 @@ export class ConnectionComponent implements OnInit {
     let encryptedPassword = CryptoJS.SHA3(this.connectionForm.value.password, { outputLength: 224 }).toString();
     let credentials = { email: this.connectionForm.value.email, password: encryptedPassword };
     this.accountService.login(credentials);
-    this.router.navigateByUrl("/");
   }
 
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from '../models/user.models';
 import { AccountService } from '../services/account.service';
@@ -8,13 +8,16 @@ import { AccountService } from '../services/account.service';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnChanges{
 
   user !: User;
 
-  constructor(public account: AccountService, private router : Router) {
+  constructor(public account: AccountService) {
       this.user = this.account.userValue;
-      this.router = router;
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+      this.user = this.account.userValue;
   }
 
   isLoggedIn() : boolean{

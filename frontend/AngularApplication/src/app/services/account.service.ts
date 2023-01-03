@@ -37,6 +37,7 @@ export class AccountService {
                 console.log(localStorage.getItem('user'));
                 this.userSubject.next(user);
                 Swal.fire('Connecté!','','success')
+                this.router.navigateByUrl("/");
                 return user;
             },
             error: (err) => Swal.fire('Utilisateur inconnu','Veuillez créer un compte avant de vous connecter','error')
@@ -68,7 +69,7 @@ export class AccountService {
         return this.http.get<User>(`${environment.apiUrl}/find-user/${id}`);
     }
 
-    update(id: string, user: any) { // A VOIR -> pour maj score par exemple
+    update(id: string, user: any) {
         return this.http.put<User>(`${environment.apiUrl}/add-user/`, user)
             .pipe(map(x => {
                 if (id == this.userValue.id) {
