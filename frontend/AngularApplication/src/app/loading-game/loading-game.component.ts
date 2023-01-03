@@ -5,7 +5,7 @@ import { Question } from '../models/question.model';
 import { QuestionList } from '../models/questionlist.models';
 import { User } from '../models/user.models';
 import { AccountService } from '../services/account.service';
-import { QuestionService } from '../services/questions.service';
+import { GameService } from '../services/game.service';
 
 
 @Component({
@@ -18,7 +18,7 @@ export class LoadingGameComponent implements OnInit, OnDestroy {
   user !: User;
   questions !: Question[];
 
-  constructor(private questionService: QuestionService, private route: ActivatedRoute,
+  constructor(private questionService: GameService, private route: ActivatedRoute,
     private router: Router, public account: AccountService) {
       this.router.routeReuseStrategy.shouldReuseRoute = function () {
         return false;
@@ -32,6 +32,7 @@ export class LoadingGameComponent implements OnInit, OnDestroy {
 
       questionService.getQuestionList(environment.nbQuestionsInQuiz).subscribe(val => {
         questionService.questionList = val;
+        localStorage.setItem("score","0");
         this.router.navigateByUrl(`/questions/1`);
       })
   }

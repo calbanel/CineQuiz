@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Question } from '../models/question.model';
-import { QuestionService } from '../services/questions.service';
+import { GameService } from '../services/game.service';
 import { interval, Observable, timer } from 'rxjs';
 import { User } from '../models/user.models';
 import { AccountService } from '../services/account.service';
@@ -30,9 +30,9 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
   user !: User;
   timeToAnswer: number = TIME_TO_ANSWER;
   interval !: any;
-  score : number = 0;
+  score !: number;
 
-  constructor(private questionService: QuestionService, private route: ActivatedRoute,
+  constructor(private gameService: GameService, private route: ActivatedRoute,
     private router: Router, public account: AccountService) {
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false;
@@ -44,8 +44,15 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
     });
     this.user = this.account.userValue;
 
-    if(questionService.questionList != null && questionService.questionList.list.length == environment.nbQuestionsInQuiz)
-      this.questionList = questionService.questionList;
+    if(gameService.questionList != null && gameService.questionList.list.length == environment.nbQuestionsInQuiz){
+      this.questionList = gameService.questionList;
+    }
+    else;
+      //TODO gestion des erreurs
+
+    let tmp : string | null = localStorage.getItem("score");
+    if(tmp != null)
+      this.score = Number.parseInt(tmp);
     else;
       //TODO gestion des erreurs
 
@@ -58,7 +65,6 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
     this.currentQuestion = this.questionList.list[this.questionNumber-1];
     this.marky = require('marky');
     this.marky.mark('answerTime');
-
   }
 
   startQuestionTimer() {
@@ -93,6 +99,7 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
   }
 
   nextQuestion() {
+    localStorage.setItem("score", this.score.toString());
     if (this.questionNumber == environment.nbQuestionsInQuiz) {
       this.router.navigateByUrl("/ranking");
     } else {

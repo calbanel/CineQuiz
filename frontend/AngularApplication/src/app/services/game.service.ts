@@ -8,7 +8,7 @@ import { QuestionList } from "../models/questionlist.models";
 @Injectable({
   providedIn: 'root'
 })
-export class QuestionService {
+export class GameService {
   questionList !: QuestionList;
 
   constructor(private http: HttpClient) {

@@ -10,23 +10,6 @@ import { AccountService } from '../services/account.service';
   templateUrl: './homepage.component.html',
   styleUrls: ['./homepage.component.css']
 })
-export class HomepageComponent implements OnInit {
+export class HomepageComponent {
 
-  user !: User;
-
-  constructor(public account: AccountService, private router : Router) {
-      this.user = this.account.userValue;
-  }
-
-  isLoggedIn() : boolean{
-    return this.account.isLoggedIn;
-  }
-
-  logout(){
-    this.account.logout();
-  }
-
-  ngOnInit() {
-    
-  }
 }

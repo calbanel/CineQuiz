@@ -1,3 +1,27 @@
-<header class="bg-cine-red h-20">
-    <h1 class="text-6xl text-white font-roboto text-center leading-tight">CineQuiz</h1>
+<header class="bg-cine-red h-auto">
+    <div class="grid grid-cols-3 gap-4">
+        <div class="col-span-2 ml-20 my-auto"> 
+            <h1 class="capitalize  underline-offset- underline decoration-dashed decoration-forrest-blues pl-10 text-5xl text-white font-roboto leading-tight">CineQuiz</h1>
+        </div>
+        <div class="ml-auto mr-20 my-auto">
+            <div class="grid grid-cols-2 gap-4" *ngIf = "!isLoggedIn()">
+                <div class="my-auto">
+                    <button class="text-left font-roboto hover:bg-spray text-spray font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"> <a routerLink="login">Connexion</a></button>
+                </div>
+                <div class="my-auto">
+                    <button class="text-left font-roboto hover:bg-spray text-spray font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded"> <a routerLink="sign-in">Inscription</a></button>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4" *ngIf = "isLoggedIn()">
+                <div class="float-left flex">
+                    <img src="../assets/user.png" class="w-10 h-10 mr-4">
+                    <p class="py-2 text-white">{{user.pseudo}}</p>
+                </div>
+                <div>
+                    <button class="float-right mr-10 font-roboto hover:bg-spray text-spray font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded" (click)="logout()">Deconnexion</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </header>
