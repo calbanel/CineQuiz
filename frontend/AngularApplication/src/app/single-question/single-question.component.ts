@@ -65,10 +65,8 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
 
   startQuestionTimer() {
     this.interval = setInterval(() => {
-      if(this.timeToAnswer > 0) {
-        this.timeToAnswer--;
-      } else {
-        this.timeToAnswer = TIME_TO_ANSWER;
+      this.timeToAnswer--;
+      if(this.timeToAnswer <= 0) {
         clearInterval(this.interval);
         this.nextQuestion();
       }
@@ -92,6 +90,9 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
       document.getElementById(answerClicked)?.setAttribute("style", "background-color:#E55039");
       document.getElementById(question.answer)!.setAttribute("style", "background-color:#78e08f");
     }
+
+    clearInterval(this.interval);
+    setTimeout(() => { this.nextQuestion() }, 2000);
   }
 
   nextQuestion() {
