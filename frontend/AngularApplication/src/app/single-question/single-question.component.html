@@ -1,10 +1,15 @@
-
-
-<p class="py-2 font-roboto ml-80 text-2xl">Score : {{score}} - Temps restant : {{timeToAnswer}}</p>
-
-<div class="px-40">
+<div class="h-[80vh] px-[10%]">
     <div class="grid bg-waterfall text-white font-roboto my-16 space-y-4 rounded-t-3xl rounded-b-xl w-full mx-auto">
-        <div id="nbQuestion" class="bg-jalapeno-red rounded-full py-2 px-4 text-center"> Question {{questionNumber}}/10
+        <div id="nbQuestion" class="bg-jalapeno-red rounded-full py-2 px-4 grid grid-cols-3 gap-4">
+            <div>
+                Score : {{score}}
+            </div>
+            <div class="mx-auto">
+                Question {{questionNumber}}/10
+            </div>
+            <div class="mr-0 ml-auto">
+                Temps restant : {{timeToAnswer}}
+            </div>
         </div>
         <div id="question" class="text-2xl text-center">{{currentQuestion.question}}</div>
         <div class="flex flex-row mb-6">
