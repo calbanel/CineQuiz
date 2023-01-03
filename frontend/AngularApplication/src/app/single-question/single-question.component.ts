@@ -74,25 +74,27 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
   }
 
   onClick(answerClicked: string, question: Question) {
-    this.answerTimeInSeconds = this.marky.stop('answerTime')['duration'] / MILISECONDS_FOR_ONE_SECOND;
-    this.currentAnswer = answerClicked;
-    if (answerClicked === question.answer && this.answered === false) {
+    if(!this.answered){
       this.answered = true;
-      document.getElementById(answerClicked)?.setAttribute("style", "background-color:#78e08f");
-      document.getElementById(answerClicked)?.setAttribute('disabled', '');
-      if (this.answerTimeInSeconds <= TIMING_TO_GET_MAX_SCORE_ON_ONE_QUESTION) {
-        this.score += MAX_SCORE_FOR_ONE_QUESTION;
-      } else {
-        this.score += Math.round((1 - (this.answerTimeInSeconds / TIME_TO_ANSWER) / 2) * MAX_SCORE_FOR_ONE_QUESTION);
-      }
-    } else {
-      this.answered = true;
-      document.getElementById(answerClicked)?.setAttribute("style", "background-color:#E55039");
-      document.getElementById(question.answer)!.setAttribute("style", "background-color:#78e08f");
-    }
+      this.answerTimeInSeconds = this.marky.stop('answerTime')['duration'] / MILISECONDS_FOR_ONE_SECOND;
+      this.currentAnswer = answerClicked;
 
-    clearInterval(this.interval);
-    setTimeout(() => { this.nextQuestion() }, 2000);
+      if (answerClicked === question.answer) {
+        this.answered = true;
+        document.getElementById(answerClicked)?.setAttribute("style", "background-color:#78e08f");
+        if (this.answerTimeInSeconds <= TIMING_TO_GET_MAX_SCORE_ON_ONE_QUESTION) {
+          this.score += MAX_SCORE_FOR_ONE_QUESTION;
+        } else {
+          this.score += Math.round((1 - (this.answerTimeInSeconds / TIME_TO_ANSWER) / 2) * MAX_SCORE_FOR_ONE_QUESTION);
+        }
+      } else {
+        document.getElementById(answerClicked)?.setAttribute("style", "background-color:#E55039");
+        document.getElementById(question.answer)!.setAttribute("style", "background-color:#78e08f");
+      }
+
+      clearInterval(this.interval);
+      setTimeout(() => { this.nextQuestion() }, 2000);
+    }
   }
 
   nextQuestion() {
