@@ -21,7 +21,10 @@ export class HeaderComponent implements OnChanges{
   }
 
   isLoggedIn() : boolean{
-    return this.account.isLoggedIn;
+    let isLogged : boolean = this.account.isLoggedIn;
+    if(isLogged)
+      this.user = this.account.userValue;
+    return isLogged;
   }
 
   logout(){
