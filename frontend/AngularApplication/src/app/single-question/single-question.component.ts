@@ -1,12 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Question } from '../models/question.model';
-import { GameService } from '../services/game.service';
-import { interval, Observable, timer } from 'rxjs';
-import { User } from '../models/user.models';
 import { AccountService } from '../services/account.service';
 import { QuestionList } from '../models/questionlist.models';
 import { environment } from 'src/environments/environment';
+import { GameService } from '../services/game.service';
 
 const TIME_TO_ANSWER = 15;
 const TIME_BETWEEN_TWO_QUESTIONS = 3;
@@ -27,13 +25,20 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
   questionNumber !: number;
   marky !: any;
   answerTimeInSeconds !: number;
-  user !: User;
   timeToAnswer: number = TIME_TO_ANSWER;
   interval !: any;
   score !: number;
+  questionGameID !: string;
 
-  constructor(private gameService: GameService, private route: ActivatedRoute,
-    private router: Router, public account: AccountService) {
+  constructor(private game: GameService, private route: ActivatedRoute,
+    private router: Router) {
+
+    this.questionNumber = +this.route.snapshot.params['id'];
+    if(this.questionNumber != game.currentQuestion || !game.gameLaunched){
+      this.router.navigateByUrl("/");
+      this.ngOnDestroy();
+    }
+
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false;
     };
@@ -42,25 +47,19 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
         this.router.navigated = false;
       }
     });
-    this.user = this.account.userValue;
 
-    if(gameService.questionList != null && gameService.questionList.list.length == environment.nbQuestionsInQuiz){
-      this.questionList = gameService.questionList;
-    }
-    else;
-      //TODO gestion des erreurs
+    this.questionGameID = game.gameID;
+    this.questionList = game.questionList;
+    this.score = this.game.score;
 
-      this.score = this.gameService.score;
-
-    this.startQuestionTimer();
+    this.answered = false;
+    this.currentQuestion = this.questionList.list[this.questionNumber-1];
   }
 
   ngOnInit(): void {
-    this.answered = false;
-    this.questionNumber = +this.route.snapshot.params['id'];
-    this.currentQuestion = this.questionList.list[this.questionNumber-1];
     this.marky = require('marky');
     this.marky.mark('answerTime');
+    this.startQuestionTimer();
   }
 
   startQuestionTimer() {
@@ -95,20 +94,15 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
   }
 
   nextQuestion() {
-    this.gameService.score = this.score;
-    if (this.questionNumber == environment.nbQuestionsInQuiz) {
-      this.router.navigateByUrl("/ranking");
-    } else {
-      this.router.navigateByUrl(`/questions/${this.questionNumber + 1}`);
+    if(this.game.gameID == this.questionGameID){
+      this.game.currentQuestion += 1;
+      this.game.score = this.score;
+      if (this.questionNumber == environment.nbQuestionsInQuiz) {
+        this.router.navigateByUrl("/ranking");
+      } else {
+        this.router.navigateByUrl(`/questions/${this.game.currentQuestion}`);
+      }
     }
-  }
-
-  isLoggedIn(): boolean {
-    return this.account.isLoggedIn;
-  }
-
-  logout() {
-    this.account.logout();
   }
 
   ngOnDestroy() {

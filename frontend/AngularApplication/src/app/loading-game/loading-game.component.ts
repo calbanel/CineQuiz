@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
+import Swal from 'sweetalert2';
 import { Question } from '../models/question.model';
 import { QuestionList } from '../models/questionlist.models';
 import { User } from '../models/user.models';
@@ -14,40 +15,28 @@ import { GameService } from '../services/game.service';
   styleUrls: ['./loading-game.component.css']
 })
 export class LoadingGameComponent implements OnInit, OnDestroy {
-  someSubscription: any;
-  user !: User;
   questions !: Question[];
 
-  constructor(private questionService: GameService, private route: ActivatedRoute,
-    private router: Router, public account: AccountService) {
-      this.router.routeReuseStrategy.shouldReuseRoute = function () {
-        return false;
-      };
-      this.someSubscription = this.router.events.subscribe((event) => {
-        if (event instanceof NavigationEnd) {
-          this.router.navigated = false;
-        }
-      });
-      this.user = this.account.userValue;
+  constructor(private game: GameService, private router: Router) {
 
-      questionService.generateQuiz(environment.nbQuestionsInQuiz).subscribe(val => {
-        if(val){
+    if(game.gameLaunched)
+      game.reset();
+    
+    game.generateQuiz(environment.nbQuestionsInQuiz).subscribe(
+    {
+      next: (val) => {
+        if(val)
           this.router.navigateByUrl(`/questions/1`);
-        } else;
-        //TODO modal d'erreur
-      })
+        else
+          Swal.fire('Echec de la création','Veuillez réessayer','error')
+      },
+      error: (err) => Swal.fire('Impossible de créer une partie','Veuillez réessayer ultérieurement','error')
+    });
+
   }
 
   ngOnDestroy() {
   
-  }
-
-  isLoggedIn() : boolean{
-    return this.account.isLoggedIn;
-  }
-
-  logout(){
-    this.account.logout();
   }
 
   ngOnInit() {

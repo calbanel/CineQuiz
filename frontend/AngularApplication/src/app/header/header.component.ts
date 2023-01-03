@@ -2,6 +2,7 @@ import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from '../models/user.models';
 import { AccountService } from '../services/account.service';
+import { GameService } from '../services/game.service';
 
 @Component({
   selector: 'app-header',
@@ -12,7 +13,7 @@ export class HeaderComponent implements OnChanges{
 
   user !: User;
 
-  constructor(public account: AccountService) {
+  constructor(private account: AccountService, private game: GameService, private router: Router) {
       this.user = this.account.userValue;
   }
 
@@ -29,6 +30,10 @@ export class HeaderComponent implements OnChanges{
 
   logout(){
     this.account.logout();
+  }
+
+  home(){
+    this.router.navigateByUrl("/");
   }
 
 }

@@ -1,8 +1,5 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { User } from '../models/user.models';
-import { AccountService } from '../services/account.service';
+import { Component } from '@angular/core';
+import { GameService } from '../services/game.service';
 
 
 @Component({
@@ -11,5 +8,9 @@ import { AccountService } from '../services/account.service';
   styleUrls: ['./homepage.component.css']
 })
 export class HomepageComponent {
-
+    constructor(private game: GameService){
+      if(this.game.gameLaunched){
+        this.game.reset();
+      }
+    }
 }

@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
 import { AccountService } from '../services/account.service';
-import { first } from 'rxjs/operators';
 import * as CryptoJS from 'crypto-js';
 
 @Component({
@@ -16,8 +14,6 @@ export class ConnectionComponent implements OnInit {
   submitted = false;
 
   constructor(private formBuilder: FormBuilder,
-    private route: ActivatedRoute,
-    private router: Router,
     private accountService: AccountService) { }
 
   ngOnInit(): void {
