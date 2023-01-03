@@ -11,7 +11,7 @@ import { SingleQuestionComponent } from './single-question/single-question.compo
 import { ReactiveFormsModule } from '@angular/forms';
 import { RegistrationComponent } from './registration/registration.component';
 import { ConnectionComponent } from './connection/connection.component';
-import { LobbyComponent } from './lobby/lobby.component';
+import { CreditsComponent } from './credits/credits.component';
 import { RankingComponent } from './ranking/ranking.component';
 import { AccountService } from './services/account.service';
 import { catchError, Observable, throwError } from 'rxjs';
@@ -67,7 +67,7 @@ export class JwtInterceptor implements HttpInterceptor {
     SingleQuestionComponent,
     RegistrationComponent,
     ConnectionComponent,
-    LobbyComponent,
+    CreditsComponent,
     RankingComponent,
     LoadingGameComponent
   ],
