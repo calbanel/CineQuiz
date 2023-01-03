@@ -14,6 +14,7 @@ export class HeaderComponent {
 
   constructor(public account: AccountService, private router : Router) {
       this.user = this.account.userValue;
+      this.router = router;
   }
 
   isLoggedIn() : boolean{

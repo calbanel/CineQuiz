@@ -50,11 +50,7 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
     else;
       //TODO gestion des erreurs
 
-    let tmp : string | null = localStorage.getItem("score");
-    if(tmp != null)
-      this.score = Number.parseInt(tmp);
-    else;
-      //TODO gestion des erreurs
+      this.score = this.gameService.score;
 
     this.startQuestionTimer();
   }
@@ -99,7 +95,7 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
   }
 
   nextQuestion() {
-    localStorage.setItem("score", this.score.toString());
+    this.gameService.score = this.score;
     if (this.questionNumber == environment.nbQuestionsInQuiz) {
       this.router.navigateByUrl("/ranking");
     } else {

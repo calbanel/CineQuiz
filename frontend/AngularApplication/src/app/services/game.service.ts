@@ -9,18 +9,38 @@ import { QuestionList } from "../models/questionlist.models";
   providedIn: 'root'
 })
 export class GameService {
+  gameLaunched : boolean = false;
   questionList !: QuestionList;
+  score : number = 0;
 
   constructor(private http: HttpClient) {
 
   }
 
-  getQuestion(): Observable<Question> {
-    return this.http.get<Question>(`${environment.apiUrl}/questions/random`);
+  generateQuiz(nb:number): Observable<boolean> {
+
+    const creation = new Observable<boolean>(observer => {
+      if(!this.gameLaunched){
+        let queryParams = new HttpParams().append("number",nb);
+        this.http.get<QuestionList>(`${environment.apiUrl}/questions/random-list`,{params:queryParams}).subscribe(val => {
+          this.questionList = val;
+          observer.next(this.isQuizOK());
+          observer.complete();
+        })
+      } else {
+        observer.next(false);
+        observer.complete();
+      }
+    })
+    return creation;
   }
 
-  getQuestionList(nb:number): Observable<QuestionList> {
-    let queryParams = new HttpParams().append("number",nb);
-    return this.http.get<QuestionList>(`${environment.apiUrl}/questions/random-list`,{params:queryParams})
+  isQuizOK() : boolean {
+    let ok : boolean = false;
+    if(this.questionList != undefined && this.questionList != null){
+      this.gameLaunched = true;
+      ok = true;
+    }
+    return ok;
   }
 }

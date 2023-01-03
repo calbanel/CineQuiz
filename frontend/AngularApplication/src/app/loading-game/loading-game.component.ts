@@ -30,10 +30,11 @@ export class LoadingGameComponent implements OnInit, OnDestroy {
       });
       this.user = this.account.userValue;
 
-      questionService.getQuestionList(environment.nbQuestionsInQuiz).subscribe(val => {
-        questionService.questionList = val;
-        localStorage.setItem("score","0");
-        this.router.navigateByUrl(`/questions/1`);
+      questionService.generateQuiz(environment.nbQuestionsInQuiz).subscribe(val => {
+        if(val){
+          this.router.navigateByUrl(`/questions/1`);
+        } else;
+        //TODO modal d'erreur
       })
   }
 
