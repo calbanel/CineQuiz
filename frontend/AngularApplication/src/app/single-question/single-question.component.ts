@@ -30,6 +30,7 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
   user !: User;
   timeToAnswer: number = TIME_TO_ANSWER;
   interval !: any;
+  score : number = 0;
 
   constructor(private questionService: QuestionService, private route: ActivatedRoute,
     private router: Router, public account: AccountService) {
@@ -80,9 +81,9 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
       document.getElementById(answerClicked)?.setAttribute("style", "background-color:#78e08f");
       document.getElementById(answerClicked)?.setAttribute('disabled', '');
       if (this.answerTimeInSeconds <= TIMING_TO_GET_MAX_SCORE_ON_ONE_QUESTION) {
-        this.user.score += MAX_SCORE_FOR_ONE_QUESTION;
+        this.score += MAX_SCORE_FOR_ONE_QUESTION;
       } else {
-        this.user.score += Math.round((1 - (this.answerTimeInSeconds / TIME_TO_ANSWER) / 2) * MAX_SCORE_FOR_ONE_QUESTION);
+        this.score += Math.round((1 - (this.answerTimeInSeconds / TIME_TO_ANSWER) / 2) * MAX_SCORE_FOR_ONE_QUESTION);
       }
     } else {
       this.answered = true;
