@@ -1,21 +1,23 @@
-<button class="text-left font-roboto ml-10 my-4 hover:bg-spray text-spray font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"> <a routerLink="/">Retour</a></button>
+<div class="h-[88vh]">
+    <div class="form-card mt-[15%]">
+        <h2 class="text-3xl my-6 text-waterfall">Connexion</h2>
+        <form [formGroup]="connectionForm">
+            <div class="form-group">
+                <label for="pseudo" class="text-orange">Email</label>
+                <input type="email" formControlName="pseudo" id="pseudo" formControlName="email" required>
+            </div>
 
-<div class="form-card">
-    <h2 class="text-3xl my-6 text-waterfall">Connexion</h2>
-    <form [formGroup]="connectionForm">
-        <div class="form-group">
-            <label for="pseudo" class="text-orange">Email</label>
-            <input type="email" formControlName="pseudo" id="pseudo" formControlName="email" required>
-        </div>
+            <div class="form-group">
+                <label for="password" class="text-orange">Mot de passe</label>
+                <input type="password" id="password" formControlName="password" required>
+            </div>
 
-        <div class="form-group">
-            <label for="password" class="text-orange">Mot de passe</label>
-            <input type="password" id="password" formControlName="password" required>
-        </div>
+            <div>
+                <button type="submit" (click)="onSubmitForm()" id="submitButton" class="text-left font-roboto ml-20 mr-6 my-4 bg-spray hover:bg-white hover:text-spray font-semibold text-white py-2 px-4 hover:border hover:border-blue-500 rounded" [disabled]="connectionForm.invalid"> Connexion </button>
+            </div>
 
-        <div>
-            <button type="submit" (click)="onSubmitForm()" id="submitButton" class="text-left font-roboto ml-20 mr-6 my-4 bg-spray hover:bg-white hover:text-spray font-semibold text-white py-2 px-4 hover:border hover:border-blue-500 rounded" [disabled]="connectionForm.invalid"> Connexion </button>
-        </div>
+            <button class="font-roboto hover:bg-spray text-spray font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"> <a routerLink="/">Retour</a></button>
 
-    </form>
+        </form>
+    </div>
 </div>

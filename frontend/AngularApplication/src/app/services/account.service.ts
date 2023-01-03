@@ -37,7 +37,6 @@ export class AccountService {
                 console.log(localStorage.getItem('user'));
                 this.userSubject.next(user);
                 Swal.fire('Connecté!','','success')
-                this.router.navigateByUrl("/");
                 return user;
             },
             error: (err) => Swal.fire('Utilisateur inconnu','Veuillez créer un compte avant de vous connecter','error')
