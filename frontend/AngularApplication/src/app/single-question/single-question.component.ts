@@ -5,6 +5,8 @@ import { QuestionService } from '../services/questions.service';
 import { interval, Observable, timer } from 'rxjs';
 import { User } from '../models/user.models';
 import { AccountService } from '../services/account.service';
+import { QuestionList } from '../models/questionlist.models';
+import { environment } from 'src/environments/environment';
 
 const TIME_TO_ANSWER = 15;
 const TIME_BETWEEN_TWO_QUESTIONS = 3;
@@ -12,15 +14,14 @@ const MILISECONDS_FOR_ONE_SECOND = 1000;
 
 const TIMING_TO_GET_MAX_SCORE_ON_ONE_QUESTION = 4;
 const MAX_SCORE_FOR_ONE_QUESTION = 1000;
-
-const NB_QUESTIONS_IN_QUIZ = 10;
 @Component({
   selector: 'app-single-question',
   templateUrl: './single-question.component.html',
   styleUrls: ['./single-question.component.css']
 })
 export class SingleQuestionComponent implements OnInit, OnDestroy {
-  quest$!: Observable<Question>;
+  questionList !: QuestionList;
+  currentQuestion !: Question;
   answered: boolean = false;
   someSubscription: any;
   questionNumber !: number;
@@ -41,13 +42,19 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
       }
     });
     this.user = this.account.userValue;
+
+    if(questionService.questionList != null && questionService.questionList.list.length == environment.nbQuestionsInQuiz)
+      this.questionList = questionService.questionList;
+    else;
+      //TODO gestion des erreurs
+
     this.startQuestionTimer();
   }
 
   ngOnInit(): void {
     this.answered = false;
     this.questionNumber = +this.route.snapshot.params['id'];
-    this.quest$ = this.questionService.getQuestion();
+    this.currentQuestion = this.questionList.list[this.questionNumber-1];
     this.marky = require('marky');
     this.marky.mark('answerTime');
 
@@ -85,7 +92,7 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
   }
 
   nextQuestion() {
-    if (this.questionNumber == NB_QUESTIONS_IN_QUIZ) {
+    if (this.questionNumber == environment.nbQuestionsInQuiz) {
       this.router.navigateByUrl("/ranking");
     } else {
       this.router.navigateByUrl(`/questions/${this.questionNumber + 1}`);

@@ -17,37 +17,37 @@
     </div>
 </div>
 
-<div class="container mx-auto px-40" *ngIf="quest$ | async as quest">
+<div class="container mx-auto px-40">
     <div class="grid bg-waterfall text-white font-roboto my-16 space-y-4 rounded-t-3xl rounded-b-xl w-full mx-auto">
         <div id="nbQuestion" class="bg-jalapeno-red rounded-full py-2 px-4 text-center"> Question {{questionNumber}}/10
         </div>
-        <div id="question" class="text-2xl text-center">{{quest.question}}</div>
+        <div id="question" class="text-2xl text-center">{{currentQuestion.question}}</div>
         <div class="flex flex-row mb-6">
-            <div class="mb-6 mx-6 w-4/6" id="image"><img [src]="quest.optionalImage" class="mx-auto object-fill">
-                <p class="text-center">{{quest.optionalText}}
+            <div class="mb-6 mx-6 w-4/6" id="image"><img [src]="currentQuestion.optionalImage" class="mx-auto object-fill">
+                <p class="text-center">{{currentQuestion.optionalText}}
                 <p>
             </div>
             <div id="answers" class="bg-waterfall rounded space-y-4 w-2/6 place-items-center ml-4 mr-12 mb-6">
-                <div id="{{quest.choices.choice1}}" class="bg-good-samaritan rounded hover:bg-spray"> <label
+                <div id="{{currentQuestion.choices.choice1}}" class="bg-good-samaritan rounded hover:bg-spray"> <label
                         for="questA" [ngClass]="{ disabled : answered === true}"> <img src="../assets/A.png"
                             class="w-6 left pt-4 inline pb-4 ml-5"></label> <button
-                        (click)="onClick(quest.choices.choice1,quest)" class="py-2 px-4 w-3/4 flex-1"
-                        [ngClass]="{ disabled : answered === true}" id="questA">{{quest.choices.choice1}}</button></div>
-                <div id="{{quest.choices.choice2}}" class="bg-good-samaritan rounded hover:bg-spray"> <label
+                        (click)="onClick(currentQuestion.choices.choice1,currentQuestion)" class="py-2 px-4 w-3/4 flex-1"
+                        [ngClass]="{ disabled : answered === true}" id="questA">{{currentQuestion.choices.choice1}}</button></div>
+                <div id="{{currentQuestion.choices.choice2}}" class="bg-good-samaritan rounded hover:bg-spray"> <label
                         for="questB" [ngClass]="{ disabled : answered === true}"> <img src="../assets/B.png"
                             class="w-6 left pt-4 inline pb-4 ml-5"> </label> <button
-                        (click)="onClick(quest.choices.choice2,quest)" class="py-2 px-4 w-3/4 flex-1"
-                        [ngClass]="{ disabled : answered === true}" id="questB">{{quest.choices.choice2}}</button></div>
-                <div id="{{quest.choices.choice3}}" class="bg-good-samaritan rounded hover:bg-spray"> <label
+                        (click)="onClick(currentQuestion.choices.choice2,currentQuestion)" class="py-2 px-4 w-3/4 flex-1"
+                        [ngClass]="{ disabled : answered === true}" id="questB">{{currentQuestion.choices.choice2}}</button></div>
+                <div id="{{currentQuestion.choices.choice3}}" class="bg-good-samaritan rounded hover:bg-spray"> <label
                         for="questC" [ngClass]="{ disabled : answered === true}"> <img src="../assets/C.png"
                             class="w-6 left pt-4 inline pb-4 ml-5"> </label> <button
-                        (click)="onClick(quest.choices.choice3,quest)" class="py-2 px-4 w-3/4 flex-1"
-                        [ngClass]="{ disabled : answered === true}" id="questC">{{quest.choices.choice3}}</button></div>
-                <div id="{{quest.choices.choice4}}" class="bg-good-samaritan rounded hover:bg-spray"> <label
+                        (click)="onClick(currentQuestion.choices.choice3,currentQuestion)" class="py-2 px-4 w-3/4 flex-1"
+                        [ngClass]="{ disabled : answered === true}" id="questC">{{currentQuestion.choices.choice3}}</button></div>
+                <div id="{{currentQuestion.choices.choice4}}" class="bg-good-samaritan rounded hover:bg-spray"> <label
                         for="questD" [ngClass]="{ disabled : answered === true}"> <img src="../assets/D.png"
                             class="w-6 left pt-4 inline pb-4 ml-5"> </label> <button
-                        (click)="onClick(quest.choices.choice4,quest)" class="py-2 px-4 w-3/4 flex-1"
-                        [ngClass]="{ disabled : answered === true}" id="questD">{{quest.choices.choice4}}</button></div>
+                        (click)="onClick(currentQuestion.choices.choice4,currentQuestion)" class="py-2 px-4 w-3/4 flex-1"
+                        [ngClass]="{ disabled : answered === true}" id="questD">{{currentQuestion.choices.choice4}}</button></div>
             </div>
         </div>
     </div>

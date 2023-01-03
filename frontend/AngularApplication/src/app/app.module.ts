@@ -16,6 +16,8 @@ import { RankingComponent } from './ranking/ranking.component';
 import { AccountService } from './services/account.service';
 import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { LoadingGameComponent } from './loading-game/loading-game.component';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 
 @Injectable()
@@ -66,13 +68,15 @@ export class JwtInterceptor implements HttpInterceptor {
     RegistrationComponent,
     ConnectionComponent,
     LobbyComponent,
-    RankingComponent
+    RankingComponent,
+    LoadingGameComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    MatProgressSpinnerModule,
   ],
   providers: [{ provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
               { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },],
