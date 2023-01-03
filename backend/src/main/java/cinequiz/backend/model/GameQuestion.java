@@ -19,5 +19,5 @@ public class GameQuestion {
     String playerAnswer;
 
     @ApiModelProperty("Time the player take to answer")
-    int answerTime;
+    float answerTime;
 }

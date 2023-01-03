@@ -1,8 +1,15 @@
-import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
-import { Injectable, ɵisListLikeIterable } from "@angular/core";
+import { DatePipe } from "@angular/common";
+import { HttpClient, HttpParams } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { Router } from "@angular/router";
 import { Observable, throwError } from "rxjs";
 import { environment } from "src/environments/environment";
+import Swal from "sweetalert2";
+import { AnsweredQuestion } from "../models/answeredquestion.models";
+import { Game } from "../models/game.models";
+import { Question } from "../models/question.model";
 import { QuestionList } from "../models/questionlist.models";
+import { AccountService } from "./account.service";
 
 const BASE_GAME_ID : string = "-1"
 @Injectable({
@@ -14,8 +21,9 @@ export class GameService {
   questionList !: QuestionList;
   currentQuestion : number = 1;
   score : number = 0;
+  currentGame !: Game;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private account : AccountService, private router : Router, private datepipe: DatePipe) {
 
   }
 
@@ -40,6 +48,14 @@ export class GameService {
           { next: val => {
           this.questionList = val;
           this.gameID = this.genUniqueGameId();
+
+          let date : string = "NaN";
+          let supposedDate : string | null = this.datepipe.transform(Date.now(), 'dd/MM/yyyy HH:mm:ss');
+          if(supposedDate != null)
+            date = supposedDate;
+        
+          this.currentGame = new Game(date,this.score);
+          
           observer.next(this.isQuizOK());
           observer.complete();
           },
@@ -63,5 +79,23 @@ export class GameService {
     this.gameLaunched = false;
     this.currentQuestion = 1;
     this.score = 0;
+  }
+
+  addAnsweredQuestionToCurrentGame(num : number, answer : string, answerTime : number, question : Question, score : number){
+    if(num <= environment.nbQuestionsInQuiz && num > 0){
+      let answeredQuestion : AnsweredQuestion = new AnsweredQuestion(score,question,answer,answerTime);
+      this.currentGame.questions[num-1] = answeredQuestion;
+    }
+  }
+
+  gameEnd(){
+    this.currentGame.score = this.score;
+    this.http.post<Game>(`${environment.apiUrl}/add-game-to-user/${this.account.userValue.id}`, this.currentGame)
+            .subscribe({ next: result => {
+                Swal.fire('La partie est terminé!','Tu peux retrouver tes réponses dans ton historique de parties','success')
+                setTimeout(() => { this.router.navigateByUrl("/"); }, 2000);
+            },
+            error: (err) => Swal.fire('La partie est terminé!','Echec de sauvegarde de la partie','error')
+        });
   }
 }

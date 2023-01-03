@@ -9,7 +9,7 @@ const TIME_TO_ANSWER = 15;
 const TIME_BETWEEN_TWO_QUESTIONS = 3;
 const MILISECONDS_FOR_ONE_SECOND = 1000;
 
-const TIMING_TO_GET_MAX_SCORE_ON_ONE_QUESTION = 4;
+const TIMING_TO_GET_MAX_SCORE_ON_ONE_QUESTION = 3;
 const MAX_SCORE_FOR_ONE_QUESTION = 1000;
 @Component({
   selector: 'app-single-question',
@@ -28,6 +28,7 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
   interval !: any;
   score !: number;
   questionGameID !: string;
+  currentAnswer !: string;
 
   constructor(private game: GameService, private route: ActivatedRoute,
     private router: Router) {
@@ -51,6 +52,7 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
     this.questionList = game.questionList;
     this.score = this.game.score;
 
+    this.currentAnswer = "";
     this.answered = false;
     this.currentQuestion = this.questionList.list[this.questionNumber-1];
   }
@@ -75,7 +77,7 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
 
   onClick(answerClicked: string, question: Question) {
     this.answerTimeInSeconds = this.marky.stop('answerTime')['duration'] / MILISECONDS_FOR_ONE_SECOND;
-    
+    this.currentAnswer = answerClicked;
     if (answerClicked === question.answer && this.answered === false) {
       this.answered = true;
       document.getElementById(answerClicked)?.setAttribute("style", "background-color:#78e08f");
@@ -94,11 +96,12 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
 
   nextQuestion() {
     if(this.game.gameID == this.questionGameID){
-      this.game.currentQuestion += 1;
+      this.game.addAnsweredQuestionToCurrentGame(this.questionNumber,this.currentAnswer,this.answerTimeInSeconds,this.currentQuestion, this.score - this.game.score);
       this.game.score = this.score;
       if (this.questionNumber == environment.nbQuestionsInQuiz) {
-        this.router.navigateByUrl("/ranking");
+        this.game.gameEnd();
       } else {
+        this.game.currentQuestion += 1;
         this.router.navigateByUrl(`/questions/${this.game.currentQuestion}`);
       }
     }
