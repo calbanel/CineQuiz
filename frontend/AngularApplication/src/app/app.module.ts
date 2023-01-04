@@ -12,7 +12,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { RegistrationComponent } from './registration/registration.component';
 import { ConnectionComponent } from './connection/connection.component';
 import { CreditsComponent } from './credits/credits.component';
-import { RankingComponent } from './ranking/ranking.component';
 import { AccountService } from './services/account.service';
 import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -72,7 +71,6 @@ registerLocaleData(localeFr);
     RegistrationComponent,
     ConnectionComponent,
     CreditsComponent,
-    RankingComponent,
     LoadingGameComponent
   ],
   imports: [
