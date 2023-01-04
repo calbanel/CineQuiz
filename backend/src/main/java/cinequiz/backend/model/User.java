@@ -35,7 +35,6 @@ public class User {
     private List<Game> games;
 
     public void addGame(Game game) {
-        // TODO gestion des erreurs
         games.add(game);
     }
 }
