@@ -1,42 +1,37 @@
 <div class="h-[88vh]">
-<div class="form-card">
-    <h2 class="text-3xl my-6 text-waterfall">Inscription</h2>
-    <form [formGroup]="registrationForm">
-        <div class="form-group">
-            <label for="pseudo" class="text-orange">Nom d'utilisateur</label>
-            <input type="text" id="pseudo" formControlName="pseudo" required>
-        </div>
-
-        <div class="form-group">
-            <label for="email" class="text-orange">Adresse mail</label>
-            <input type="email" id="email" formControlName="email" required>
-        </div>
-        <div class="wrongInput" *ngIf="showEmailErrors$ | async">
-            Veuillez entrer une adresse mail valide.
-        </div>
-        
-
-        <div class="form-group">
-            <label for="password" class="text-orange">Mot de passe</label>
-            <input type="password" id="password" formControlName="password" required>
-        </div>
-
-
-        <div class="form-group">
-            <label for="confirmPassword" class="text-orange">Confirmez votre mot de passe</label>
-            <input type="password" id="confirmPassword" formControlName="confirmPassword" required  
-                [ngClass] = "{ invalid : showPasswordErrors$ | async }">
-        </div>
-        <div class="wrongInput" *ngIf="showPasswordErrors$ | async">
-            Les mots de passe sont différents.
-        </div>
-
-        <div>
-            <button type="submit" (click)="onSubmitForm()" id="submitButton" class="text-left font-roboto ml-20 mr-6 my-4 bg-spray hover:bg-white hover:text-spray font-semibold text-white py-2 px-4 hover:border hover:border-blue-500 rounded" [disabled]="registrationForm.invalid"> Inscription </button>
-        </div>
-
-        <button class="text-left font-roboto ml-10 my-4 hover:bg-spray text-spray font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"> <a routerLink="/">Retour</a></button>
-
-    </form>
-</div>
+    <div class="mx-auto w-full max-w-xs">
+        <form [formGroup]="registrationForm" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="pseudo">
+                  Nom d'utilisateur
+                </label>
+                <input id="pseudo" type="text" placeholder="Entrer un nom d'utilisateur." formControlName="pseudo" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            </div>
+          <div class="mb-6">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
+              Email
+            </label>
+            <input id="email" type="email" placeholder="Entrer une adresse email." formControlName="email" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            <p *ngIf="showEmailErrors$ | async" class="text-red-500 text-xs italic">Adresse mail non valide.</p>
+          </div>
+          <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
+                Mot de passe
+            </label>
+            <input id="password" type="password" placeholder="******************" formControlName="password" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline">
+          </div>
+          <div class="mb-6">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="confirmPassword">
+                Mot de passe
+            </label>
+            <input id="confirmPassword" type="password" placeholder="******************" formControlName="confirmPassword" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" [ngClass] = "{ invalid : showPasswordErrors$ | async }">
+            <p *ngIf="showPasswordErrors$ | async" class="text-red-500 text-xs italic">Les mots de passe sont différents.</p>
+          </div>
+          <div class="flex items-center justify-between">
+            <button [disabled]="registrationForm.invalid" (click)="onSubmitForm()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" id="submitButton" type="submit">
+              S'inscrire
+            </button>
+          </div>
+        </form>
+      </div>
 </div>
