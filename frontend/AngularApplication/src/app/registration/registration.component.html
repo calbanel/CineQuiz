@@ -28,7 +28,7 @@
             <p *ngIf="showPasswordErrors$ | async" class="text-red-500 text-xs italic">Les mots de passe sont différents.</p>
           </div>
           <div class="flex items-center justify-between">
-            <button [disabled]="registrationForm.invalid" (click)="onSubmitForm()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" id="submitButton" type="submit">
+            <button [disabled]="registrationForm.invalid" (click)="onSubmitForm()" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" id="submitButton" type="submit">
               S'inscrire
             </button>
           </div>
