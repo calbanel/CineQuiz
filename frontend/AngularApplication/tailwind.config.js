@@ -20,6 +20,8 @@ module.exports = {
       yellow: colors.yellow,
       red: colors.red,
       blue: colors.blue,
+      green: colors.green,
+      pink: colors.pink,
       'cine-red': '#ad3133',
       'jalapeno-red': '#b71540',
       'orange': '#e58e26',
@@ -35,5 +37,6 @@ module.exports = {
       roboto: ['./src/assets/roboto/Roboto-Black.ttf'],
     },
   },
-  plugins: [],
+  plugins: [
+  ],
 }
