@@ -5,7 +5,8 @@
             <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
               Email
             </label>
-            <input id="email" type="email" placeholder="Entrer votre adresse email." formControlName="email" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            <input id="email" type="email" placeholder="Entrer votre adresse email." formControlName="email" required class="mb-3 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            <p *ngIf="showEmailErrors$ | async" class="text-red-500 text-xs italic">Adresse mail non valide.</p>
           </div>
           <div class="mb-6">
             <label class="block text-gray-700 text-sm font-bold mb-2" for="password">

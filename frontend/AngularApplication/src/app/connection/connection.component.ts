@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AccountService } from '../services/account.service';
 import * as CryptoJS from 'crypto-js';
+import { Observable } from 'rxjs/internal/Observable';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-connection',
@@ -12,6 +14,7 @@ export class ConnectionComponent implements OnInit {
 
   connectionForm !: FormGroup;
   submitted = false;
+  showEmailErrors$ !: Observable<Boolean>;
 
   constructor(private formBuilder: FormBuilder,
     private accountService: AccountService) { }
@@ -21,6 +24,11 @@ export class ConnectionComponent implements OnInit {
       email: [null, [Validators.required, Validators.email]],
       password: [null, [Validators.required]]
     });
+
+    this.showEmailErrors$ = this.connectionForm.statusChanges.pipe(
+      map(status => status === 'INVALID' &&
+        this.connectionForm.get('email')!.dirty &&
+        this.connectionForm.get('email')!.invalid));
   }
 
   onSubmitForm() {
