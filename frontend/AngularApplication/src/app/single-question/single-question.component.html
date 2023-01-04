@@ -1,6 +1,6 @@
-<div class="h-[80vh] px-[10%]">
-    <div class="grid bg-waterfall text-white font-roboto my-16 space-y-4 rounded-t-3xl rounded-b-xl w-full mx-auto">
-        <div id="nbQuestion" class="bg-jalapeno-red rounded-full py-2 px-4 grid grid-cols-3 gap-4">
+<div class="mt-[10%] px-[10%]">
+    <div class="grid bg-red-400 text-white font-roboto my-16 space-y-4 rounded-t-3xl rounded-b-xl w-full mx-auto">
+        <div id="nbQuestion" class="bg-red-600 rounded-full py-2 px-4 grid grid-cols-3 gap-4">
             <div>
                 Score : {{score}}
             </div>
@@ -17,23 +17,23 @@
                 <p class="text-center">{{currentQuestion.optionalText}}
                 <p>
             </div>
-            <div id="answers" class="bg-waterfall rounded space-y-4 w-2/6 place-items-center ml-4 mr-12 mb-6">
-                <div id="{{currentQuestion.choices.choice1}}" class="bg-good-samaritan rounded hover:bg-spray"> <label
+            <div id="answers" class="bg-red-400 rounded space-y-4 w-2/6 place-items-center ml-4 mr-12 mb-6">
+                <div id="{{currentQuestion.choices.choice1}}" class="bg-blue-500 rounded hover:bg-spray"> <label
                         for="questA"> <img src="../assets/A.png"
                             class="w-6 left pt-4 inline pb-4 ml-5"></label> <button
                         (click)="onClick(currentQuestion.choices.choice1,currentQuestion)" class="py-2 px-4 w-3/4 flex-1"
                         [disabled]="answered" id="questA">{{currentQuestion.choices.choice1}}</button></div>
-                <div id="{{currentQuestion.choices.choice2}}" class="bg-good-samaritan rounded hover:bg-spray"> <label
+                <div id="{{currentQuestion.choices.choice2}}" class="bg-blue-500 rounded hover:bg-spray"> <label
                         for="questB"> <img src="../assets/B.png"
                             class="w-6 left pt-4 inline pb-4 ml-5"> </label> <button
                         (click)="onClick(currentQuestion.choices.choice2,currentQuestion)" class="py-2 px-4 w-3/4 flex-1"
                         [disabled]="answered" id="questB">{{currentQuestion.choices.choice2}}</button></div>
-                <div id="{{currentQuestion.choices.choice3}}" class="bg-good-samaritan rounded hover:bg-spray"> <label
+                <div id="{{currentQuestion.choices.choice3}}" class="bg-blue-500 rounded hover:bg-spray"> <label
                         for="questC"> <img src="../assets/C.png"
                             class="w-6 left pt-4 inline pb-4 ml-5"> </label> <button
                         (click)="onClick(currentQuestion.choices.choice3,currentQuestion)" class="py-2 px-4 w-3/4 flex-1"
                         [disabled]="answered" id="questC">{{currentQuestion.choices.choice3}}</button></div>
-                <div id="{{currentQuestion.choices.choice4}}" class="bg-good-samaritan rounded hover:bg-spray"> <label
+                <div id="{{currentQuestion.choices.choice4}}" class="bg-blue-500 rounded hover:bg-spray"> <label
                         for="questD"> <img src="../assets/D.png"
                             class="w-6 left pt-4 inline pb-4 ml-5"> </label> <button
                         (click)="onClick(currentQuestion.choices.choice4,currentQuestion)" class="py-2 px-4 w-3/4 flex-1"
