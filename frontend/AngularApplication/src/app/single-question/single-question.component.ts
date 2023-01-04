@@ -68,7 +68,7 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
       this.timeToAnswer--;
       if(this.timeToAnswer <= 0) {
         clearInterval(this.interval);
-        this.nextQuestion();
+        this.onClick("", this.currentQuestion);
       }
     },MILISECONDS_FOR_ONE_SECOND)
   }
@@ -93,7 +93,7 @@ export class SingleQuestionComponent implements OnInit, OnDestroy {
       }
 
       clearInterval(this.interval);
-      setTimeout(() => { this.nextQuestion() }, 2000);
+      setTimeout(() => { this.nextQuestion() }, TIME_BETWEEN_TWO_QUESTIONS*1000);
     }
   }
 
