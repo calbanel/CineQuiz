@@ -92,10 +92,10 @@ export class GameService {
     this.currentGame.score = this.score;
     this.http.post<Game>(`${environment.apiUrl}/add-game-to-user/${this.account.userValue.id}`, this.currentGame)
             .subscribe({ next: result => {
-                Swal.fire('La partie est terminé!','Tu peux retrouver tes réponses dans ton historique de parties','success')
+                Swal.fire('La partie est terminée !','Tu peux retrouver tes réponses dans ton historique de parties','success')
                 setTimeout(() => { this.router.navigateByUrl("/"); }, 2000);
             },
-            error: (err) => Swal.fire('La partie est terminé!','Echec de sauvegarde de la partie','error')
+            error: (err) => Swal.fire('La partie est terminée !','Echec de sauvegarde de la partie','error')
         });
   }
 }
