@@ -32,6 +32,14 @@ export class HeaderComponent implements OnChanges{
     this.account.logout();
   }
 
+  signUpPage(){
+    this.router.navigateByUrl("/login");
+  }
+
+  signInPage(){
+    this.router.navigateByUrl("/sign-in");
+  }
+
   home(){
     this.router.navigateByUrl("/");
   }

@@ -6,10 +6,14 @@
         <div class="col-span-2 ml-auto mr-20 my-auto">
             <div class="grid grid-cols-2 gap-4" *ngIf = "!isLoggedIn()">
                 <div class="my-auto">
-                    <button class="text-left font-roboto hover:bg-spray text-spray font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"> <a routerLink="login">Connexion</a></button>
+                    <button (click)="signUpPage()" class="float-right font-roboto bg-forrest-blues hover:bg-good-samaritan text-white font-bold py-2 px-4 rounded-full">
+                        Connexion
+                    </button>
                 </div>
                 <div class="my-auto">
-                    <button class="text-left font-roboto hover:bg-spray text-spray font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded"> <a routerLink="sign-in">Inscription</a></button>
+                    <button (click)="signInPage()" class="float-left mr-10 font-roboto bg-forrest-blues hover:bg-good-samaritan text-white font-bold py-2 px-4 rounded-full">
+                        Inscription
+                    </button>
                 </div>
             </div>
             
@@ -19,7 +23,9 @@
                     <p class="py-2 text-white">{{user.pseudo}}</p>
                 </div>
                 <div>
-                    <button class="float-right mr-10 font-roboto hover:bg-spray text-spray font-semibold hover:text-white py-2 px-2 border border-blue-500 hover:border-transparent rounded" (click)="logout()">Deconnexion</button>
+                    <button (click)="logout()" class="float-right mr-10 font-roboto  bg-forrest-blues hover:bg-good-samaritan text-white font-bold py-2 px-4 rounded-full">
+                        Deconnexion
+                    </button>
                 </div>
             </div>
         </div>
