@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ThemePalette } from '@angular/material';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import Swal from 'sweetalert2';
@@ -13,6 +14,7 @@ import { GameService } from '../services/game.service';
 })
 export class LoadingGameComponent implements OnInit, OnDestroy {
   questions !: Question[];
+  spinnerColor : ThemePalette = "warn";
 
   constructor(private game: GameService, private router: Router) {
 
