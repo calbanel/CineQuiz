@@ -34,7 +34,6 @@ export class AccountService {
         return this.http.post<User>(`${environment.apiUrl}/connection`, userEntered).subscribe({
             next: user => {
                 localStorage.setItem('user', JSON.stringify(user));
-                console.log(localStorage.getItem('user'));
                 this.userSubject.next(user);
                 Swal.fire('Connecté!','','success')
                 this.router.navigateByUrl("/");
