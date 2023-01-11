@@ -21,7 +21,7 @@ import java.util.Optional;
 
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/api", method = RequestMethod.GET)
+@RequestMapping(value = "/api")
 public class UserController {
 	@Autowired
 	private UserRepository repository;
