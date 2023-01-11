@@ -104,6 +104,10 @@ public abstract class GlobalStrategy implements MCQStrategy {
             Collections.shuffle(list);
             String[] choices = { list.get(0).getDate(), list.get(1).getDate(), list.get(2).getDate(),
                     list.get(3).getDate() };
+
+            for (int i = 0; i < choices.length; i++)
+                choices[i] = language.getFormattedDate(choices[i]);
+
             Choices choicesObject = new Choices(choices[0], choices[1], choices[2], choices[3]);
 
             String question = ((Question) Question.getByInfosType(type).getDeclaredField("DATE").get(null))
@@ -111,7 +115,7 @@ public abstract class GlobalStrategy implements MCQStrategy {
             MCQQuestion mcq = new MCQQuestion(TmdbFetching.IMG_URL_BASE + answer.getImage(), answer.getName(),
                     question,
                     choicesObject,
-                    answer.getDate());
+                    language.getFormattedDate(answer.getDate()));
 
             return mcq;
 
