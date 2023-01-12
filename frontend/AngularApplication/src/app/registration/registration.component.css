@@ -1,15 +1,9 @@
-input.ng-invalid.ng-dirty{
-  border-color: #f56565 !important;
-}
-
 input.ng-valid.ng-dirty{
   border-color: #48bb78;
 }
 
-.wrongInput{
-  margin: auto;
-  text-align: center;
-  color: #f56565;
+input.ng-invalid.ng-dirty{
+  border-color: #f56565 !important;
 }
 
 .invalid{

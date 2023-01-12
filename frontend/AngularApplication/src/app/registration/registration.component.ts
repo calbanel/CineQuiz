@@ -5,6 +5,7 @@ import * as CryptoJS from 'crypto-js';
 import { matchPasswordsValidator } from '../validators/match-passwords';
 import { map, Observable } from 'rxjs';
 import { AccountService } from '../services/account.service';
+import { patternValidator } from '../validators/regex';
 
 @Component({
   selector: 'app-inscription',
@@ -17,13 +18,22 @@ export class RegistrationComponent implements OnInit {
   showPasswordErrors$ !: Observable<Boolean>;
   showEmailErrors$ !: Observable<Boolean>;
 
+  showPasswordLengthError$ !: Observable<Boolean>;
+  showHasNumberError$ !: Observable<Boolean>;
+  showHasUpperCaseError$ !: Observable<Boolean>;
+
   constructor(private formBuilder: FormBuilder, private http: HttpClient, private accountService: AccountService) { }
 
   ngOnInit(): void {
     this.registrationForm = this.formBuilder.group({
       pseudo: [null, [Validators.required]],
       email: [null, [Validators.required, Validators.email]],
-      password: [null, [Validators.required]],
+      password: [null, Validators.compose([
+        Validators.required,
+        patternValidator(/\d/, { hasNumberError: true }),
+        patternValidator(/[A-Z]/, { hasUpperCaseError: true }),
+        Validators.minLength(8)])
+      ],
       confirmPassword: [null, [Validators.required]],
     },
       {
@@ -40,6 +50,21 @@ export class RegistrationComponent implements OnInit {
       map(status => status === 'INVALID' &&
         this.registrationForm.get('email')!.dirty &&
         this.registrationForm.get('email')!.invalid));
+
+    this.showPasswordLengthError$ = this.registrationForm.statusChanges.pipe(
+      map(status => status === 'INVALID' &&
+        this.registrationForm.get('password')!.dirty &&
+        this.registrationForm.get('password')!.hasError('minlength')));
+
+    this.showHasNumberError$ = this.registrationForm.statusChanges.pipe(
+      map(status => status === 'INVALID' &&
+        this.registrationForm.get('password')!.dirty &&
+        this.registrationForm.get('password')!.hasError('hasNumberError')));
+
+    this.showHasUpperCaseError$ = this.registrationForm.statusChanges.pipe(
+      map(status => status === 'INVALID' &&
+        this.registrationForm.get('password')!.dirty &&
+        this.registrationForm.get('password')!.hasError('hasUpperCaseError')));
   }
 
   onSubmitForm(): void {
