@@ -1,7 +1,715 @@
-<div class="grid flex-col h-[88vh]">
-    <div class="mt-[15%] mx-auto">
-        <button (click)="loading()" class="bg-red-500 hover:bg-red-400 text-white font-bold py-2 px-4 border-b-4 border-red-700 hover:border-red-500 rounded">
+<div class="grid gap-4 flex-col">
+    <div class="my-[2%] mx-auto">
+        <button (click)="loading()"
+            class="bg-red-500 hover:bg-red-400 text-white font-bold py-2 px-4 border-b-4 border-red-700 hover:border-red-500 rounded">
             JOUER
-          </button>
+        </button>
+    </div>
+    <div class="w-[280px] mx-auto">
+        <label for="history" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Revoir une ancienne
+            partie</label>
+        <select (change)="changeGame($event)" id="history"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500">
+            <option value="null" selected>Choisir une partie</option>
+            <option *ngFor="let game of gameHistory" [ngValue]="game">
+                {{ game.date }}
+            </option>
+        </select>
+    </div>
+    <div *ngIf="selectedGame != null" class="h-[500px] relative">
+        <div class="w-[280px] mx-auto" style="scroll-snap-type: x mandatory;">
+            <!-- first -->
+            <div class="">
+                <input class="sr-only peer" type="radio" name="carousel" id="carousel-1" checked />
+                <!-- content #1 -->
+                <div
+                    class="w-[280px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-lg transition-all duration-300 opacity-0 peer-checked:opacity-100 peer-checked:z-10 z-0">
+                    <div class="h-50">
+                        <img *ngIf="selectedGame.questions[0].question.optionalImage !== '' && selectedGame.questions[0].question.optionalImage != null" class="rounded-t-lg mx-auto w-auto h-[160px]"
+                            src="{{selectedGame.questions[0].question.optionalImage}}" alt="" />
+                        <p *ngIf="selectedGame.questions[0].question.optionalText !== '' && selectedGame.questions[0].question.optionalText != null" class="max-h-[160px] text-ellipsis overflow-hidden text-center text-xs">{{selectedGame.questions[0].question.optionalText}}</p>
+                    </div>
+                    <div class="pt-2 pb-4 px-4">
+                        <h1 class="hover:cursor-pointer text-gray-900 font-bold text-sm tracking-tight text-center">Question 1: {{selectedGame.questions[0].question.question}}
+                        </h1>
+                        <div class="pt-[3px] grid grid-rows-5 grid-flow-row-dense gap-1 place-items-stretch">
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[0].question.answer === selectedGame.questions[0].question.choices.choice1,
+                                'bg-blue-400' : selectedGame.questions[0].playerAnswer !== selectedGame.questions[0].question.choices.choice1,
+                                'bg-red-400' : selectedGame.questions[0].playerAnswer == selectedGame.questions[0].question.choices.choice1 && selectedGame.questions[0].question.answer !== selectedGame.questions[0].question.choices.choice1}" class="rounded">
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[0].question.choices.choice1}}</p>
+                            </div>
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[0].question.answer === selectedGame.questions[0].question.choices.choice2,
+                                'bg-blue-400' : selectedGame.questions[0].playerAnswer !== selectedGame.questions[0].question.choices.choice2,
+                                'bg-red-400' : selectedGame.questions[0].playerAnswer == selectedGame.questions[0].question.choices.choice2 && selectedGame.questions[0].question.answer !== selectedGame.questions[0].question.choices.choice2}" class="rounded">
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[0].question.choices.choice2}}</p>
+                            </div>
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[0].question.answer === selectedGame.questions[0].question.choices.choice3,
+                                'bg-blue-400' : selectedGame.questions[0].playerAnswer !== selectedGame.questions[0].question.choices.choice3,
+                                'bg-red-400' : selectedGame.questions[0].playerAnswer == selectedGame.questions[0].question.choices.choice3 && selectedGame.questions[0].question.answer !== selectedGame.questions[0].question.choices.choice3}" class="rounded">    
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[0].question.choices.choice3}}</p>
+                            </div>
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[0].question.answer === selectedGame.questions[0].question.choices.choice4,
+                                'bg-blue-400' : selectedGame.questions[0].playerAnswer !== selectedGame.questions[0].question.choices.choice4,
+                                'bg-red-400' : selectedGame.questions[0].playerAnswer == selectedGame.questions[0].question.choices.choice4 && selectedGame.questions[0].question.answer !== selectedGame.questions[0].question.choices.choice4}" class="rounded">    
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[0].question.choices.choice4}}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-roboto uppercase text-gray-900">
+                                    <span class="font-semibold">Score</span> {{selectedGame.questions[0].score}}<br>
+                                    <span class="font-semibold">Temps de réponse</span> {{selectedGame.questions[0].answerTime}} secondes
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- controls -->
+                    <div class="absolute top-1/2 w-full flex justify-between z-20">
+                        <label for="carousel-10"
+                            class="inline-block text-red-600 cursor-pointer -translate-x-5 bg-white rounded-full shadow-md active:translate-y-0.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </label>
+                        <label for="carousel-2"
+                            class="inline-block text-red-600 cursor-pointer translate-x-5 bg-white rounded-full shadow-md active:translate-y-0.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="">
+                <input class="sr-only peer" type="radio" name="carousel" id="carousel-2" />
+                <!-- content #1 -->
+                <div
+                    class="w-[280px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-lg transition-all duration-300 opacity-0 peer-checked:opacity-100 peer-checked:z-10 z-0">
+                    <div class="h-50">
+                        <img *ngIf="selectedGame.questions[1].question.optionalImage !== '' && selectedGame.questions[1].question.optionalImage != null" class="rounded-t-lg mx-auto w-auto h-[160px]"
+                            src="{{selectedGame.questions[1].question.optionalImage}}" alt="" />
+                        <p *ngIf="selectedGame.questions[1].question.optionalText !== '' && selectedGame.questions[1].question.optionalText != null" class="max-h-[160px] text-ellipsis overflow-hidden text-center text-xs">{{selectedGame.questions[1].question.optionalText}}</p>
+                    </div>
+                    <div class="pt-2 pb-4 px-4">
+                        <h1 class="hover:cursor-pointer text-gray-900 font-bold text-sm tracking-tight text-center">Question 2: {{selectedGame.questions[1].question.question}}
+                        </h1>
+                        <div class="pt-[3px] grid grid-rows-5 grid-flow-row-dense gap-1 place-items-stretch">
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[1].question.answer === selectedGame.questions[1].question.choices.choice1,
+                                'bg-blue-400' : selectedGame.questions[1].playerAnswer !== selectedGame.questions[1].question.choices.choice1,
+                                'bg-red-400' : selectedGame.questions[1].playerAnswer == selectedGame.questions[1].question.choices.choice1 && selectedGame.questions[1].question.answer !== selectedGame.questions[1].question.choices.choice1}" class="rounded">
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[1].question.choices.choice1}}</p>
+                            </div>
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[1].question.answer === selectedGame.questions[1].question.choices.choice2,
+                                'bg-blue-400' : selectedGame.questions[1].playerAnswer !== selectedGame.questions[1].question.choices.choice2,
+                                'bg-red-400' : selectedGame.questions[1].playerAnswer == selectedGame.questions[1].question.choices.choice2 && selectedGame.questions[1].question.answer !== selectedGame.questions[1].question.choices.choice2}" class="rounded">
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[1].question.choices.choice2}}</p>
+                            </div>
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[1].question.answer === selectedGame.questions[1].question.choices.choice3,
+                                'bg-blue-400' : selectedGame.questions[1].playerAnswer !== selectedGame.questions[1].question.choices.choice3,
+                                'bg-red-400' : selectedGame.questions[1].playerAnswer == selectedGame.questions[1].question.choices.choice3 && selectedGame.questions[1].question.answer !== selectedGame.questions[1].question.choices.choice3}" class="rounded">    
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[1].question.choices.choice3}}</p>
+                            </div>
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[1].question.answer === selectedGame.questions[1].question.choices.choice4,
+                                'bg-blue-400' : selectedGame.questions[1].playerAnswer !== selectedGame.questions[1].question.choices.choice4,
+                                'bg-red-400' : selectedGame.questions[1].playerAnswer == selectedGame.questions[1].question.choices.choice4 && selectedGame.questions[1].question.answer !== selectedGame.questions[1].question.choices.choice4}" class="rounded">    
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[1].question.choices.choice4}}</p>
+                            </div>        
+                            <div>
+                                <p class="text-xs font-roboto uppercase text-gray-900">
+                                    <span class="font-semibold">Score</span> {{selectedGame.questions[1].score}}<br>
+                                    <span class="font-semibold">Temps de réponse</span> {{selectedGame.questions[1].answerTime}} secondes
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- controls -->
+                    <div class="absolute top-1/2 w-full flex justify-between z-20">
+                        <label for="carousel-1"
+                            class="inline-block text-red-600 cursor-pointer -translate-x-5 bg-white rounded-full shadow-md active:translate-y-0.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </label>
+                        <label for="carousel-3"
+                            class="inline-block text-red-600 cursor-pointer translate-x-5 bg-white rounded-full shadow-md active:translate-y-0.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="">
+                <input class="sr-only peer" type="radio" name="carousel" id="carousel-3" />
+                <!-- content #1 -->
+                <div
+                    class="w-[280px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-lg transition-all duration-300 opacity-0 peer-checked:opacity-100 peer-checked:z-10 z-0">
+                    <div class="h-50">
+                        <img *ngIf="selectedGame.questions[2].question.optionalImage !== '' && selectedGame.questions[2].question.optionalImage != null" class="rounded-t-lg mx-auto w-auto h-[160px]"
+                            src="{{selectedGame.questions[2].question.optionalImage}}" alt="" />
+                        <p *ngIf="selectedGame.questions[2].question.optionalText !== '' && selectedGame.questions[2].question.optionalText != null" class="max-h-[160px] text-ellipsis overflow-hidden text-center text-xs">{{selectedGame.questions[2].question.optionalText}}</p>
+                    </div>
+                    <div class="pt-2 pb-4 px-4">
+                        <h1 class="hover:cursor-pointer text-gray-900 font-bold text-sm tracking-tight text-center">Question 3: {{selectedGame.questions[2].question.question}}
+                        </h1>
+                        <div class="pt-[3px] grid grid-rows-5 grid-flow-row-dense gap-1 place-items-stretch">
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[2].question.answer === selectedGame.questions[2].question.choices.choice1,
+                                'bg-blue-400' : selectedGame.questions[2].playerAnswer !== selectedGame.questions[2].question.choices.choice1,
+                                'bg-red-400' : selectedGame.questions[2].playerAnswer == selectedGame.questions[2].question.choices.choice1 && selectedGame.questions[2].question.answer !== selectedGame.questions[2].question.choices.choice1}" class="rounded">
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[2].question.choices.choice1}}</p>
+                            </div>
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[2].question.answer === selectedGame.questions[2].question.choices.choice2,
+                                'bg-blue-400' : selectedGame.questions[2].playerAnswer !== selectedGame.questions[2].question.choices.choice2,
+                                'bg-red-400' : selectedGame.questions[2].playerAnswer == selectedGame.questions[2].question.choices.choice2 && selectedGame.questions[2].question.answer !== selectedGame.questions[2].question.choices.choice2}" class="rounded">
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[2].question.choices.choice2}}</p>
+                            </div>
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[2].question.answer === selectedGame.questions[2].question.choices.choice3,
+                                'bg-blue-400' : selectedGame.questions[2].playerAnswer !== selectedGame.questions[2].question.choices.choice3,
+                                'bg-red-400' : selectedGame.questions[2].playerAnswer == selectedGame.questions[2].question.choices.choice3 && selectedGame.questions[2].question.answer !== selectedGame.questions[2].question.choices.choice3}" class="rounded">    
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[2].question.choices.choice3}}</p>
+                            </div>
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[2].question.answer === selectedGame.questions[2].question.choices.choice4,
+                                'bg-blue-400' : selectedGame.questions[2].playerAnswer !== selectedGame.questions[2].question.choices.choice4,
+                                'bg-red-400' : selectedGame.questions[2].playerAnswer == selectedGame.questions[2].question.choices.choice4 && selectedGame.questions[2].question.answer !== selectedGame.questions[2].question.choices.choice4}" class="rounded">    
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[2].question.choices.choice4}}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-roboto uppercase text-gray-900">
+                                    <span class="font-semibold">Score</span> {{selectedGame.questions[2].score}}<br>
+                                    <span class="font-semibold">Temps de réponse</span> {{selectedGame.questions[2].answerTime}} secondes
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- controls -->
+                    <div class="absolute top-1/2 w-full flex justify-between z-20">
+                        <label for="carousel-2"
+                            class="inline-block text-red-600 cursor-pointer -translate-x-5 bg-white rounded-full shadow-md active:translate-y-0.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </label>
+                        <label for="carousel-4"
+                            class="inline-block text-red-600 cursor-pointer translate-x-5 bg-white rounded-full shadow-md active:translate-y-0.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="">
+                <input class="sr-only peer" type="radio" name="carousel" id="carousel-4" />
+                <!-- content #1 -->
+                <div
+                    class="w-[280px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-lg transition-all duration-300 opacity-0 peer-checked:opacity-100 peer-checked:z-10 z-0">
+                    <div class="h-50">
+                        <img *ngIf="selectedGame.questions[3].question.optionalImage !== '' && selectedGame.questions[3].question.optionalImage != null" class="rounded-t-lg mx-auto w-auto h-[160px]"
+                            src="{{selectedGame.questions[3].question.optionalImage}}" alt="" />
+                        <p *ngIf="selectedGame.questions[3].question.optionalText !== '' && selectedGame.questions[3].question.optionalText != null" class="max-h-[160px] text-ellipsis overflow-hidden text-center text-xs">{{selectedGame.questions[3].question.optionalText}}</p>
+                    </div>
+                    <div class="pt-2 pb-4 px-4">
+                        <h1 class="hover:cursor-pointer text-gray-900 font-bold text-sm tracking-tight text-center">Question 4: {{selectedGame.questions[3].question.question}}
+                        </h1>
+                        <div class="pt-[3px] grid grid-rows-5 grid-flow-row-dense gap-1 place-items-stretch">
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[3].question.answer === selectedGame.questions[3].question.choices.choice1,
+                                'bg-blue-400' : selectedGame.questions[3].playerAnswer !== selectedGame.questions[3].question.choices.choice1,
+                                'bg-red-400' : selectedGame.questions[3].playerAnswer == selectedGame.questions[3].question.choices.choice1 && selectedGame.questions[3].question.answer !== selectedGame.questions[3].question.choices.choice1}" class="rounded">
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[3].question.choices.choice1}}</p>
+                            </div>
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[3].question.answer === selectedGame.questions[3].question.choices.choice2,
+                                'bg-blue-400' : selectedGame.questions[3].playerAnswer !== selectedGame.questions[3].question.choices.choice2,
+                                'bg-red-400' : selectedGame.questions[3].playerAnswer == selectedGame.questions[3].question.choices.choice2 && selectedGame.questions[3].question.answer !== selectedGame.questions[3].question.choices.choice2}" class="rounded">
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[3].question.choices.choice2}}</p>
+                            </div>
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[3].question.answer === selectedGame.questions[3].question.choices.choice3,
+                                'bg-blue-400' : selectedGame.questions[3].playerAnswer !== selectedGame.questions[3].question.choices.choice3,
+                                'bg-red-400' : selectedGame.questions[3].playerAnswer == selectedGame.questions[3].question.choices.choice3 && selectedGame.questions[3].question.answer !== selectedGame.questions[3].question.choices.choice3}" class="rounded">    
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[3].question.choices.choice3}}</p>
+                            </div>
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[3].question.answer === selectedGame.questions[3].question.choices.choice4,
+                                'bg-blue-400' : selectedGame.questions[3].playerAnswer !== selectedGame.questions[3].question.choices.choice4,
+                                'bg-red-400' : selectedGame.questions[3].playerAnswer == selectedGame.questions[3].question.choices.choice4 && selectedGame.questions[3].question.answer !== selectedGame.questions[3].question.choices.choice4}" class="rounded">    
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[3].question.choices.choice4}}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-roboto uppercase text-gray-900">
+                                    <span class="font-semibold">Score</span> {{selectedGame.questions[3].score}}<br>
+                                    <span class="font-semibold">Temps de réponse</span> {{selectedGame.questions[3].answerTime}} secondes
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- controls -->
+                    <div class="absolute top-1/2 w-full flex justify-between z-20">
+                        <label for="carousel-3"
+                            class="inline-block text-red-600 cursor-pointer -translate-x-5 bg-white rounded-full shadow-md active:translate-y-0.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </label>
+                        <label for="carousel-5"
+                            class="inline-block text-red-600 cursor-pointer translate-x-5 bg-white rounded-full shadow-md active:translate-y-0.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="">
+                <input class="sr-only peer" type="radio" name="carousel" id="carousel-5" />
+                <!-- content #1 -->
+                <div
+                    class="w-[280px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-lg transition-all duration-300 opacity-0 peer-checked:opacity-100 peer-checked:z-10 z-0">
+                    <div class="h-50">
+                        <img *ngIf="selectedGame.questions[4].question.optionalImage !== '' && selectedGame.questions[4].question.optionalImage != null" class="rounded-t-lg mx-auto w-auto h-[160px]"
+                            src="{{selectedGame.questions[4].question.optionalImage}}" alt="" />
+                        <p *ngIf="selectedGame.questions[4].question.optionalText !== '' && selectedGame.questions[4].question.optionalText != null" class="max-h-[160px] text-ellipsis overflow-hidden text-center text-xs">{{selectedGame.questions[4].question.optionalText}}</p>
+                    </div>
+                    <div class="pt-2 pb-4 px-4">
+                        <h1 class="hover:cursor-pointer text-gray-900 font-bold text-sm tracking-tight text-center">Question 5: {{selectedGame.questions[4].question.question}}
+                        </h1>
+                        <div class="pt-[3px] grid grid-rows-5 grid-flow-row-dense gap-1 place-items-stretch">
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[4].question.answer === selectedGame.questions[4].question.choices.choice1,
+                                'bg-blue-400' : selectedGame.questions[4].playerAnswer !== selectedGame.questions[4].question.choices.choice1,
+                                'bg-red-400' : selectedGame.questions[4].playerAnswer == selectedGame.questions[4].question.choices.choice1 && selectedGame.questions[4].question.answer !== selectedGame.questions[4].question.choices.choice1}" class="rounded">
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[4].question.choices.choice1}}</p>
+                            </div>
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[4].question.answer === selectedGame.questions[4].question.choices.choice2,
+                                'bg-blue-400' : selectedGame.questions[4].playerAnswer !== selectedGame.questions[4].question.choices.choice2,
+                                'bg-red-400' : selectedGame.questions[4].playerAnswer == selectedGame.questions[4].question.choices.choice2 && selectedGame.questions[4].question.answer !== selectedGame.questions[4].question.choices.choice2}" class="rounded">
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[4].question.choices.choice2}}</p>
+                            </div>
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[4].question.answer === selectedGame.questions[4].question.choices.choice3,
+                                'bg-blue-400' : selectedGame.questions[4].playerAnswer !== selectedGame.questions[4].question.choices.choice3,
+                                'bg-red-400' : selectedGame.questions[4].playerAnswer == selectedGame.questions[4].question.choices.choice3 && selectedGame.questions[4].question.answer !== selectedGame.questions[4].question.choices.choice3}" class="rounded">    
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[4].question.choices.choice3}}</p>
+                            </div>
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[4].question.answer === selectedGame.questions[4].question.choices.choice4,
+                                'bg-blue-400' : selectedGame.questions[4].playerAnswer !== selectedGame.questions[4].question.choices.choice4,
+                                'bg-red-400' : selectedGame.questions[4].playerAnswer == selectedGame.questions[4].question.choices.choice4 && selectedGame.questions[4].question.answer !== selectedGame.questions[4].question.choices.choice4}" class="rounded">    
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[4].question.choices.choice4}}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-roboto uppercase text-gray-900">
+                                    <span class="font-semibold">Score</span> {{selectedGame.questions[4].score}}<br>
+                                    <span class="font-semibold">Temps de réponse</span> {{selectedGame.questions[4].answerTime}} secondes
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- controls -->
+                    <div class="absolute top-1/2 w-full flex justify-between z-20">
+                        <label for="carousel-4"
+                            class="inline-block text-red-600 cursor-pointer -translate-x-5 bg-white rounded-full shadow-md active:translate-y-0.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </label>
+                        <label for="carousel-6"
+                            class="inline-block text-red-600 cursor-pointer translate-x-5 bg-white rounded-full shadow-md active:translate-y-0.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="">
+                <input class="sr-only peer" type="radio" name="carousel" id="carousel-6" />
+                <!-- content #1 -->
+                <div
+                    class="w-[280px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-lg transition-all duration-300 opacity-0 peer-checked:opacity-100 peer-checked:z-10 z-0">
+                    <div class="h-50">
+                        <img *ngIf="selectedGame.questions[5].question.optionalImage !== '' && selectedGame.questions[5].question.optionalImage != null" class="rounded-t-lg mx-auto w-auto h-[160px]"
+                            src="{{selectedGame.questions[5].question.optionalImage}}" alt="" />
+                        <p *ngIf="selectedGame.questions[5].question.optionalText !== '' && selectedGame.questions[5].question.optionalText != null" class="max-h-[160px] text-ellipsis overflow-hidden text-center text-xs">{{selectedGame.questions[5].question.optionalText}}</p>
+                    </div>
+                    <div class="pt-2 pb-4 px-4">
+                        <h1 class="hover:cursor-pointer text-gray-900 font-bold text-sm tracking-tight text-center">Question 6: {{selectedGame.questions[5].question.question}}
+                        </h1>
+                        <div class="pt-[3px] grid grid-rows-5 grid-flow-row-dense gap-1 place-items-stretch">
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[5].question.answer === selectedGame.questions[5].question.choices.choice1,
+                                'bg-blue-400' : selectedGame.questions[5].playerAnswer !== selectedGame.questions[5].question.choices.choice1,
+                                'bg-red-400' : selectedGame.questions[5].playerAnswer == selectedGame.questions[5].question.choices.choice1 && selectedGame.questions[5].question.answer !== selectedGame.questions[5].question.choices.choice1}" class="rounded">
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[5].question.choices.choice1}}</p>
+                            </div>
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[5].question.answer === selectedGame.questions[5].question.choices.choice2,
+                                'bg-blue-400' : selectedGame.questions[5].playerAnswer !== selectedGame.questions[5].question.choices.choice2,
+                                'bg-red-400' : selectedGame.questions[5].playerAnswer == selectedGame.questions[5].question.choices.choice2 && selectedGame.questions[5].question.answer !== selectedGame.questions[5].question.choices.choice2}" class="rounded">
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[5].question.choices.choice2}}</p>
+                            </div>
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[5].question.answer === selectedGame.questions[5].question.choices.choice3,
+                                'bg-blue-400' : selectedGame.questions[5].playerAnswer !== selectedGame.questions[5].question.choices.choice3,
+                                'bg-red-400' : selectedGame.questions[5].playerAnswer == selectedGame.questions[5].question.choices.choice3 && selectedGame.questions[5].question.answer !== selectedGame.questions[5].question.choices.choice3}" class="rounded">    
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[5].question.choices.choice3}}</p>
+                            </div>
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[5].question.answer === selectedGame.questions[5].question.choices.choice4,
+                                'bg-blue-400' : selectedGame.questions[5].playerAnswer !== selectedGame.questions[5].question.choices.choice4,
+                                'bg-red-400' : selectedGame.questions[5].playerAnswer == selectedGame.questions[5].question.choices.choice4 && selectedGame.questions[5].question.answer !== selectedGame.questions[5].question.choices.choice4}" class="rounded">    
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[5].question.choices.choice4}}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-roboto uppercase text-gray-900">
+                                    <span class="font-semibold">Score</span> {{selectedGame.questions[5].score}}<br>
+                                    <span class="font-semibold">Temps de réponse</span> {{selectedGame.questions[5].answerTime}} secondes
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- controls -->
+                    <div class="absolute top-1/2 w-full flex justify-between z-20">
+                        <label for="carousel-5"
+                            class="inline-block text-red-600 cursor-pointer -translate-x-5 bg-white rounded-full shadow-md active:translate-y-0.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </label>
+                        <label for="carousel-7"
+                            class="inline-block text-red-600 cursor-pointer translate-x-5 bg-white rounded-full shadow-md active:translate-y-0.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="">
+                <input class="sr-only peer" type="radio" name="carousel" id="carousel-7" />
+                <!-- content #1 -->
+                <div
+                    class="w-[280px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-lg transition-all duration-300 opacity-0 peer-checked:opacity-100 peer-checked:z-10 z-0">
+                    <div class="h-50">
+                        <img *ngIf="selectedGame.questions[6].question.optionalImage !== '' && selectedGame.questions[6].question.optionalImage != null" class="rounded-t-lg mx-auto w-auto h-[160px]"
+                            src="{{selectedGame.questions[6].question.optionalImage}}" alt="" />
+                        <p *ngIf="selectedGame.questions[6].question.optionalText !== '' && selectedGame.questions[6].question.optionalText != null" class="max-h-[160px] text-ellipsis overflow-hidden text-center text-xs">{{selectedGame.questions[6].question.optionalText}}</p>
+                    </div>
+                    <div class="pt-2 pb-4 px-4">
+                        <h1 class="hover:cursor-pointer text-gray-900 font-bold text-sm tracking-tight text-center">Question 7: {{selectedGame.questions[6].question.question}}
+                        </h1>
+                        <div class="pt-[3px] grid grid-rows-5 grid-flow-row-dense gap-1 place-items-stretch">
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[6].question.answer === selectedGame.questions[6].question.choices.choice1,
+                                'bg-blue-400' : selectedGame.questions[6].playerAnswer !== selectedGame.questions[6].question.choices.choice1,
+                                'bg-red-400' : selectedGame.questions[6].playerAnswer == selectedGame.questions[6].question.choices.choice1 && selectedGame.questions[6].question.answer !== selectedGame.questions[6].question.choices.choice1}" class="rounded">
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[6].question.choices.choice1}}</p>
+                            </div>
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[6].question.answer === selectedGame.questions[6].question.choices.choice2,
+                                'bg-blue-400' : selectedGame.questions[6].playerAnswer !== selectedGame.questions[6].question.choices.choice2,
+                                'bg-red-400' : selectedGame.questions[6].playerAnswer == selectedGame.questions[6].question.choices.choice2 && selectedGame.questions[6].question.answer !== selectedGame.questions[6].question.choices.choice2}" class="rounded">
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[6].question.choices.choice2}}</p>
+                            </div>
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[6].question.answer === selectedGame.questions[6].question.choices.choice3,
+                                'bg-blue-400' : selectedGame.questions[6].playerAnswer !== selectedGame.questions[6].question.choices.choice3,
+                                'bg-red-400' : selectedGame.questions[6].playerAnswer == selectedGame.questions[6].question.choices.choice3 && selectedGame.questions[6].question.answer !== selectedGame.questions[6].question.choices.choice3}" class="rounded">    
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[6].question.choices.choice3}}</p>
+                            </div>
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[6].question.answer === selectedGame.questions[6].question.choices.choice4,
+                                'bg-blue-400' : selectedGame.questions[6].playerAnswer !== selectedGame.questions[6].question.choices.choice4,
+                                'bg-red-400' : selectedGame.questions[6].playerAnswer == selectedGame.questions[6].question.choices.choice4 && selectedGame.questions[6].question.answer !== selectedGame.questions[6].question.choices.choice4}" class="rounded">    
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[6].question.choices.choice4}}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-roboto uppercase text-gray-900">
+                                    <span class="font-semibold">Score</span> {{selectedGame.questions[6].score}}<br>
+                                    <span class="font-semibold">Temps de réponse</span> {{selectedGame.questions[6].answerTime}} secondes
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- controls -->
+                    <div class="absolute top-1/2 w-full flex justify-between z-20">
+                        <label for="carousel-6"
+                            class="inline-block text-red-600 cursor-pointer -translate-x-5 bg-white rounded-full shadow-md active:translate-y-0.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </label>
+                        <label for="carousel-8"
+                            class="inline-block text-red-600 cursor-pointer translate-x-5 bg-white rounded-full shadow-md active:translate-y-0.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="">
+                <input class="sr-only peer" type="radio" name="carousel" id="carousel-8" />
+                <!-- content #1 -->
+                <div
+                    class="w-[280px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-lg transition-all duration-300 opacity-0 peer-checked:opacity-100 peer-checked:z-10 z-0">
+                    <div class="h-50">
+                        <img *ngIf="selectedGame.questions[7].question.optionalImage !== '' && selectedGame.questions[7].question.optionalImage != null" class="rounded-t-lg mx-auto w-auto h-[160px]"
+                            src="{{selectedGame.questions[7].question.optionalImage}}" alt="" />
+                        <p *ngIf="selectedGame.questions[7].question.optionalText !== '' && selectedGame.questions[7].question.optionalText != null" class="max-h-[160px] text-ellipsis overflow-hidden text-center text-xs">{{selectedGame.questions[7].question.optionalText}}</p>
+                    </div>
+                    <div class="pt-2 pb-4 px-4">
+                        <h1 class="hover:cursor-pointer text-gray-900 font-bold text-sm tracking-tight text-center">Question 8: {{selectedGame.questions[7].question.question}}
+                        </h1>
+                        <div class="pt-[3px] grid grid-rows-5 grid-flow-row-dense gap-1 place-items-stretch">
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[7].question.answer === selectedGame.questions[7].question.choices.choice1,
+                                'bg-blue-400' : selectedGame.questions[7].playerAnswer !== selectedGame.questions[7].question.choices.choice1,
+                                'bg-red-400' : selectedGame.questions[7].playerAnswer == selectedGame.questions[7].question.choices.choice1 && selectedGame.questions[7].question.answer !== selectedGame.questions[7].question.choices.choice1}" class="rounded">
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[7].question.choices.choice1}}</p>
+                            </div>
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[7].question.answer === selectedGame.questions[7].question.choices.choice2,
+                                'bg-blue-400' : selectedGame.questions[7].playerAnswer !== selectedGame.questions[7].question.choices.choice2,
+                                'bg-red-400' : selectedGame.questions[7].playerAnswer == selectedGame.questions[7].question.choices.choice2 && selectedGame.questions[7].question.answer !== selectedGame.questions[7].question.choices.choice2}" class="rounded">
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[7].question.choices.choice2}}</p>
+                            </div>
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[7].question.answer === selectedGame.questions[7].question.choices.choice3,
+                                'bg-blue-400' : selectedGame.questions[7].playerAnswer !== selectedGame.questions[7].question.choices.choice3,
+                                'bg-red-400' : selectedGame.questions[7].playerAnswer == selectedGame.questions[7].question.choices.choice3 && selectedGame.questions[7].question.answer !== selectedGame.questions[7].question.choices.choice3}" class="rounded">    
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[7].question.choices.choice3}}</p>
+                            </div>
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[7].question.answer === selectedGame.questions[7].question.choices.choice4,
+                                'bg-blue-400' : selectedGame.questions[7].playerAnswer !== selectedGame.questions[7].question.choices.choice4,
+                                'bg-red-400' : selectedGame.questions[7].playerAnswer == selectedGame.questions[7].question.choices.choice4 && selectedGame.questions[7].question.answer !== selectedGame.questions[7].question.choices.choice4}" class="rounded">    
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[7].question.choices.choice4}}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-roboto uppercase text-gray-900">
+                                    <span class="font-semibold">Score</span> {{selectedGame.questions[7].score}}<br>
+                                    <span class="font-semibold">Temps de réponse</span> {{selectedGame.questions[7].answerTime}} secondes
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- controls -->
+                    <div class="absolute top-1/2 w-full flex justify-between z-20">
+                        <label for="carousel-7"
+                            class="inline-block text-red-600 cursor-pointer -translate-x-5 bg-white rounded-full shadow-md active:translate-y-0.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </label>
+                        <label for="carousel-9"
+                            class="inline-block text-red-600 cursor-pointer translate-x-5 bg-white rounded-full shadow-md active:translate-y-0.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="">
+                <input class="sr-only peer" type="radio" name="carousel" id="carousel-9" />
+                <!-- content #1 -->
+                <div
+                    class="w-[280px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-lg transition-all duration-300 opacity-0 peer-checked:opacity-100 peer-checked:z-10 z-0">
+                    <div class="h-50">
+                        <img *ngIf="selectedGame.questions[8].question.optionalImage !== '' && selectedGame.questions[8].question.optionalImage != null" class="rounded-t-lg mx-auto w-auto h-[160px]"
+                            src="{{selectedGame.questions[8].question.optionalImage}}" alt="" />
+                        <p *ngIf="selectedGame.questions[8].question.optionalText !== '' && selectedGame.questions[8].question.optionalText != null" class="max-h-[160px] text-ellipsis overflow-hidden text-center text-xs">{{selectedGame.questions[8].question.optionalText}}</p>
+                    </div>
+                    <div class="pt-2 pb-4 px-4">
+                        <h1 class="hover:cursor-pointer text-gray-900 font-bold text-sm tracking-tight text-center">Question 9: {{selectedGame.questions[8].question.question}}
+                        </h1>
+                        <div class="pt-[3px] grid grid-rows-5 grid-flow-row-dense gap-1 place-items-stretch">
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[8].question.answer === selectedGame.questions[8].question.choices.choice1,
+                                'bg-blue-400' : selectedGame.questions[8].playerAnswer !== selectedGame.questions[8].question.choices.choice1,
+                                'bg-red-400' : selectedGame.questions[8].playerAnswer == selectedGame.questions[8].question.choices.choice1 && selectedGame.questions[8].question.answer !== selectedGame.questions[8].question.choices.choice1}" class="rounded">
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[8].question.choices.choice1}}</p>
+                            </div>
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[8].question.answer === selectedGame.questions[8].question.choices.choice2,
+                                'bg-blue-400' : selectedGame.questions[8].playerAnswer !== selectedGame.questions[8].question.choices.choice2,
+                                'bg-red-400' : selectedGame.questions[8].playerAnswer == selectedGame.questions[8].question.choices.choice2 && selectedGame.questions[8].question.answer !== selectedGame.questions[8].question.choices.choice2}" class="rounded">
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[8].question.choices.choice2}}</p>
+                            </div>
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[8].question.answer === selectedGame.questions[8].question.choices.choice3,
+                                'bg-blue-400' : selectedGame.questions[8].playerAnswer !== selectedGame.questions[8].question.choices.choice3,
+                                'bg-red-400' : selectedGame.questions[8].playerAnswer == selectedGame.questions[8].question.choices.choice3 && selectedGame.questions[8].question.answer !== selectedGame.questions[8].question.choices.choice3}" class="rounded">    
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[8].question.choices.choice3}}</p>
+                            </div>
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[8].question.answer === selectedGame.questions[8].question.choices.choice4,
+                                'bg-blue-400' : selectedGame.questions[8].playerAnswer !== selectedGame.questions[8].question.choices.choice4,
+                                'bg-red-400' : selectedGame.questions[8].playerAnswer == selectedGame.questions[8].question.choices.choice4 && selectedGame.questions[8].question.answer !== selectedGame.questions[8].question.choices.choice4}" class="rounded">    
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[8].question.choices.choice4}}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-roboto uppercase text-gray-900">
+                                    <span class="font-semibold">Score</span> {{selectedGame.questions[8].score}}<br>
+                                    <span class="font-semibold">Temps de réponse</span> {{selectedGame.questions[8].answerTime}} secondes
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- controls -->
+                    <div class="absolute top-1/2 w-full flex justify-between z-20">
+                        <label for="carousel-8"
+                            class="inline-block text-red-600 cursor-pointer -translate-x-5 bg-white rounded-full shadow-md active:translate-y-0.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </label>
+                        <label for="carousel-10"
+                            class="inline-block text-red-600 cursor-pointer translate-x-5 bg-white rounded-full shadow-md active:translate-y-0.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="">
+                <input class="sr-only peer" type="radio" name="carousel" id="carousel-10" />
+                <!-- content #1 -->
+                <div
+                    class="w-[280px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-lg transition-all duration-300 opacity-0 peer-checked:opacity-100 peer-checked:z-10 z-0">
+                    <div class="h-50">
+                        <img *ngIf="selectedGame.questions[9].question.optionalImage !== '' && selectedGame.questions[9].question.optionalImage != null" class="rounded-t-lg mx-auto w-auto h-[160px]"
+                            src="{{selectedGame.questions[9].question.optionalImage}}" alt="" />
+                        <p *ngIf="selectedGame.questions[9].question.optionalText !== '' && selectedGame.questions[9].question.optionalText != null" class="max-h-[160px] text-ellipsis overflow-hidden text-center text-xs">{{selectedGame.questions[9].question.optionalText}}</p>
+                    </div>
+                    <div class="pt-2 pb-4 px-4">
+                        <h1 class="hover:cursor-pointer text-gray-900 font-bold text-sm tracking-tight text-center">Question 10: {{selectedGame.questions[9].question.question}}
+                        </h1>
+                        <div class="pt-[3px] grid grid-rows-5 grid-flow-row-dense gap-1 place-items-stretch">
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[9].question.answer === selectedGame.questions[9].question.choices.choice1,
+                                'bg-blue-400' : selectedGame.questions[9].playerAnswer !== selectedGame.questions[9].question.choices.choice1,
+                                'bg-red-400' : selectedGame.questions[9].playerAnswer == selectedGame.questions[9].question.choices.choice1 && selectedGame.questions[9].question.answer !== selectedGame.questions[9].question.choices.choice1}" class="rounded">
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[9].question.choices.choice1}}</p>
+                            </div>
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[9].question.answer === selectedGame.questions[9].question.choices.choice2,
+                                'bg-blue-400' : selectedGame.questions[9].playerAnswer !== selectedGame.questions[9].question.choices.choice2,
+                                'bg-red-400' : selectedGame.questions[9].playerAnswer == selectedGame.questions[9].question.choices.choice2 && selectedGame.questions[9].question.answer !== selectedGame.questions[9].question.choices.choice2}" class="rounded">
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[9].question.choices.choice2}}</p>
+                            </div>
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[9].question.answer === selectedGame.questions[9].question.choices.choice3,
+                                'bg-blue-400' : selectedGame.questions[9].playerAnswer !== selectedGame.questions[9].question.choices.choice3,
+                                'bg-red-400' : selectedGame.questions[9].playerAnswer == selectedGame.questions[9].question.choices.choice3 && selectedGame.questions[9].question.answer !== selectedGame.questions[9].question.choices.choice3}" class="rounded">    
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[9].question.choices.choice3}}</p>
+                            </div>
+                            <div id="" [ngClass]="{
+                                'bg-green' : selectedGame.questions[9].question.answer === selectedGame.questions[9].question.choices.choice4,
+                                'bg-blue-400' : selectedGame.questions[9].playerAnswer !== selectedGame.questions[9].question.choices.choice4,
+                                'bg-red-400' : selectedGame.questions[9].playerAnswer == selectedGame.questions[9].question.choices.choice4 && selectedGame.questions[9].question.answer !== selectedGame.questions[9].question.choices.choice4}" class="rounded">    
+                                <p class="text-xs py-2 px-4 text-center max-h-[24px] text-ellipsis overflow-hidden">{{selectedGame.questions[9].question.choices.choice4}}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-roboto uppercase text-gray-900">
+                                    <span class="font-semibold">Score</span> {{selectedGame.questions[9].score}}<br>
+                                    <span class="font-semibold">Temps de réponse</span> {{selectedGame.questions[9].answerTime}} secondes
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- controls -->
+                    <div class="absolute top-1/2 w-full flex justify-between z-20">
+                        <label for="carousel-9"
+                            class="inline-block text-red-600 cursor-pointer -translate-x-5 bg-white rounded-full shadow-md active:translate-y-0.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </label>
+                        <label for="carousel-1"
+                            class="inline-block text-red-600 cursor-pointer translate-x-5 bg-white rounded-full shadow-md active:translate-y-0.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <p class="font-roboto font-semibold uppercase text-gray-900"> <span class="underline decoration-red-500 decoration-dashed">Score final</span> {{selectedGame.score}}</p>
+        </div>
     </div>
 </div>

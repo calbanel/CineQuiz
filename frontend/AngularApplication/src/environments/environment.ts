@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: `${location.origin}/api`,
+  apiUrl: `http://localhost:8080/api`,
   nbQuestionsInQuiz: 10
 };
 
