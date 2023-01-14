@@ -14,15 +14,19 @@ export class HomepageComponent{
     gameHistory !: Game[];
     selectedGame ?: Game;
 
-    constructor(private user: AccountService, private gameService : GameService, private router: Router){
+    constructor(private accountService: AccountService, private gameService : GameService, private router: Router){
       if(this.gameService.gameLaunched){
         this.gameService.reset();
       }
 
-      user.getById(user.userValue.id).subscribe(value => {
+      accountService.getById(accountService.userValue.id).subscribe(value => {
         this.gameHistory = value.games;
         this.gameHistory = this.gameHistory.reverse();
       });
+    }
+
+    isLoggedIn() : boolean{
+      return this.accountService.isLoggedIn;
     }
 
     loading(){
