@@ -20,6 +20,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { DatePipe, registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import {MatButtonModule} from '@angular/material/button';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
@@ -80,6 +81,7 @@ registerLocaleData(localeFr);
     HttpClientModule,
     MatProgressSpinnerModule,
     MatButtonModule,
+    BrowserAnimationsModule,
   ],
   providers: [   
     DatePipe,
