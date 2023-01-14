@@ -28,8 +28,8 @@
                 <version>1.7.6</version>
                 <configuration>
                     <workingDirectory>./AngularApplication/</workingDirectory>
-                    <nodeVersion>v16.10.0</nodeVersion>
-                    <npmVersion>7.24.0</npmVersion>
+                    <nodeVersion>v18.10.0</nodeVersion>
+                    <npmVersion>8.19.2</npmVersion>
                 </configuration>
                 <executions>
                     <execution>
