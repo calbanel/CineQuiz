@@ -19,7 +19,10 @@ export class HomepageComponent{
         this.gameService.reset();
       }
 
-      this.gameHistory = user.userValue.games;
+      user.getById(user.userValue.id).subscribe(value => {
+        this.gameHistory = value.games;
+        this.gameHistory = this.gameHistory.reverse();
+      });
     }
 
     loading(){
