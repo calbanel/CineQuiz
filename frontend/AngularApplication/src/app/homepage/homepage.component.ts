@@ -19,10 +19,12 @@ export class HomepageComponent{
         this.gameService.reset();
       }
 
-      accountService.getById(accountService.userValue.id).subscribe(value => {
-        this.gameHistory = value.games;
-        this.gameHistory = this.gameHistory.reverse();
-      });
+      if(this.isLoggedIn()){
+        accountService.getById(accountService.userValue.id).subscribe(value => {
+          this.gameHistory = value.games;
+          this.gameHistory = this.gameHistory.reverse();
+        });
+      }
     }
 
     isLoggedIn() : boolean{
