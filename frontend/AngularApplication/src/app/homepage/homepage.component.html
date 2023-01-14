@@ -9,7 +9,7 @@
     </div>
 </div>
 
-<div *ngIf="isLoggedIn()" class="grid gap-4 flex-col">
+<div *ngIf="isLoggedIn()" class="grid gap-2 flex-col">
     <div class="my-[2%] mx-auto">
         <button (click)="loading()"
             class="bg-red-500 hover:bg-red-400 text-white font-bold py-2 px-4 border-b-4 border-red-700 hover:border-red-500 rounded">
@@ -17,10 +17,10 @@
         </button>
     </div>
     <div class="w-[280px] mx-auto">
-        <label for="history" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Revoir une ancienne
+        <label for="history" class="block text-sm font-medium text-gray-900 dark:text-white">Revoir une ancienne
             partie</label>
         <select (change)="changeGame($event)" id="history"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500">
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-[4px] dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500">
             <option value="null" selected>Choisir une partie</option>
             <option *ngFor="let game of gameHistory" [ngValue]="game">
                 {{ game.date }}
