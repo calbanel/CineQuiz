@@ -35,6 +35,10 @@ export class HomepageComponent{
       this.router.navigateByUrl("/loading");
     }
 
+    signInPage(){
+      this.router.navigateByUrl("/sign-in");
+    }
+
     changeGame(e: any){
       if(e.target.value == "null")
         this.selectedGame = undefined;
