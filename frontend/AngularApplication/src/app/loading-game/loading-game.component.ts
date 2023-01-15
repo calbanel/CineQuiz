@@ -22,8 +22,10 @@ export class LoadingGameComponent implements OnInit, OnDestroy {
     game.generateQuiz(environment.nbQuestionsInQuiz).subscribe(
     {
       next: (val) => {
-        if(val)
-          this.router.navigateByUrl(`/questions/1`);
+        if(val){
+          if(this.router.url === "/loading")
+            this.router.navigateByUrl(`/questions/1`);
+        }
         else
           Swal.fire('Echec de la création','Veuillez réessayer','error')
       },
