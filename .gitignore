@@ -1,6 +1,11 @@
 
 backend/src/main/resources/static/runtime.a6d47058ea21e154.js
-.vscode/settings.json
+### VisualStudioCode ###
+.vscode/*      # Maybe .vscode/**/* instead - see comments
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
 backend/src/main/resources/static/3rdpartylicenses.txt
 backend/src/main/resources/static/assets/A.png
 backend/src/main/resources/static/assets/A.pngZone.Identifier
@@ -55,3 +60,4 @@ backend/src/main/resources/static/main.f5858359ff1fd993.js
 backend/src/main/resources/static/polyfills.c8a41f9d82374ced.js
 backend/src/main/resources/static/runtime.103d6c24b5795a5c.js
 backend/src/main/resources/static/styles.f7530c1e6b276805.css
+frontend/target/
