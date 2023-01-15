@@ -3,12 +3,12 @@
 ## Installation
 
 #### Docker
-**(Build)** mvn clean install <br>
-**(Lancement)** mvn spring-boot:run
-
-#### Maven
 **(Build)** docker build -t cinequiz . <br>
 **(Lancement)** docker run -p 8080:8080 cinequiz
+
+#### Maven
+**(Build)** mvn clean install <br>
+**(Lancement)** mvn spring-boot:run
 
 L’application est maintenant disponible à l’adresse : http://localhost:8080/
 
