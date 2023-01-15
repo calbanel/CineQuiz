@@ -1,7 +1,7 @@
 
 backend/src/main/resources/static/runtime.a6d47058ea21e154.js
 ### VisualStudioCode ###
-.vscode/*      # Maybe .vscode/**/* instead - see comments
+.vscode/**/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
