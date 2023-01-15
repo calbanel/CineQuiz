@@ -16,10 +16,9 @@ import { AccountService } from './services/account.service';
 import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { LoadingGameComponent } from './loading-game/loading-game.component';
-import {MatLegacyProgressSpinnerModule as MatProgressSpinnerModule} from '@angular/material/legacy-progress-spinner';
+import {MatProgressSpinnerModule as MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { DatePipe, registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
-import {MatLegacyButtonModule as MatButtonModule} from '@angular/material/legacy-button';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @Injectable()
@@ -80,7 +79,6 @@ registerLocaleData(localeFr);
     ReactiveFormsModule,
     HttpClientModule,
     MatProgressSpinnerModule,
-    MatButtonModule,
     BrowserAnimationsModule,
   ],
   providers: [   
