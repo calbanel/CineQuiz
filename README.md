@@ -2,6 +2,7 @@
 
 ## Installation
 
+*Choisir soit Docker soit Maven*
 #### Docker
 **(Build)** docker build -t cinequiz . <br>
 **(Lancement)** docker run -p 8080:8080 cinequiz
