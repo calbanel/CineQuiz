@@ -45,7 +45,8 @@ public class TmdbFetching {
     public static List<InfosInterface> getRandomValidInfos(Language language, InfosTmdbFetchingOptions options,
             InfosType type, int number) {
         List<InfosInterface> infosList = new ArrayList<InfosInterface>();
-
+        
+        int randomGenre = BackendApplication.random(MIN_GENDER_TMDB_CODE, MAX_GENDER_TMDB_CODE);
         // as long as we don't have valid infos, we go through the pages of popular
         // randomly
         while (infosList.size() < number) {
@@ -59,7 +60,6 @@ public class TmdbFetching {
                         options.isImage(), false, false, options.isGenre());
                 filtredResults = filterInfosList(page, adaptedOptions);
 
-                int randomGenre = BackendApplication.random(MIN_GENDER_TMDB_CODE, MAX_GENDER_TMDB_CODE);
                 filtredResults = (List<? extends InfosInterface>) page.stream()
                         .filter(p -> p.getGenre() == randomGenre).collect(Collectors.toList());
             } else {
